@@ -6,28 +6,38 @@
   <style>
     table{
       border-collapse: collapse;
+      border: 2px solid peru;
+      width: 386px;  /* td 보더 없애면서 조정함 */
+      background-color: transparent;
     }
     td{
       width: 40px;
-      height: 30px;
-      border: 1px solid black;
+      height: 40px;
+      border: 1px solid tomato;
+      text-align: center;
     }
     #janggiBoard{
-      width: 400px;
+      width: 345px;  /* 테이블 크기에 맞게 조금 조정 */
       display: block;
       margin: auto;
-      position: relative;
+      position: absolute;  
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
     #backTable{
-      position: relative;
-      left: 200px;
-      bottom: 400px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   </style>
 </head>
 <body>
   <img id = "janggiBoard" src = "./janggi_board.png">
-  <table id = "backTable"></table>
+  <table id = "backTable"></table>  <!-- 테이블이 먼저 깔리도록 -->
+    
+
   <script>
     const $table = document.querySelector("table");
     const data = [];
@@ -36,12 +46,14 @@
       const $tr = document.createElement("tr");
       for (let j = 0; j < 9; j++){
         const $td = document.createElement("td");
+        $td.textContent = "0";
         $tr.appendChild($td);
         row.push($td);
       }
       data.push(row);
       $table.appendChild($tr);
     }
+    console.log(window.innerWidth);
   </script>
 </body>
 </html>
