@@ -7,13 +7,15 @@
     table{
       border-collapse: collapse;
       border: 2px solid peru;
-      width: 386px;  /* td 보더 없애면서 조정함 */
+      width: 390px;  /* td 보더 없애면서 조정함 */
+      height: 432.76px;
       background-color: transparent;
+      
     }
     td{
       width: 40px;
       height: 40px;
-      border: 1px solid tomato;
+      
       text-align: center;
     }
     #janggiBoard{
@@ -35,9 +37,8 @@
 </head>
 <body>
   <img id = "janggiBoard" src = "./janggi_board.png">
-  <table id = "backTable"></table>  <!-- 테이블이 먼저 깔리도록 -->
-    
-
+  <table id = "backTable"></table> 
+  
   <script>
     const $table = document.querySelector("table");
     const data = [];
