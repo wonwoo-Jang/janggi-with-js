@@ -13,6 +13,6 @@ class car extends janggiPieces{
   canMove(goToR, gotToC){
     if(goToR == this.nowR || gotToC == this.nowC){
       return true;
-    }
+    } //class를 어떻게 구성해야 할지 고민해보자.
   }
 }
