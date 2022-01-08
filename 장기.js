@@ -1,4 +1,5 @@
 import { boardClassSetting, boardContentSetting } from "./initialSettings.js";
+import { janggiPieces } from "./janggiPieces.js";
 
 const $table = document.querySelector("table");
 const data = [];
@@ -17,4 +18,3 @@ for(let i = 0; i < 10; i++){
   data.push(row);
   $table.appendChild($tr);
 }
-console.log(window.innerWidth);
