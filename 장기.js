@@ -39,7 +39,7 @@ function carValidMove(){
   }
   i = 1;
   while (true){
-    const rightCheck = data[this.parentNode.rowIndex - i]?.[this.cellIndex + i];
+    const rightCheck = data[this.parentNode.rowIndex - i]?.[this.cellIndex];
     if (!rightCheck) break;
     if (rightCheck.textContent) break;
     rightCheck.classList.toggle("valid");
@@ -75,7 +75,30 @@ function soldierValidMove(){
 }
 
 function horseValidMove(){
-
+  if (beforeClickedPiece != this){
+    data.flat().forEach((ele) => {
+      if(ele.classList.contains("valid")) ele.classList.remove("valid");
+    })
+  } //만약 이전에 클릭된 기물이 아니면, valid를 토글하기 전에 valid를 초기화해줘야 함
+  const x = this.parentNode.rowIndex;
+  const y = this.cellIndex;
+  if(data[x + 1]?.[y] && !data[x + 1]?.[y].textContent){
+    if(data[x + 2]?.[y + 1] && !data[x + 2]?.[y + 1].textContent) data[x + 2]?.[y + 1].classList.toggle("valid");
+    if(data[x + 2]?.[y - 1] && !data[x + 2]?.[y - 1].textContent) data[x + 2]?.[y - 1].classList.toggle("valid");
+  }
+  if(data[x - 1]?.[y] && !data[x - 1]?.[y].textContent){
+    if(data[x - 2]?.[y + 1] && !data[x - 2]?.[y + 1].textContent) data[x - 2]?.[y + 1].classList.toggle("valid");
+    if(data[x - 2]?.[y - 1] && !data[x - 2]?.[y - 1].textContent) data[x - 2]?.[y - 1].classList.toggle("valid");
+  }
+  if(data[x]?.[y + 1] && !data[x]?.[y + 1].textContent){
+    if(data[x + 1]?.[y + 2] && !data[x + 1]?.[y + 2].textContent) data[x + 1]?.[y + 2].classList.toggle("valid");
+    if(data[x - 1]?.[y + 2] && !data[x - 1]?.[y + 2].textContent) data[x - 1]?.[y + 2].classList.toggle("valid");
+  }
+  if(data[x]?.[y - 1] && !data[x]?.[y -1].textContent){
+    if(data[x + 1]?.[y - 2] && !data[x + 1]?.[y - 2].textContent) data[x + 1]?.[y - 2].classList.toggle("valid");
+    if(data[x - 1]?.[y - 2] && !data[x - 1]?.[y - 2].textContent) data[x - 1]?.[y - 2].classList.toggle("valid");
+  }
+  beforeClickedPiece = this; //이전에 클릭된 기물에 클릭된 td를 저장
 }
 
 function elephantValidMove(){
