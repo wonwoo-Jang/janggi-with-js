@@ -12,9 +12,11 @@ function carValidMove(_this) {
     })
   } //만약 이전에 클릭된 기물이 아니면, valid를 토글하기 전에 valid를 초기화해줘야 함
 
+  const x = _this.parentNode.rowIndex;
+  const y = _this.cellIndex;
   let i = 1;
   while (true){
-    const rightCheck = data[_this.parentNode.rowIndex]?.[_this.cellIndex + i];
+    const rightCheck = data[x]?.[y + i];
     if (!rightCheck) break;
     if (rightCheck.textContent) break;
     rightCheck.classList.toggle("valid");
@@ -22,7 +24,7 @@ function carValidMove(_this) {
   }
   i = 1;
   while (true){
-    const rightCheck = data[_this.parentNode.rowIndex]?.[_this.cellIndex - i];
+    const rightCheck = data[x]?.[y - i];
     if (!rightCheck) break;
     if (rightCheck.textContent) break;
     rightCheck.classList.toggle("valid");
@@ -30,7 +32,7 @@ function carValidMove(_this) {
   }
   i = 1;
   while (true){
-    const rightCheck = data[_this.parentNode.rowIndex + i]?.[_this.cellIndex];
+    const rightCheck = data[x + i]?.[y];
     if (!rightCheck) break;
     if (rightCheck.textContent) break;
     rightCheck.classList.toggle("valid");
@@ -38,7 +40,7 @@ function carValidMove(_this) {
   }
   i = 1;
   while (true){
-    const rightCheck = data[_this.parentNode.rowIndex - i]?.[_this.cellIndex];
+    const rightCheck = data[x - i]?.[y];
     if (!rightCheck) break;
     if (rightCheck.textContent) break;
     rightCheck.classList.toggle("valid");
@@ -282,7 +284,12 @@ function scholarValidMove(_this){
 function whichMoveToSelect(){
   if(this.classList.contains("valid")){
     data.flat().forEach((e) => {e.classList.remove("valid");})
-    this.classList.add(beforeClickedPiece.classList[0], beforeClickedPiece.classList[1]); //지금은 2개(기물 정보, 나라) 추후 class 추가되면 이부분 수정! + 궁성을 표시하는 house class도 생각해줘야 한다!
+    let classArr = []; //기물이 가진 class 저장(진영과 기물 이름만 저장하기 위해 만든 임시 array)
+    beforeClickedPiece.classList.forEach((e) => classArr.push(e));
+    classArr = classArr.filter((c) => c != "house"); //궁성 class는 냅두고 옮겨야 함.
+    classArr.forEach((e) => {
+      this.classList.add(e);
+    })
     this.textContent = beforeClickedPiece.textContent;
     if(beforeClickedPiece.classList.contains("house")){
       beforeClickedPiece.classList.value = "house";
