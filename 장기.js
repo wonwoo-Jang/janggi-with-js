@@ -17,8 +17,8 @@ function carValidMove(_this) {
   let i = 1;
   while (true){
     const rightCheck = data[x]?.[y + i];
-    if (!rightCheck) break;
-    if (rightCheck.textContent) break;
+    if (!rightCheck) break; //아예 칸이 없는 경우 여기에서 종료
+    if (rightCheck.textContent) break; //이미 그 칸에 기물이 있으면 종료(여기 수정! 상대 기물 먹을 수 있음)
     rightCheck.classList.toggle("valid");
     i++;
   }
@@ -46,6 +46,59 @@ function carValidMove(_this) {
     rightCheck.classList.toggle("valid");
     i++;
   }
+
+  if([0, 7].includes(x) && y == 3){
+    i = 1;
+    while (true){
+      const rightCheck = data[x + i]?.[y + i];
+      if (i > 2) break; //궁성 범위를 나가버리면 종료
+      if (!rightCheck) break;
+      if (rightCheck.textContent) break;
+      rightCheck.classList.toggle("valid");
+      i++;
+    }
+  }
+  else if([0, 7].includes(x) && y == 5){
+    i = 1;
+    while (true){
+      const rightCheck = data[x + i]?.[y - i];
+      if (i > 2) break; //궁성 범위를 나가버리면 종료
+      if (!rightCheck) break;
+      if (rightCheck.textContent) break;
+      rightCheck.classList.toggle("valid");
+      i++;
+    }
+  }
+  else if([2, 9].includes(x) && y == 3){
+    i = 1;
+    while (true){
+      const rightCheck = data[x - i]?.[y + i];
+      if (i > 2) break; //궁성 범위를 나가버리면 종료
+      if (!rightCheck) break;
+      if (rightCheck.textContent) break;
+      rightCheck.classList.toggle("valid");
+      i++;
+    }
+  }
+  else if([2, 9].includes(x) && y == 5){
+    i = 1;
+    while (true){
+      const rightCheck = data[x - i]?.[y - i];
+      if (i > 2) break; //궁성 범위를 나가버리면 종료
+      if (!rightCheck) break;
+      if (rightCheck.textContent) break;
+      rightCheck.classList.toggle("valid");
+      i++;
+    }
+  }
+  else if([1, 8].includes(x) && y == 4){
+    [1, -1].forEach((r) => {
+      [1, -1].forEach((c) => {
+        const rightCheck = data[x + r]?.[y + c];
+        if(rightCheck && !rightCheck.textContent) rightCheck.classList.toggle("valid");
+      })
+    })
+  } //궁성에 있다면 대각선 이동 가능!
   beforeClickedPiece = _this; //이전에 클릭된 기물에 클릭된 td를 저장
 }
 
@@ -56,22 +109,47 @@ function soldierValidMove(_this){
     })
   } //만약 이전에 클릭된 기물이 아니면, valid를 토글하기 전에 valid를 초기화해줘야 함
 
+  const x = _this.parentNode.rowIndex;
+  const y = _this.cellIndex;
   let upOrDown = 1;
   if(_this.classList.contains(myCountry)){
     upOrDown = -1;
   }
-  let rightCheck = data[_this.parentNode.rowIndex]?.[_this.cellIndex + 1];
+  let rightCheck = data[x]?.[y + 1];
   if(rightCheck && !rightCheck.textContent){
     rightCheck.classList.toggle("valid");
   }
-  rightCheck = data[_this.parentNode.rowIndex]?.[_this.cellIndex - 1];
+  rightCheck = data[x]?.[y - 1];
   if(rightCheck && !rightCheck.textContent){
     rightCheck.classList.toggle("valid");
   }
-  rightCheck = data[_this.parentNode.rowIndex + upOrDown]?.[_this.cellIndex];
+  rightCheck = data[x + upOrDown]?.[y];
   if(rightCheck && !rightCheck.textContent){
     rightCheck.classList.toggle("valid");
   }
+
+  if([2, 7].includes(x) && y == 3){
+    rightCheck = data[x + upOrDown]?.[y + 1];
+    if(rightCheck && !rightCheck.textContent){
+      rightCheck.classList.toggle("valid");
+    }
+  }
+  else if([2, 7].includes(x) && y == 5){
+    rightCheck = data[x + upOrDown]?.[y - 1];
+    if(rightCheck && !rightCheck.textContent){
+      rightCheck.classList.toggle("valid");
+    }
+  }
+  else if([1, 8].includes(x) && y == 4){
+    rightCheck = data[x + upOrDown]?.[y + 1];
+    if(rightCheck && !rightCheck.textContent){
+      rightCheck.classList.toggle("valid");
+    }
+    rightCheck = data[x + upOrDown]?.[y - 1];
+    if(rightCheck && !rightCheck.textContent){
+      rightCheck.classList.toggle("valid");
+    }
+  } //궁성에 있다면 대각선 이동 가능!
   beforeClickedPiece = _this; //이전에 클릭된 기물에 클릭된 td를 저장
 }
 
@@ -152,10 +230,12 @@ function cannonValidMove(_this){
     })
   } //만약 이전에 클릭된 기물이 아니면, valid를 토글하기 전에 valid를 초기화해줘야 함
 
+  const x = _this.parentNode.rowIndex;
+  const y = _this.cellIndex;
   let i = 1;
   let pivot = false;
   while (true){
-    const rightCheck = data[_this.parentNode.rowIndex]?.[_this.cellIndex + i];
+    const rightCheck = data[x]?.[y + i];
     if (!rightCheck) break;
     if (!pivot && rightCheck.textContent && !rightCheck.classList.contains("cannon")){
       pivot = true;
@@ -171,7 +251,7 @@ function cannonValidMove(_this){
   i = 1;
   pivot = false;
   while (true){
-    const rightCheck = data[_this.parentNode.rowIndex]?.[_this.cellIndex - i];
+    const rightCheck = data[x]?.[y - i];
     if (!rightCheck) break;
     if (!pivot && rightCheck.textContent && !rightCheck.classList.contains("cannon")){
       pivot = true;
@@ -187,7 +267,7 @@ function cannonValidMove(_this){
   i = 1;
   pivot = false;
   while (true){
-    const rightCheck = data[_this.parentNode.rowIndex + i]?.[_this.cellIndex];
+    const rightCheck = data[x + i]?.[y];
     if (!rightCheck) break;
     if (!pivot && rightCheck.textContent && !rightCheck.classList.contains("cannon")){
       pivot = true;
@@ -203,7 +283,7 @@ function cannonValidMove(_this){
   i = 1;
   pivot = false;
   while (true){
-    const rightCheck = data[_this.parentNode.rowIndex - i]?.[_this.cellIndex];
+    const rightCheck = data[x - i]?.[y];
     if (!rightCheck) break;
     if (!pivot && rightCheck.textContent && !rightCheck.classList.contains("cannon")){
       pivot = true;
@@ -216,6 +296,23 @@ function cannonValidMove(_this){
     }
     i++;
   }
+
+  if([0, 7].includes(x) && y == 3 && data[x + 1][y + 1].textContent && !data[x + 1][y + 1].classList.contains("cannon")){
+    const rightCheck = data[x + 2]?.[y + 2];
+    if (!rightCheck.textContent)  rightCheck.classList.toggle("valid");
+  }
+  else if([0, 7].includes(x) && y == 5 && data[x + 1][y - 1].textContent && !data[x + 1][y - 1].classList.contains("cannon")){
+    const rightCheck = data[x + 2]?.[y - 2];
+    if (!rightCheck.textContent)  rightCheck.classList.toggle("valid");
+  }
+  else if([2, 9].includes(x) && y == 3 && data[x - 1][y + 1].textContent && !data[x - 1][y + 1].classList.contains("cannon")){
+    const rightCheck = data[x - 2]?.[y + 2];
+    if (!rightCheck.textContent)  rightCheck.classList.toggle("valid");
+  }
+  else if([2, 9].includes(x) && y == 5 && data[x - 1][y - 1].textContent && !data[x - 1][y - 1].classList.contains("cannon")){
+    const rightCheck = data[x - 2]?.[y - 2];
+    if (!rightCheck.textContent)  rightCheck.classList.toggle("valid");
+  } //궁성에 있다면 대각선 이동 가능!
   beforeClickedPiece = _this; //이전에 클릭된 기물에 클릭된 td를 저장
 }
 
