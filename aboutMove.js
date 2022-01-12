@@ -108,7 +108,7 @@ function soldierValidMove(_this){
   const x = _this.parentNode.rowIndex;
   const y = _this.cellIndex;
   let upOrDown = 1;
-  if(_this.classList.contains(myCountry)){
+  if(_this.dataset.country == myCountry){
     upOrDown = -1;
   }
   let rightCheck = data[x]?.[y + 1];
@@ -384,13 +384,14 @@ function whichMoveToSelect(){
       this.classList.add(e);
     })
     this.textContent = beforeClickedPiece.textContent;
+    this.setAttribute("data-country", beforeClickedPiece.dataset.country);
+    beforeClickedPiece.dataset.country = "";
+    beforeClickedPiece.textContent = "";
     if(beforeClickedPiece.classList.contains("house")){
       beforeClickedPiece.classList.value = "house";
-      beforeClickedPiece.textContent = "";
       return;
     }
     beforeClickedPiece.classList.value = "";
-    beforeClickedPiece.textContent = "";
     return;
   } //만약에 빈칸에 기물을 클릭하는 행동이였으면, 이동하고 종료.
   

@@ -34,35 +34,35 @@ function determinePiecesCountry(i, j, $td, myCountry){
   if (myCountry == "cho") yourCountry = "han";
   else yourCountry = "cho";
   if ([0].includes(i) && [0, 1, 2, 3, 5, 6, 7, 8].includes(j)){
-    $td.classList.add(yourCountry);
+    $td.setAttribute("data-country",yourCountry);
     return;
   }
   if(i == 1 && j == 4){
-    $td.classList.add(yourCountry);
+    $td.setAttribute("data-country",yourCountry);
     return;
   }
   if ([2].includes(i) && [1, 7].includes(j)){
-    $td.classList.add(yourCountry);
+    $td.setAttribute("data-country",yourCountry);
     return;
   }
   if ([3].includes(i) && [0, 2, 4, 6, 8].includes(j)){
-    $td.classList.add(yourCountry);
+    $td.setAttribute("data-country",yourCountry);
     return;
   }
   if ([9].includes(i) && [0, 1, 2, 3, 5, 6, 7, 8].includes(j)){
-    $td.classList.add(myCountry);
+    $td.setAttribute("data-country",myCountry);
     return;
   }
   if(i == 8 && j == 4){
-    $td.classList.add(myCountry);
+    $td.setAttribute("data-country",myCountry);
     return;
   }
   if ([7].includes(i) && [1, 7].includes(j)){
-    $td.classList.add(myCountry);
+    $td.setAttribute("data-country",myCountry);
     return;
   }
   if ([6].includes(i) && [0, 2, 4, 6, 8].includes(j)){
-    $td.classList.add(myCountry);
+    $td.setAttribute("data-country",myCountry);
     return;
   }
 }
