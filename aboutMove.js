@@ -1,6 +1,8 @@
 import {data, myCountry, turn as startTurn} from "./index.js";
 let beforeClickedPiece; //이전에 클릭된 기물이 저장되는 곳(td를 저장)
 let turn = startTurn;
+const diePiecesNameForCho = []; 
+const diePiecesNameForHan = []; //먹힌 기물들 모아놓는 배열(이름 저장)
 
 function carValidMove(_this) {
   if (_this.dataset.country != turn) return; //자기가 둘 차례가 아니면 클릭 금지.
@@ -445,9 +447,26 @@ function scholarValidMove(_this){
 function whichMoveToSelect(){
   if(this.classList.contains("valid")){
     data.flat().forEach((e) => {e.classList.remove("valid");})
-    let classArr = []; //기물이 가진 class 저장(진영과 기물 이름만 저장하기 위해 만든 임시 array)
+    let classArr = []; //이동하는 기물이 가진 class 저장(기물 이름만 저장하기 위해 만든 임시 array)
     beforeClickedPiece.classList.forEach((e) => classArr.push(e));
     classArr = classArr.filter((c) => c != "house"); //궁성 class는 냅두고 옮겨야 함.
+
+    if (this.dataset.country == "cho") {
+      this.classList.forEach((e) => {
+        if(e != "house") diePiecesNameForCho.push(e);
+      });
+    }
+    else if (this.dataset.country == "han") {
+      this.classList.forEach((e) => {
+        if(e != "house") diePiecesNameForHan.push(e);
+      });
+    }
+    if (this.classList.contains("house")){
+      this.classList.value = "house";
+    }
+    else{
+      this.classList = "";
+    } //만약 이동 칸에 상대 기물 있었으면 먹어치우기.
     classArr.forEach((e) => {
       this.classList.add(e);
     })
@@ -463,7 +482,7 @@ function whichMoveToSelect(){
     }
     beforeClickedPiece.classList.value = "";
     return;
-  } //만약에 빈칸에 기물을 클릭하는 행동이였으면, 이동하고 종료.
+  } //만약에 빈칸에 기물을 클릭하는 행동이거나 먹는 행동이였으면, 이동하고 종료.
   
   const _this = this; //함수 안으로 this전달하기 위해서 선언
   if (this.classList.contains("car")) {carValidMove(_this); return;}
