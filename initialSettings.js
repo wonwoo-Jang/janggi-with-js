@@ -74,9 +74,4 @@ function addHouseClass(i, j, $td){
   }
 }
 
-function boardContentSetting($td){
-  const janggiPieces = $td.classList.value;
-  if (janggiPieces) $td.textContent = janggiPieces.slice(0, 1); //나중에 여기 부분 이미지로 변경하기
-}
-
-export {piecesNameSetting, boardContentSetting, determinePiecesCountry, addHouseClass};
+export {piecesNameSetting, determinePiecesCountry, addHouseClass};

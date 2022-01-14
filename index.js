@@ -1,4 +1,4 @@
-import { piecesNameSetting, boardContentSetting, determinePiecesCountry, addHouseClass } from "./initialSettings.js";
+import { piecesNameSetting, determinePiecesCountry, addHouseClass } from "./initialSettings.js";
 import { whichMoveToSelect } from "./aboutMove.js";
 
 const $table = document.querySelector("table");
@@ -14,7 +14,6 @@ for(let i = 0; i < 10; i++){
     const $td = document.createElement("td");
     piecesNameSetting(i, j, $td);
     determinePiecesCountry(i, j, $td, myCountry);
-    boardContentSetting($td);
     addHouseClass(i, j, $td);
     $td.addEventListener("click", whichMoveToSelect);
     $tr.appendChild($td);

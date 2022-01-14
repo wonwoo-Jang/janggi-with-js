@@ -18,7 +18,7 @@ function carValidMove(_this) {
   while (true){
     const rightCheck = data[x]?.[y + i];
     if (!rightCheck) break; //아예 칸이 없는 경우 여기에서 종료
-    if (rightCheck.textContent){
+    if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
       break;
     } //이미 그 칸에 기물이 있으면 종료(여기 수정! 상대 기물 먹을 수 있음)
@@ -29,7 +29,7 @@ function carValidMove(_this) {
   while (true){
     const rightCheck = data[x]?.[y - i];
     if (!rightCheck) break;
-    if (rightCheck.textContent){
+    if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
       break;
     }
@@ -40,7 +40,7 @@ function carValidMove(_this) {
   while (true){
     const rightCheck = data[x + i]?.[y];
     if (!rightCheck) break;
-    if (rightCheck.textContent){
+    if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
       break;
     }
@@ -51,7 +51,7 @@ function carValidMove(_this) {
   while (true){
     const rightCheck = data[x - i]?.[y];
     if (!rightCheck) break;
-    if (rightCheck.textContent){
+    if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
       break;
     }
@@ -65,7 +65,7 @@ function carValidMove(_this) {
       const rightCheck = data[x + i]?.[y + i];
       if (i > 2) break; //궁성 범위를 나가버리면 종료
       if (!rightCheck) break;
-      if (rightCheck.textContent){
+      if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
       break;
     }
@@ -79,7 +79,7 @@ function carValidMove(_this) {
       const rightCheck = data[x + i]?.[y - i];
       if (i > 2) break; //궁성 범위를 나가버리면 종료
       if (!rightCheck) break;
-      if (rightCheck.textContent){
+      if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
       break;
     }
@@ -93,7 +93,7 @@ function carValidMove(_this) {
       const rightCheck = data[x - i]?.[y + i];
       if (i > 2) break; //궁성 범위를 나가버리면 종료
       if (!rightCheck) break;
-      if (rightCheck.textContent){
+      if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
       break;
     }
@@ -107,7 +107,7 @@ function carValidMove(_this) {
       const rightCheck = data[x - i]?.[y - i];
       if (i > 2) break; //궁성 범위를 나가버리면 종료
       if (!rightCheck) break;
-      if (rightCheck.textContent){
+      if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
       break;
     }
@@ -119,7 +119,7 @@ function carValidMove(_this) {
     [1, -1].forEach((r) => {
       [1, -1].forEach((c) => {
         const rightCheck = data[x + r]?.[y + c];
-        if(rightCheck && !rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn)) rightCheck.classList.toggle("valid");
+        if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)) rightCheck.classList.toggle("valid");
       })
     })
   } //궁성에 있다면 대각선 이동 가능!
@@ -141,37 +141,37 @@ function soldierValidMove(_this){
     upOrDown = -1;
   }
   let rightCheck = data[x]?.[y + 1];
-  if(rightCheck && !rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn)){
+  if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
     rightCheck.classList.toggle("valid");
   }
   rightCheck = data[x]?.[y - 1];
-  if(rightCheck && !rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn)){
+  if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
     rightCheck.classList.toggle("valid");
   }
   rightCheck = data[x + upOrDown]?.[y];
-  if(rightCheck && !rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn)){
+  if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
     rightCheck.classList.toggle("valid");
   }
 
   if([2, 7].includes(x) && y == 3){
     rightCheck = data[x + upOrDown]?.[y + 1];
-    if(rightCheck && !rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn)){
+    if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
       rightCheck.classList.toggle("valid");
     }
   }
   else if([2, 7].includes(x) && y == 5){
     rightCheck = data[x + upOrDown]?.[y - 1];
-    if(rightCheck && !rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn)){
+    if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
       rightCheck.classList.toggle("valid");
     }
   }
   else if([1, 8].includes(x) && y == 4){
     rightCheck = data[x + upOrDown]?.[y + 1];
-    if(rightCheck && !rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn)){
+    if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
       rightCheck.classList.toggle("valid");
     }
     rightCheck = data[x + upOrDown]?.[y - 1];
-    if(rightCheck && !rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn)){
+    if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
       rightCheck.classList.toggle("valid");
     }
   } //궁성에 있다면 대각선 이동 가능!
@@ -187,28 +187,28 @@ function horseValidMove(_this){
   } //만약 이전에 클릭된 기물이 아니면, valid를 토글하기 전에 valid를 초기화해줘야 함
   const x = _this.parentNode.rowIndex;
   const y = _this.cellIndex;
-  if(data[x + 1]?.[y] && !data[x + 1]?.[y].textContent){
-    if(data[x + 2]?.[y + 1] && !data[x + 2]?.[y + 1].textContent 
+  if(data[x + 1]?.[y] && !data[x + 1]?.[y].dataset.country){
+    if(data[x + 2]?.[y + 1] && !data[x + 2]?.[y + 1].dataset.country 
       || (data[x + 2]?.[y + 1] && data[x + 2]?.[y + 1].dataset.country != turn)) data[x + 2]?.[y + 1].classList.toggle("valid");
-    if(data[x + 2]?.[y - 1] && !data[x + 2]?.[y - 1].textContent
+    if(data[x + 2]?.[y - 1] && !data[x + 2]?.[y - 1].dataset.country
       || (data[x + 2]?.[y - 1] && data[x + 2]?.[y - 1].dataset.country != turn)) data[x + 2]?.[y - 1].classList.toggle("valid");
   }
-  if(data[x - 1]?.[y] && !data[x - 1]?.[y].textContent){
-    if(data[x - 2]?.[y + 1] && !data[x - 2]?.[y + 1].textContent
+  if(data[x - 1]?.[y] && !data[x - 1]?.[y].dataset.country){
+    if(data[x - 2]?.[y + 1] && !data[x - 2]?.[y + 1].dataset.country
       || (data[x - 2]?.[y + 1] && data[x - 2]?.[y + 1].dataset.country != turn)) data[x - 2]?.[y + 1].classList.toggle("valid");
-    if(data[x - 2]?.[y - 1] && !data[x - 2]?.[y - 1].textContent
+    if(data[x - 2]?.[y - 1] && !data[x - 2]?.[y - 1].dataset.country
       || (data[x - 2]?.[y - 1] && data[x - 2]?.[y - 1].dataset.country != turn)) data[x - 2]?.[y - 1].classList.toggle("valid");
   }
-  if(data[x]?.[y + 1] && !data[x]?.[y + 1].textContent){
-    if(data[x + 1]?.[y + 2] && !data[x + 1]?.[y + 2].textContent
+  if(data[x]?.[y + 1] && !data[x]?.[y + 1].dataset.country){
+    if(data[x + 1]?.[y + 2] && !data[x + 1]?.[y + 2].dataset.country
       || (data[x + 1]?.[y + 2] && data[x + 1]?.[y + 2].dataset.country != turn)) data[x + 1]?.[y + 2].classList.toggle("valid");
-    if(data[x - 1]?.[y + 2] && !data[x - 1]?.[y + 2].textContent
+    if(data[x - 1]?.[y + 2] && !data[x - 1]?.[y + 2].dataset.country
       || (data[x - 1]?.[y + 2] && data[x - 1]?.[y + 2].dataset.country != turn)) data[x - 1]?.[y + 2].classList.toggle("valid");
   }
-  if(data[x]?.[y - 1] && !data[x]?.[y -1].textContent){
-    if(data[x + 1]?.[y - 2] && !data[x + 1]?.[y - 2].textContent
+  if(data[x]?.[y - 1] && !data[x]?.[y -1].dataset.country){
+    if(data[x + 1]?.[y - 2] && !data[x + 1]?.[y - 2].dataset.country
       || (data[x + 1]?.[y - 2] && data[x + 1]?.[y - 2].dataset.country != turn)) data[x + 1]?.[y - 2].classList.toggle("valid");
-    if(data[x - 1]?.[y - 2] && !data[x - 1]?.[y - 2].textContent
+    if(data[x - 1]?.[y - 2] && !data[x - 1]?.[y - 2].dataset.country
       || (data[x - 1]?.[y - 2] && data[x - 1]?.[y - 2].dataset.country != turn)) data[x - 1]?.[y - 2].classList.toggle("valid");
   }
   beforeClickedPiece = _this; //이전에 클릭된 기물에 클릭된 td를 저장
@@ -223,43 +223,43 @@ function elephantValidMove(_this){
   } //만약 이전에 클릭된 기물이 아니면, valid를 토글하기 전에 valid를 초기화해줘야 함
   const x = _this.parentNode.rowIndex;
   const y = _this.cellIndex;
-  if(data[x + 1]?.[y] && !data[x + 1]?.[y].textContent){
-    if(data[x + 2]?.[y + 1] && !data[x + 2]?.[y + 1].textContent) {
-      if(data[x + 3]?.[y + 2] && !data[x + 3]?.[y + 2].textContent
+  if(data[x + 1]?.[y] && !data[x + 1]?.[y].dataset.country){
+    if(data[x + 2]?.[y + 1] && !data[x + 2]?.[y + 1].dataset.country) {
+      if(data[x + 3]?.[y + 2] && !data[x + 3]?.[y + 2].dataset.country
         || (data[x + 3]?.[y + 2] && data[x + 3]?.[y + 2].dataset.country != turn)) data[x + 3]?.[y + 2].classList.toggle("valid");
     };
-    if(data[x + 2]?.[y - 1] && !data[x + 2]?.[y - 1].textContent) {
-      if(data[x + 3]?.[y - 2] && !data[x + 3]?.[y - 2].textContent
+    if(data[x + 2]?.[y - 1] && !data[x + 2]?.[y - 1].dataset.country) {
+      if(data[x + 3]?.[y - 2] && !data[x + 3]?.[y - 2].dataset.country
         || (data[x + 3]?.[y - 2] && data[x + 3]?.[y - 2].dataset.country != turn)) data[x + 3]?.[y - 2].classList.toggle("valid");
     };
   }
-  if(data[x - 1]?.[y] && !data[x - 1]?.[y].textContent){
-    if(data[x - 2]?.[y + 1] && !data[x - 2]?.[y + 1].textContent) {
-      if(data[x - 3]?.[y + 2] && !data[x - 3]?.[y + 2].textContent
+  if(data[x - 1]?.[y] && !data[x - 1]?.[y].dataset.country){
+    if(data[x - 2]?.[y + 1] && !data[x - 2]?.[y + 1].dataset.country) {
+      if(data[x - 3]?.[y + 2] && !data[x - 3]?.[y + 2].dataset.country
         || (data[x - 3]?.[y + 2] && data[x - 3]?.[y + 2].dataset.country != turn)) data[x - 3]?.[y + 2].classList.toggle("valid");
     };
-    if(data[x - 2]?.[y - 1] && !data[x - 2]?.[y - 1].textContent) {
-      if(data[x - 3]?.[y - 2] && !data[x - 3]?.[y - 2].textContent
+    if(data[x - 2]?.[y - 1] && !data[x - 2]?.[y - 1].dataset.country) {
+      if(data[x - 3]?.[y - 2] && !data[x - 3]?.[y - 2].dataset.country
         || (data[x - 3]?.[y - 2] && data[x - 3]?.[y - 2].dataset.country != turn)) data[x - 3]?.[y - 2].classList.toggle("valid");
     };
   }
-  if(data[x]?.[y + 1] && !data[x]?.[y + 1].textContent){
-    if(data[x + 1]?.[y + 2] && !data[x + 1]?.[y + 2].textContent) {
-      if(data[x + 2]?.[y + 3] && !data[x + 2]?.[y + 3].textContent
+  if(data[x]?.[y + 1] && !data[x]?.[y + 1].dataset.country){
+    if(data[x + 1]?.[y + 2] && !data[x + 1]?.[y + 2].dataset.country) {
+      if(data[x + 2]?.[y + 3] && !data[x + 2]?.[y + 3].dataset.country
         || (data[x + 2]?.[y + 3] && data[x + 2]?.[y + 3].dataset.country != turn)) data[x + 2]?.[y + 3].classList.toggle("valid");
     };
-    if(data[x - 1]?.[y + 2] && !data[x - 1]?.[y + 2].textContent) {
-      if(data[x - 2]?.[y + 3] && !data[x - 2]?.[y + 3].textContent
+    if(data[x - 1]?.[y + 2] && !data[x - 1]?.[y + 2].dataset.country) {
+      if(data[x - 2]?.[y + 3] && !data[x - 2]?.[y + 3].dataset.country
         || (data[x - 2]?.[y + 3] && data[x - 2]?.[y + 3].dataset.country != turn)) data[x - 2]?.[y + 3].classList.toggle("valid");
     };
   }
-  if(data[x]?.[y - 1] && !data[x]?.[y -1].textContent){
-    if(data[x + 1]?.[y - 2] && !data[x + 1]?.[y - 2].textContent) {
-      if(data[x + 2]?.[y - 3] && !data[x + 2]?.[y - 3].textContent
+  if(data[x]?.[y - 1] && !data[x]?.[y -1].dataset.country){
+    if(data[x + 1]?.[y - 2] && !data[x + 1]?.[y - 2].dataset.country) {
+      if(data[x + 2]?.[y - 3] && !data[x + 2]?.[y - 3].dataset.country
         || (data[x + 2]?.[y - 3] && data[x + 2]?.[y - 3].dataset.country != turn)) data[x + 2]?.[y - 3].classList.toggle("valid");
     };
-    if(data[x - 1]?.[y - 2] && !data[x - 1]?.[y - 2].textContent) {
-      if(data[x - 2]?.[y - 3] && !data[x - 2]?.[y - 3].textContent
+    if(data[x - 1]?.[y - 2] && !data[x - 1]?.[y - 2].dataset.country) {
+      if(data[x - 2]?.[y - 3] && !data[x - 2]?.[y - 3].dataset.country
         || (data[x - 2]?.[y - 3] && data[x - 2]?.[y - 3].dataset.country != turn)) data[x - 2]?.[y - 3].classList.toggle("valid");
     };
   }
@@ -281,12 +281,12 @@ function cannonValidMove(_this){
   while (true){
     const rightCheck = data[x]?.[y + i];
     if (!rightCheck) break;
-    if (!pivot && rightCheck.textContent && !rightCheck.classList.contains("cannon")){
+    if (!pivot && rightCheck.dataset.country && !rightCheck.classList.contains("cannon")){
       pivot = true;
       i++;
       continue;
     } //처음 만나는 장애물은 발판이다.
-    if (rightCheck.textContent){
+    if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) rightCheck.classList.toggle("valid");
       break;
     }  //두번째로 만나는 장애물까지 이동가능
@@ -300,12 +300,12 @@ function cannonValidMove(_this){
   while (true){
     const rightCheck = data[x]?.[y - i];
     if (!rightCheck) break;
-    if (!pivot && rightCheck.textContent && !rightCheck.classList.contains("cannon")){
+    if (!pivot && rightCheck.dataset.country && !rightCheck.classList.contains("cannon")){
       pivot = true;
       i++;
       continue;
     } //처음 만나는 장애물은 발판이다.
-    if (rightCheck.textContent){
+    if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) rightCheck.classList.toggle("valid");
       break;
     }  //두번째로 만나는 장애물까지 이동가능
@@ -319,12 +319,12 @@ function cannonValidMove(_this){
   while (true){
     const rightCheck = data[x + i]?.[y];
     if (!rightCheck) break;
-    if (!pivot && rightCheck.textContent && !rightCheck.classList.contains("cannon")){
+    if (!pivot && rightCheck.dataset.country && !rightCheck.classList.contains("cannon")){
       pivot = true;
       i++;
       continue;
     } //처음 만나는 장애물은 발판이다.
-    if (rightCheck.textContent){
+    if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) rightCheck.classList.toggle("valid");
       break;
     } ; //두번째로 만나는 장애물까지 이동가능
@@ -338,12 +338,12 @@ function cannonValidMove(_this){
   while (true){
     const rightCheck = data[x - i]?.[y];
     if (!rightCheck) break;
-    if (!pivot && rightCheck.textContent && !rightCheck.classList.contains("cannon")){
+    if (!pivot && rightCheck.dataset.country && !rightCheck.classList.contains("cannon")){
       pivot = true;
       i++;
       continue;
     } //처음 만나는 장애물은 발판이다.
-    if (rightCheck.textContent){
+    if (rightCheck.dataset.country){
       if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) rightCheck.classList.toggle("valid");
       break;
     }  //두번째로 만나는 장애물까지 이동가능
@@ -353,24 +353,24 @@ function cannonValidMove(_this){
     i++;
   }
 
-  if([0, 7].includes(x) && y == 3 && data[x + 1][y + 1].textContent && !data[x + 1][y + 1].classList.contains("cannon")){
+  if([0, 7].includes(x) && y == 3 && data[x + 1][y + 1].dataset.country && !data[x + 1][y + 1].classList.contains("cannon")){
     const rightCheck = data[x + 2]?.[y + 2];
-    if (!rightCheck.textContent 
+    if (!rightCheck.dataset.country 
       || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  rightCheck.classList.toggle("valid");
   }
-  else if([0, 7].includes(x) && y == 5 && data[x + 1][y - 1].textContent && !data[x + 1][y - 1].classList.contains("cannon")){
+  else if([0, 7].includes(x) && y == 5 && data[x + 1][y - 1].dataset.country && !data[x + 1][y - 1].classList.contains("cannon")){
     const rightCheck = data[x + 2]?.[y - 2];
-    if (!rightCheck.textContent 
+    if (!rightCheck.dataset.country 
       || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  rightCheck.classList.toggle("valid");
   }
-  else if([2, 9].includes(x) && y == 3 && data[x - 1][y + 1].textContent && !data[x - 1][y + 1].classList.contains("cannon")){
+  else if([2, 9].includes(x) && y == 3 && data[x - 1][y + 1].dataset.country && !data[x - 1][y + 1].classList.contains("cannon")){
     const rightCheck = data[x - 2]?.[y + 2];
-    if (!rightCheck.textContent 
+    if (!rightCheck.dataset.country 
       || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  rightCheck.classList.toggle("valid");
   }
-  else if([2, 9].includes(x) && y == 5 && data[x - 1][y - 1].textContent && !data[x - 1][y - 1].classList.contains("cannon")){
+  else if([2, 9].includes(x) && y == 5 && data[x - 1][y - 1].dataset.country && !data[x - 1][y - 1].classList.contains("cannon")){
     const rightCheck = data[x - 2]?.[y - 2];
-    if (!rightCheck.textContent 
+    if (!rightCheck.dataset.country 
       || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  rightCheck.classList.toggle("valid");
   } //궁성에 있다면 대각선 이동 가능!
   beforeClickedPiece = _this; //이전에 클릭된 기물에 클릭된 td를 저장
@@ -390,7 +390,7 @@ function kingValidMove(_this){
       [1, 0, -1].forEach((j) => {
         const rightCheck = data[x + i]?.[y + j];
         if(rightCheck && rightCheck.classList.contains("house") && !(i == 0 && j == 0)
-        && (!rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn))){
+        && (!rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn))){
           rightCheck.classList.toggle("valid");
         }
       })
@@ -402,7 +402,7 @@ function kingValidMove(_this){
     [1, 0, -1].forEach((j) => {
       const rightCheck = data[x + i]?.[y + j];
       if(rightCheck && rightCheck.classList.contains("house") && Math.abs(i) != Math.abs(j)
-      && (!rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn))){
+      && (!rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn))){
         rightCheck.classList.toggle("valid");
       }
     })
@@ -424,7 +424,7 @@ function scholarValidMove(_this){
       [1, 0, -1].forEach((j) => {
         const rightCheck = data[x + i]?.[y + j];
         if(rightCheck && rightCheck.classList.contains("house") && !(i == 0 && j == 0)
-        && (!rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn))){
+        && (!rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn))){
           rightCheck.classList.toggle("valid");
         }
       })
@@ -436,7 +436,7 @@ function scholarValidMove(_this){
     [1, 0, -1].forEach((j) => {
       const rightCheck = data[x + i]?.[y + j];
       if(rightCheck && rightCheck.classList.contains("house") && Math.abs(i) != Math.abs(j)
-      && (!rightCheck.textContent || (rightCheck && rightCheck.dataset.country != turn))){
+      && (!rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn))){
         rightCheck.classList.toggle("valid");
       }
     })
@@ -470,7 +470,6 @@ function whichMoveToSelect(){
     classArr.forEach((e) => {
       this.classList.add(e);
     })
-    this.textContent = beforeClickedPiece.textContent;
     this.setAttribute("data-country", beforeClickedPiece.dataset.country);
     beforeClickedPiece.dataset.country = "";
     beforeClickedPiece.textContent = "";

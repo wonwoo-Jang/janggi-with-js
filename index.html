@@ -3,40 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
-  <style>
-    table{
-      border-collapse: collapse;
-      border: 2px solid peru;
-      width: 390px;
-      height: 432.76px;
-      background-color: transparent;
-      
-    }
-    td{
-      width: 40px;
-      height: 40px;
-      
-      text-align: center;
-    }
-    td.valid::after{
-      content: "O"; /*갈 수 있는 칸 표시하기 위해 valid class가 있으면 O를 표시. 추후에 이미지나 동그란 원 등으로 수정*/
-    }
-    #janggiBoard{
-      width: 345px;
-      display: block;
-      margin: auto;
-      position: absolute;  
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    #backTable{
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-  </style>
+  <link rel = "stylesheet" href = "index.css">
 </head>
 <body>
   <img id = "janggiBoard" src = "./image/janggi_board.png">
