@@ -1,4 +1,5 @@
 import {data, myCountry, turn as startTurn} from "./index.js";
+import {isCheck} from "./aboutCheckLogic.js";
 let beforeClickedPiece; //이전에 클릭된 기물이 저장되는 곳(td를 저장)
 let turn = startTurn;
 const diePiecesNameForCho = []; 
@@ -450,7 +451,7 @@ function whichMoveToSelect(){
     let classArr = []; //이동하는 기물이 가진 class 저장(기물 이름만 저장하기 위해 만든 임시 array)
     beforeClickedPiece.classList.forEach((e) => classArr.push(e));
     classArr = classArr.filter((c) => c != "house"); //궁성 class는 냅두고 옮겨야 함.
-
+    
     if (this.dataset.country == "cho") {
       this.classList.forEach((e) => {
         if(e != "house") diePiecesNameForCho.push(e);
@@ -461,6 +462,7 @@ function whichMoveToSelect(){
         if(e != "house") diePiecesNameForHan.push(e);
       });
     }
+    
     if (this.classList.contains("house")){
       this.classList.value = "house";
     }
@@ -470,16 +472,21 @@ function whichMoveToSelect(){
     classArr.forEach((e) => {
       this.classList.add(e);
     })
+    
     this.setAttribute("data-country", beforeClickedPiece.dataset.country);
     beforeClickedPiece.dataset.country = "";
     beforeClickedPiece.textContent = "";
-    if (turn == "cho") turn = "han";
-    else turn = "cho"; //다른 턴으로 넘겨주는 작업
     if(beforeClickedPiece.classList.contains("house")){
       beforeClickedPiece.classList.value = "house";
-      return;
     }
-    beforeClickedPiece.classList.value = "";
+    else{
+      beforeClickedPiece.classList.value = "";
+    }
+    console.log(turn);
+    if (isCheck(turn)) alert("장군!"); //장군이면 일단 장군 경고창이 나오게 하였음. 장군판단하는 부분 추후에 코드 추가
+    
+    if (turn == "cho") turn = "han";
+    else turn = "cho"; //다른 턴으로 넘겨주는 작업
     return;
   } //만약에 빈칸에 기물을 클릭하는 행동이거나 먹는 행동이였으면, 이동하고 종료.
   
