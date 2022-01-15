@@ -20,10 +20,10 @@ function carValidMove(_this) {
     const rightCheck = data[x]?.[y + i];
     if (!rightCheck) break; //아예 칸이 없는 경우 여기에서 종료
     if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn) giveValidWithNotChecked(_this, rightCheck);
       break;
     } //이미 그 칸에 기물이 있으면 종료(여기 수정! 상대 기물 먹을 수 있음)
-    rightCheck.classList.toggle("valid");
+    giveValidWithNotChecked(_this, rightCheck);
     i++;
   }
   i = 1;
@@ -31,10 +31,10 @@ function carValidMove(_this) {
     const rightCheck = data[x]?.[y - i];
     if (!rightCheck) break;
     if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn) giveValidWithNotChecked(_this, rightCheck);
       break;
     }
-    rightCheck.classList.toggle("valid");
+    giveValidWithNotChecked(_this, rightCheck);
     i++;
   }
   i = 1;
@@ -42,10 +42,10 @@ function carValidMove(_this) {
     const rightCheck = data[x + i]?.[y];
     if (!rightCheck) break;
     if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn) giveValidWithNotChecked(_this, rightCheck);
       break;
     }
-    rightCheck.classList.toggle("valid");
+    giveValidWithNotChecked(_this, rightCheck);
     i++;
   }
   i = 1;
@@ -53,10 +53,10 @@ function carValidMove(_this) {
     const rightCheck = data[x - i]?.[y];
     if (!rightCheck) break;
     if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn) giveValidWithNotChecked(_this, rightCheck);
       break;
     }
-    rightCheck.classList.toggle("valid");
+    giveValidWithNotChecked(_this, rightCheck);
     i++;
   }
 
@@ -67,10 +67,10 @@ function carValidMove(_this) {
       if (i > 2) break; //궁성 범위를 나가버리면 종료
       if (!rightCheck) break;
       if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn) giveValidWithNotChecked(_this, rightCheck);
       break;
     }
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
       i++;
     }
   }
@@ -81,10 +81,10 @@ function carValidMove(_this) {
       if (i > 2) break; //궁성 범위를 나가버리면 종료
       if (!rightCheck) break;
       if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn) giveValidWithNotChecked(_this, rightCheck);
       break;
     }
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
       i++;
     }
   }
@@ -95,10 +95,10 @@ function carValidMove(_this) {
       if (i > 2) break; //궁성 범위를 나가버리면 종료
       if (!rightCheck) break;
       if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn) giveValidWithNotChecked(_this, rightCheck);
       break;
     }
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
       i++;
     }
   }
@@ -109,10 +109,10 @@ function carValidMove(_this) {
       if (i > 2) break; //궁성 범위를 나가버리면 종료
       if (!rightCheck) break;
       if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn) giveValidWithNotChecked(_this, rightCheck);
       break;
     }
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
       i++;
     }
   }
@@ -120,7 +120,7 @@ function carValidMove(_this) {
     [1, -1].forEach((r) => {
       [1, -1].forEach((c) => {
         const rightCheck = data[x + r]?.[y + c];
-        if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)) rightCheck.classList.toggle("valid");
+        if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)) giveValidWithNotChecked(_this, rightCheck);
       })
     })
   } //궁성에 있다면 대각선 이동 가능!
@@ -143,37 +143,37 @@ function soldierValidMove(_this){
   }
   let rightCheck = data[x]?.[y + 1];
   if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
-    rightCheck.classList.toggle("valid");
+    giveValidWithNotChecked(_this, rightCheck);
   }
   rightCheck = data[x]?.[y - 1];
   if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
-    rightCheck.classList.toggle("valid");
+    giveValidWithNotChecked(_this, rightCheck);
   }
   rightCheck = data[x + upOrDown]?.[y];
   if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
-    rightCheck.classList.toggle("valid");
+    giveValidWithNotChecked(_this, rightCheck);
   }
 
   if([2, 7].includes(x) && y == 3){
     rightCheck = data[x + upOrDown]?.[y + 1];
     if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
     }
   }
   else if([2, 7].includes(x) && y == 5){
     rightCheck = data[x + upOrDown]?.[y - 1];
     if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
     }
   }
   else if([1, 8].includes(x) && y == 4){
     rightCheck = data[x + upOrDown]?.[y + 1];
     if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
     }
     rightCheck = data[x + upOrDown]?.[y - 1];
     if(rightCheck && !rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn)){
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
     }
   } //궁성에 있다면 대각선 이동 가능!
   beforeClickedPiece = _this; //이전에 클릭된 기물에 클릭된 td를 저장
@@ -190,27 +190,27 @@ function horseValidMove(_this){
   const y = _this.cellIndex;
   if(data[x + 1]?.[y] && !data[x + 1]?.[y].dataset.country){
     if(data[x + 2]?.[y + 1] && !data[x + 2]?.[y + 1].dataset.country 
-      || (data[x + 2]?.[y + 1] && data[x + 2]?.[y + 1].dataset.country != turn)) data[x + 2]?.[y + 1].classList.toggle("valid");
+      || (data[x + 2]?.[y + 1] && data[x + 2]?.[y + 1].dataset.country != turn)) giveValidWithNotChecked(_this, data[x + 2]?.[y + 1]);
     if(data[x + 2]?.[y - 1] && !data[x + 2]?.[y - 1].dataset.country
-      || (data[x + 2]?.[y - 1] && data[x + 2]?.[y - 1].dataset.country != turn)) data[x + 2]?.[y - 1].classList.toggle("valid");
+      || (data[x + 2]?.[y - 1] && data[x + 2]?.[y - 1].dataset.country != turn)) giveValidWithNotChecked(_this, data[x + 2]?.[y - 1]);
   }
   if(data[x - 1]?.[y] && !data[x - 1]?.[y].dataset.country){
     if(data[x - 2]?.[y + 1] && !data[x - 2]?.[y + 1].dataset.country
-      || (data[x - 2]?.[y + 1] && data[x - 2]?.[y + 1].dataset.country != turn)) data[x - 2]?.[y + 1].classList.toggle("valid");
+      || (data[x - 2]?.[y + 1] && data[x - 2]?.[y + 1].dataset.country != turn)) giveValidWithNotChecked(_this, data[x - 2]?.[y + 1]);
     if(data[x - 2]?.[y - 1] && !data[x - 2]?.[y - 1].dataset.country
-      || (data[x - 2]?.[y - 1] && data[x - 2]?.[y - 1].dataset.country != turn)) data[x - 2]?.[y - 1].classList.toggle("valid");
+      || (data[x - 2]?.[y - 1] && data[x - 2]?.[y - 1].dataset.country != turn)) giveValidWithNotChecked(_this, data[x - 2]?.[y - 1]);
   }
   if(data[x]?.[y + 1] && !data[x]?.[y + 1].dataset.country){
     if(data[x + 1]?.[y + 2] && !data[x + 1]?.[y + 2].dataset.country
-      || (data[x + 1]?.[y + 2] && data[x + 1]?.[y + 2].dataset.country != turn)) data[x + 1]?.[y + 2].classList.toggle("valid");
+      || (data[x + 1]?.[y + 2] && data[x + 1]?.[y + 2].dataset.country != turn)) giveValidWithNotChecked(_this, data[x + 1]?.[y + 2]);
     if(data[x - 1]?.[y + 2] && !data[x - 1]?.[y + 2].dataset.country
-      || (data[x - 1]?.[y + 2] && data[x - 1]?.[y + 2].dataset.country != turn)) data[x - 1]?.[y + 2].classList.toggle("valid");
+      || (data[x - 1]?.[y + 2] && data[x - 1]?.[y + 2].dataset.country != turn)) giveValidWithNotChecked(_this, data[x - 1]?.[y + 2]);
   }
   if(data[x]?.[y - 1] && !data[x]?.[y -1].dataset.country){
     if(data[x + 1]?.[y - 2] && !data[x + 1]?.[y - 2].dataset.country
-      || (data[x + 1]?.[y - 2] && data[x + 1]?.[y - 2].dataset.country != turn)) data[x + 1]?.[y - 2].classList.toggle("valid");
+      || (data[x + 1]?.[y - 2] && data[x + 1]?.[y - 2].dataset.country != turn)) giveValidWithNotChecked(_this, data[x + 1]?.[y - 2]);
     if(data[x - 1]?.[y - 2] && !data[x - 1]?.[y - 2].dataset.country
-      || (data[x - 1]?.[y - 2] && data[x - 1]?.[y - 2].dataset.country != turn)) data[x - 1]?.[y - 2].classList.toggle("valid");
+      || (data[x - 1]?.[y - 2] && data[x - 1]?.[y - 2].dataset.country != turn)) giveValidWithNotChecked(_this, data[x - 1]?.[y - 2]);
   }
   beforeClickedPiece = _this; //이전에 클릭된 기물에 클릭된 td를 저장
 }
@@ -227,41 +227,41 @@ function elephantValidMove(_this){
   if(data[x + 1]?.[y] && !data[x + 1]?.[y].dataset.country){
     if(data[x + 2]?.[y + 1] && !data[x + 2]?.[y + 1].dataset.country) {
       if(data[x + 3]?.[y + 2] && !data[x + 3]?.[y + 2].dataset.country
-        || (data[x + 3]?.[y + 2] && data[x + 3]?.[y + 2].dataset.country != turn)) data[x + 3]?.[y + 2].classList.toggle("valid");
+        || (data[x + 3]?.[y + 2] && data[x + 3]?.[y + 2].dataset.country != turn)) giveValidWithNotChecked(_this, data[x + 3]?.[y + 2]);
     };
     if(data[x + 2]?.[y - 1] && !data[x + 2]?.[y - 1].dataset.country) {
       if(data[x + 3]?.[y - 2] && !data[x + 3]?.[y - 2].dataset.country
-        || (data[x + 3]?.[y - 2] && data[x + 3]?.[y - 2].dataset.country != turn)) data[x + 3]?.[y - 2].classList.toggle("valid");
+        || (data[x + 3]?.[y - 2] && data[x + 3]?.[y - 2].dataset.country != turn)) giveValidWithNotChecked(_this, data[x + 3]?.[y - 2]);
     };
   }
   if(data[x - 1]?.[y] && !data[x - 1]?.[y].dataset.country){
     if(data[x - 2]?.[y + 1] && !data[x - 2]?.[y + 1].dataset.country) {
       if(data[x - 3]?.[y + 2] && !data[x - 3]?.[y + 2].dataset.country
-        || (data[x - 3]?.[y + 2] && data[x - 3]?.[y + 2].dataset.country != turn)) data[x - 3]?.[y + 2].classList.toggle("valid");
+        || (data[x - 3]?.[y + 2] && data[x - 3]?.[y + 2].dataset.country != turn)) giveValidWithNotChecked(_this, data[x - 3]?.[y + 2]);
     };
     if(data[x - 2]?.[y - 1] && !data[x - 2]?.[y - 1].dataset.country) {
       if(data[x - 3]?.[y - 2] && !data[x - 3]?.[y - 2].dataset.country
-        || (data[x - 3]?.[y - 2] && data[x - 3]?.[y - 2].dataset.country != turn)) data[x - 3]?.[y - 2].classList.toggle("valid");
+        || (data[x - 3]?.[y - 2] && data[x - 3]?.[y - 2].dataset.country != turn)) giveValidWithNotChecked(_this, data[x - 3]?.[y - 2]);
     };
   }
   if(data[x]?.[y + 1] && !data[x]?.[y + 1].dataset.country){
     if(data[x + 1]?.[y + 2] && !data[x + 1]?.[y + 2].dataset.country) {
       if(data[x + 2]?.[y + 3] && !data[x + 2]?.[y + 3].dataset.country
-        || (data[x + 2]?.[y + 3] && data[x + 2]?.[y + 3].dataset.country != turn)) data[x + 2]?.[y + 3].classList.toggle("valid");
+        || (data[x + 2]?.[y + 3] && data[x + 2]?.[y + 3].dataset.country != turn)) giveValidWithNotChecked(_this, data[x + 2]?.[y + 3]);
     };
     if(data[x - 1]?.[y + 2] && !data[x - 1]?.[y + 2].dataset.country) {
       if(data[x - 2]?.[y + 3] && !data[x - 2]?.[y + 3].dataset.country
-        || (data[x - 2]?.[y + 3] && data[x - 2]?.[y + 3].dataset.country != turn)) data[x - 2]?.[y + 3].classList.toggle("valid");
+        || (data[x - 2]?.[y + 3] && data[x - 2]?.[y + 3].dataset.country != turn)) giveValidWithNotChecked(_this, data[x - 2]?.[y + 3]);
     };
   }
   if(data[x]?.[y - 1] && !data[x]?.[y -1].dataset.country){
     if(data[x + 1]?.[y - 2] && !data[x + 1]?.[y - 2].dataset.country) {
       if(data[x + 2]?.[y - 3] && !data[x + 2]?.[y - 3].dataset.country
-        || (data[x + 2]?.[y - 3] && data[x + 2]?.[y - 3].dataset.country != turn)) data[x + 2]?.[y - 3].classList.toggle("valid");
+        || (data[x + 2]?.[y - 3] && data[x + 2]?.[y - 3].dataset.country != turn)) giveValidWithNotChecked(_this, data[x + 2]?.[y - 3]);
     };
     if(data[x - 1]?.[y - 2] && !data[x - 1]?.[y - 2].dataset.country) {
       if(data[x - 2]?.[y - 3] && !data[x - 2]?.[y - 3].dataset.country
-        || (data[x - 2]?.[y - 3] && data[x - 2]?.[y - 3].dataset.country != turn)) data[x - 2]?.[y - 3].classList.toggle("valid");
+        || (data[x - 2]?.[y - 3] && data[x - 2]?.[y - 3].dataset.country != turn)) giveValidWithNotChecked(_this, data[x - 2]?.[y - 3]);
     };
   }
   beforeClickedPiece = _this; //이전에 클릭된 기물에 클릭된 td를 저장
@@ -288,11 +288,11 @@ function cannonValidMove(_this){
       continue;
     } //처음 만나는 장애물은 발판이다.
     if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) giveValidWithNotChecked(_this, rightCheck);
       break;
     }  //두번째로 만나는 장애물까지 이동가능
     if(pivot){
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
     }
     i++;
   }
@@ -307,11 +307,11 @@ function cannonValidMove(_this){
       continue;
     } //처음 만나는 장애물은 발판이다.
     if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) giveValidWithNotChecked(_this, rightCheck);
       break;
     }  //두번째로 만나는 장애물까지 이동가능
     if(pivot){
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
     }
     i++;
   }
@@ -326,11 +326,11 @@ function cannonValidMove(_this){
       continue;
     } //처음 만나는 장애물은 발판이다.
     if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) giveValidWithNotChecked(_this, rightCheck);
       break;
     } ; //두번째로 만나는 장애물까지 이동가능
     if(pivot){
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
     }
     i++;
   }
@@ -345,11 +345,11 @@ function cannonValidMove(_this){
       continue;
     } //처음 만나는 장애물은 발판이다.
     if (rightCheck.dataset.country){
-      if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) rightCheck.classList.toggle("valid");
+      if (rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")) giveValidWithNotChecked(_this, rightCheck);
       break;
     }  //두번째로 만나는 장애물까지 이동가능
     if(pivot){
-      rightCheck.classList.toggle("valid");
+      giveValidWithNotChecked(_this, rightCheck);
     }
     i++;
   }
@@ -357,22 +357,22 @@ function cannonValidMove(_this){
   if([0, 7].includes(x) && y == 3 && data[x + 1][y + 1].dataset.country && !data[x + 1][y + 1].classList.contains("cannon")){
     const rightCheck = data[x + 2]?.[y + 2];
     if (!rightCheck.dataset.country 
-      || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  rightCheck.classList.toggle("valid");
+      || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  giveValidWithNotChecked(_this, rightCheck);
   }
   else if([0, 7].includes(x) && y == 5 && data[x + 1][y - 1].dataset.country && !data[x + 1][y - 1].classList.contains("cannon")){
     const rightCheck = data[x + 2]?.[y - 2];
     if (!rightCheck.dataset.country 
-      || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  rightCheck.classList.toggle("valid");
+      || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  giveValidWithNotChecked(_this, rightCheck);
   }
   else if([2, 9].includes(x) && y == 3 && data[x - 1][y + 1].dataset.country && !data[x - 1][y + 1].classList.contains("cannon")){
     const rightCheck = data[x - 2]?.[y + 2];
     if (!rightCheck.dataset.country 
-      || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  rightCheck.classList.toggle("valid");
+      || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  giveValidWithNotChecked(_this, rightCheck);
   }
   else if([2, 9].includes(x) && y == 5 && data[x - 1][y - 1].dataset.country && !data[x - 1][y - 1].classList.contains("cannon")){
     const rightCheck = data[x - 2]?.[y - 2];
     if (!rightCheck.dataset.country 
-      || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  rightCheck.classList.toggle("valid");
+      || (rightCheck && rightCheck.dataset.country != turn && !rightCheck.classList.contains("cannon")))  giveValidWithNotChecked(_this, rightCheck);
   } //궁성에 있다면 대각선 이동 가능!
   beforeClickedPiece = _this; //이전에 클릭된 기물에 클릭된 td를 저장
 }
@@ -392,7 +392,7 @@ function kingValidMove(_this){
         const rightCheck = data[x + i]?.[y + j];
         if(rightCheck && rightCheck.classList.contains("house") && !(i == 0 && j == 0)
         && (!rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn))){
-          rightCheck.classList.toggle("valid");
+          giveValidWithNotChecked(_this, rightCheck);
         }
       })
     })
@@ -404,7 +404,7 @@ function kingValidMove(_this){
       const rightCheck = data[x + i]?.[y + j];
       if(rightCheck && rightCheck.classList.contains("house") && Math.abs(i) != Math.abs(j)
       && (!rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn))){
-        rightCheck.classList.toggle("valid");
+        giveValidWithNotChecked(_this, rightCheck);
       }
     })
   })
@@ -426,7 +426,7 @@ function scholarValidMove(_this){
         const rightCheck = data[x + i]?.[y + j];
         if(rightCheck && rightCheck.classList.contains("house") && !(i == 0 && j == 0)
         && (!rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn))){
-          rightCheck.classList.toggle("valid");
+          giveValidWithNotChecked(_this, rightCheck);
         }
       })
     })
@@ -438,7 +438,7 @@ function scholarValidMove(_this){
       const rightCheck = data[x + i]?.[y + j];
       if(rightCheck && rightCheck.classList.contains("house") && Math.abs(i) != Math.abs(j)
       && (!rightCheck.dataset.country || (rightCheck && rightCheck.dataset.country != turn))){
-        rightCheck.classList.toggle("valid");
+        giveValidWithNotChecked(_this, rightCheck);
       }
     })
   }) //왕과 완벽하게 동일하게 움직인다.
@@ -461,7 +461,7 @@ function whichMoveToSelect(){
       this.classList.forEach((e) => {
         if(e != "house") diePiecesNameForHan.push(e);
       });
-    }
+    } //죽은 기물 배열에 추가
     
     if (this.classList.contains("house")){
       this.classList.value = "house";
@@ -482,7 +482,7 @@ function whichMoveToSelect(){
     else{
       beforeClickedPiece.classList.value = "";
     }
-    console.log(turn);
+
     if (isCheck(turn)) alert("장군!"); //장군이면 일단 장군 경고창이 나오게 하였음. 장군판단하는 부분 추후에 코드 추가
     
     if (turn == "cho") turn = "han";
@@ -498,6 +498,51 @@ function whichMoveToSelect(){
   if (this.classList.contains("cannon"))  {cannonValidMove(_this); return;}
   if (this.classList.contains("king")) {kingValidMove(_this); return;}
   if (this.classList.contains("scholar")) {scholarValidMove(_this); return;} //그게 아니라면 움직일 수 있는 칸 표시해주기.
+}
+
+function pseudoMove(fromHere, toThere){
+  let classArr = []; //이동하는 기물이 가진 class 저장(기물 이름만 저장하기 위해 만든 임시 array)
+  fromHere.classList.forEach((e) => classArr.push(e));
+  classArr = classArr.filter((c) => c != "house"); //궁성 class는 냅두고 옮겨야 함.
+  
+  if (toThere.classList.contains("house")){
+    toThere.classList.value = "house";
+  }
+  else{
+    toThere.classList = "";
+  } //만약 이동 칸에 상대 기물 있었으면 먹어치우기.
+  classArr.forEach((e) => {
+    toThere.classList.add(e);
+  })
+  
+  toThere.setAttribute("data-country", fromHere.dataset.country);
+  fromHere.dataset.country = "";
+  fromHere.textContent = "";
+  if(fromHere.classList.contains("house")){
+    fromHere.classList.value = "house";
+  }
+  else{
+    fromHere.classList.value = "";
+  }
+}
+
+function giveValidWithNotChecked(_this, rightCheck){
+  const rightCheckClass = rightCheck.classList.value;
+  const rightCheckCountry = rightCheck.dataset.country;
+  pseudoMove(_this, rightCheck);
+  let tempTurn = turn;
+  if (tempTurn == "cho") tempTurn = "han";
+  else tempTurn = "cho"; //다른 턴으로 넘겨주는 작업
+  if (isCheck(tempTurn)) {
+    pseudoMove(rightCheck, _this);
+    rightCheck.classList = rightCheckClass;
+    rightCheck.dataset.country = rightCheckCountry;
+    return;
+  }
+  pseudoMove(rightCheck, _this);
+  rightCheck.classList = rightCheckClass;
+  rightCheck.dataset.country = rightCheckCountry;
+  rightCheck.classList.toggle("valid");
 }
 
 export {whichMoveToSelect};
