@@ -482,11 +482,20 @@ function whichMoveToSelect(){
     else{
       beforeClickedPiece.classList.value = "";
     }
+    moveTurn(); //잠시 상대차례라고 생각하고, 외통판단
+    if(isGameEnd()){
+      moveTurn(); //다시 차례 원상복귀
+      let turnInKorean;
+      if (turn == "cho") turnInKorean = "초";
+      if (turn == "han") turnInKorean = "한";
+      alert(`외통입니다! ${turnInKorean} 승리`)
+    } //외통수인지 확인
+
+    moveTurn();//외통수를 확인할 때 잠시 turn을 넘겨주었으므로, 원상복귀
 
     if (isCheck(turn)) alert("장군!"); //장군이면 일단 장군 경고창이 나오게 하였음. 장군판단하는 부분 추후에 코드 추가
     
-    if (turn == "cho") turn = "han";
-    else turn = "cho"; //다른 턴으로 넘겨주는 작업
+    moveTurn(); //상대 차례로 넘겨주기
     return;
   } //만약에 빈칸에 기물을 클릭하는 행동이거나 먹는 행동이였으면, 이동하고 종료.
   
@@ -498,6 +507,11 @@ function whichMoveToSelect(){
   if (this.classList.contains("cannon"))  {cannonValidMove(_this); return;}
   if (this.classList.contains("king")) {kingValidMove(_this); return;}
   if (this.classList.contains("scholar")) {scholarValidMove(_this); return;} //그게 아니라면 움직일 수 있는 칸 표시해주기.
+}
+
+function moveTurn(){
+  if (turn == "cho") turn = "han";
+  else turn = "cho"; //상대 턴으로 넘겨주는 작업
 }
 
 function pseudoMove(fromHere, toThere){
@@ -545,4 +559,53 @@ function giveValidWithNotChecked(_this, rightCheck){
   rightCheck.classList.toggle("valid");
 }
 
+function isGameEnd(){
+  return data.flat().every((e) => {
+    if (e.dataset.country == turn){      
+      if(e.classList.contains("car")) {
+        carValidMove(e);
+        let isThereValid = data.flat().some((el) => el.classList.contains("valid"))
+        carValidMove(e);
+        return !isThereValid;
+      }
+      if(e.classList.contains("cannon")) {
+        cannonValidMove(e);
+        let isThereValid = data.flat().some((el) => el.classList.contains("valid"))
+        cannonValidMove(e);
+        return !isThereValid;
+      }
+      if(e.classList.contains("soldier")) {
+        soldierValidMove(e);
+        let isThereValid = data.flat().some((el) => el.classList.contains("valid"))
+        soldierValidMove(e);
+        return !isThereValid;
+      }
+      if(e.classList.contains("horse")) {
+        horseValidMove(e);
+        let isThereValid = data.flat().some((el) => el.classList.contains("valid"))
+        horseValidMove(e);
+        return !isThereValid;
+      }
+      if(e.classList.contains("elephant")) {
+        elephantValidMove(e);
+        let isThereValid = data.flat().some((el) => el.classList.contains("valid"))
+        elephantValidMove(e);
+        return !isThereValid;
+      }
+      if(e.classList.contains("king")) {
+        kingValidMove(e);
+        let isThereValid = data.flat().some((el) => el.classList.contains("valid"))
+        kingValidMove(e);
+        return !isThereValid;
+      }
+      if(e.classList.contains("scholar")) {
+        scholarValidMove(e);
+        let isThereValid = data.flat().some((el) => el.classList.contains("valid"))
+        scholarValidMove(e);
+        return !isThereValid;
+      }
+    }
+    return true;
+  })
+}
 export {whichMoveToSelect};
