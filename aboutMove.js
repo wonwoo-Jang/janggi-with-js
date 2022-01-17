@@ -488,7 +488,7 @@ function whichMoveToSelect(){
       let turnInKorean;
       if (turn == "cho") turnInKorean = "초";
       if (turn == "han") turnInKorean = "한";
-      alert(`외통입니다! ${turnInKorean} 승리`)
+      alert(`외통입니다! ${turnInKorean} 승리`);
     } //외통수인지 확인
 
     moveTurn();//외통수를 확인할 때 잠시 turn을 넘겨주었으므로, 원상복귀
@@ -560,7 +560,7 @@ function giveValidWithNotChecked(_this, rightCheck){
 }
 
 function isGameEnd(){
-  return data.flat().every((e) => {
+  return (data.flat().every((e) => {
     if (e.dataset.country == turn){      
       if(e.classList.contains("car")) {
         carValidMove(e);
@@ -606,6 +606,12 @@ function isGameEnd(){
       }
     }
     return true;
-  })
+  }) || diePiecesNameForCho.includes("king") || diePiecesNameForHan.includes("king")) //한수쉼 해서 왕이 먹힐수도 있음
 }
+
+const $turnRest = document.querySelector("#turnRest");
+$turnRest.addEventListener("click", () => {
+  moveTurn();
+});
+
 export {whichMoveToSelect};
