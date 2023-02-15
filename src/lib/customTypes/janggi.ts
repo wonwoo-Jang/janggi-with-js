@@ -18,9 +18,10 @@ export enum PieceType {
   SOLDIER = 'soldier',
 }
 
+// TODO: change to Class
 export interface Piece {
   type: PieceType;
   position: Position;
   country: CountryType;
-  image?: string; // will be changed to required field later
+  image: string;
 }

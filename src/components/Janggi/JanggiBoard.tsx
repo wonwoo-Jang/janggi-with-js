@@ -30,6 +30,7 @@ const getInitPieces = () => {
           type: p.type,
           position: { r: country === CountryType.CHO ? p.r : ROW_LEN + 1 - p.r, c: c },
           country: country,
+          image: `images/${country}_${p.type}.png`,
         });
       });
     });
