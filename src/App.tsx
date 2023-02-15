@@ -1,6 +1,7 @@
-import './App.css';
-import Header from '@components/Header';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import Header from '@components/Header';
+
 import MainPage from '@pages/main';
 import LoginPage from '@pages/login';
 import SignUpPage from '@pages/signup';
@@ -12,6 +13,8 @@ import PuzzlesPage from '@pages/puzzles';
 import ReviewPage from '@pages/review';
 import SocialPage from '@pages/social';
 import ErrorPage from '@pages/error';
+
+import '@styles/global.scss';
 
 function AppRoutes() {
   return (

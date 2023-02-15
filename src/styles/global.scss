@@ -1,0 +1,39 @@
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  transition: all 0.3s;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: gainsboro;
+  }
+}
