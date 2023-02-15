@@ -1,0 +1,11 @@
+@use '@styles/variables.scss' as v;
+
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background-color: v.$border-brown;
+  }
+}

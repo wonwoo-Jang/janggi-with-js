@@ -1,0 +1,55 @@
+@use '@styles/variables.scss' as v;
+
+.janggiBoard {
+  margin: 0 auto;
+  width: fit-content;
+  // height: 500px;
+  background-color: v.$background-brown;
+  position: relative;
+}
+
+.lineBoard {
+  display: grid;
+  grid-template-rows: 25px repeat(9, 50px) 25px;
+  grid-template-columns: 25px repeat(8, 50px) 25px;
+  gap: 1px;
+  border: 10px solid v.$background-brown;
+  background-color: v.$border-brown;
+
+  .helpTile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: v.$background-brown;
+  }
+}
+
+.borderBoard {
+  display: grid;
+  grid-template-rows: repeat(9, 50px);
+  grid-template-columns: repeat(8, 50px);
+  gap: 1.4px;
+  border: 25px solid v.$background-brown;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  // background-color: lightblue;
+
+  // .helpTile {
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   background-color: aquamarine;
+  // }
+}
+
+.squareBoard {
+  display: grid;
+  grid-template-rows: repeat(10, 50px);
+  grid-template-columns: repeat(9, 50px);
+  gap: 1px;
+  position: absolute;
+  background-color: transparent;
+  top: 10px;
+  left: 10px;
+}
