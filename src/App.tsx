@@ -1,18 +1,18 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import Header from '@components/Header';
-
-import MainPage from '@pages/main';
-import LoginPage from '@pages/login';
-import SignUpPage from '@pages/signup';
+import ErrorPage from '@pages/error';
 import GuidePage from '@pages/guide';
 import LearnPage from '@pages/learn';
+import LoginPage from '@pages/login';
+import MainPage from '@pages/main';
 import NewsPage from '@pages/news';
 import PlayPage from '@pages/play';
 import PuzzlesPage from '@pages/puzzles';
 import ReviewPage from '@pages/review';
+import SignUpPage from '@pages/signup';
 import SocialPage from '@pages/social';
-import ErrorPage from '@pages/error';
+
+import Header from '@components/Header';
 
 import '@styles/global.scss';
 
