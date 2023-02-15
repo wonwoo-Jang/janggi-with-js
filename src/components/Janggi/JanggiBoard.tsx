@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { CountryType, Piece, PieceType } from '@customTypes/janggi';
 
@@ -43,8 +43,9 @@ export default function JanggiBoard() {
   const [board, setBoard] = useState<{ r: number; c: number; piece: Piece | null }[][]>([]);
   const [pieces, setPieces] = useState<Piece[]>(getInitPieces());
 
-  const initializeBoard = () => {
+  const initializeBoard = useCallback(() => {
     const initBoard: { r: number; c: number; piece: Piece | null }[][] = [];
+
     rows.forEach(r => {
       const row: { r: number; c: number; piece: Piece | null }[] = [];
       columns.forEach(c => {
@@ -58,10 +59,13 @@ export default function JanggiBoard() {
       });
       initBoard.push(row);
     });
+
     setBoard(initBoard);
-  };
+  }, []);
 
   useEffect(() => {
+    // TODO: determine country randomly
+    // TODO: table setting options (use modal)
     initializeBoard();
   }, []);
 
@@ -71,14 +75,14 @@ export default function JanggiBoard() {
         {Array(110)
           .fill(0)
           .map((v, i) => (
-            <div className={styles.helpTile} key={i}></div>
+            <div className={styles.helpTile} key={i} />
           ))}
       </div>
       <div className={styles.borderBoard}>
         {Array(72)
           .fill(0)
           .map((v, i) => (
-            <div className={styles.helpTile} key={i}></div>
+            <div className={styles.helpTile} key={i} />
           ))}
       </div>
       <div className={styles.squareBoard}>

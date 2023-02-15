@@ -51,17 +51,17 @@
             "position": "after"
           },
           {
+            "pattern": "@customTypes/*",
+            "group": "internal",
+            "position": "after"
+          },
+          {
             "pattern": "@hooks/*",
             "group": "internal",
             "position": "after"
           },
           {
             "pattern": "@utils/*",
-            "group": "internal",
-            "position": "after"
-          },
-          {
-            "pattern": "@customTypes/*",
             "group": "internal",
             "position": "after"
           }

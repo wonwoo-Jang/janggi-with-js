@@ -1,6 +1,6 @@
 export interface Position {
-  r: number;
-  c: number;
+  r: number; // row
+  c: number; // column
 }
 
 export enum CountryType {
