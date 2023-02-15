@@ -1,22 +1,23 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["react", "@typescript-eslint", "import"],
+  "plugins": ["react", "@typescript-eslint", "prettier", "import"],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
+    "prettier",
     "plugin:prettier/recommended",
     "plugin:import/recommended"
   ],
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "rules": {
     "no-unused-vars": "off",
     "no-undef": "off",
     "react/react-in-jsx-scope": "off",
-    "prettier/prettier": ["error", { "endOfLine": "auto" }],
+    "newline-per-chained-call": "off",
     "import/order": [
       "error",
       {
@@ -58,6 +59,11 @@
             "pattern": "@utils/*",
             "group": "internal",
             "position": "after"
+          },
+          {
+            "pattern": "@customTypes/*",
+            "group": "internal",
+            "position": "after"
           }
         ],
         "pathGroupsExcludedImportTypes": [],
@@ -73,6 +79,7 @@
     "react": {
       "version": "detect"
     },
+    "import/parsers": { "@typescript-eslint/parser": [".ts", ".tsx"] },
     "import/resolver": {
       "typescript": { "alwaysTryTypes": true }
     }
