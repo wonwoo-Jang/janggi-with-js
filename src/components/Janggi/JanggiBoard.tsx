@@ -13,42 +13,74 @@ const COL_LEN = 9;
 const rows = Array.from({ length: ROW_LEN }, (v, i) => ROW_LEN - i);
 const columns = Array.from({ length: COL_LEN }, (v, i) => i + 1);
 
-const getInitPieces = () => {
-  const initPieces: Piece[] = [];
+// const getInitPieces = () => {
+//   const initPieces: Piece[] = [];
 
-  for (const country of [CountryType.CHO, CountryType.HAN]) {
-    const pieces = [
-      { type: PieceType.SOLDIER, r: 4, c: [1, 3, 5, 7, 9] },
-      { type: PieceType.CANNON, r: 3, c: [2, 8] },
-      { type: PieceType.KING, r: 2, c: [5] },
-      { type: PieceType.CAR, r: 1, c: [1, 9] },
-      { type: PieceType.ELEPHANT, r: 1, c: [2, 7] }, // TODO: change depending on user's choice
-      { type: PieceType.HORSE, r: 1, c: [3, 8] }, // TODO: change depending on user's choice
-      { type: PieceType.SCHOLAR, r: 1, c: [4, 6] },
-    ];
+//   for (const country of [CountryType.CHO, CountryType.HAN]) {
+//     const piecesInfo = [
+//       { type: PieceType.SOLDIER, r: 4, c: [1, 3, 5, 7, 9] },
+//       { type: PieceType.CANNON, r: 3, c: [2, 8] },
+//       { type: PieceType.KING, r: 2, c: [5] },
+//       { type: PieceType.CAR, r: 1, c: [1, 9] },
+//       { type: PieceType.ELEPHANT, r: 1, c: [2, 7] }, // TODO: change depending on user's choice
+//       { type: PieceType.HORSE, r: 1, c: [3, 8] }, // TODO: change depending on user's choice
+//       { type: PieceType.SCHOLAR, r: 1, c: [4, 6] },
+//     ];
 
-    pieces.forEach(p => {
-      p.c.forEach(c => {
-        initPieces.push(
-          new Piece(
-            p.type,
-            { r: country === CountryType.CHO ? p.r : ROW_LEN + 1 - p.r, c: c },
-            country,
-            `images/${country}_${p.type}.png`,
-          ),
-        );
-      });
-    });
-  }
+//     piecesInfo.forEach(p => {
+//       p.c.forEach(c => {
+//         initPieces.push(
+//           new Piece(
+//             p.type,
+//             { r: country === CountryType.CHO ? p.r : ROW_LEN + 1 - p.r, c: c },
+//             country,
+//             `images/${country}_${p.type}.png`,
+//           ),
+//         );
+//       });
+//     });
+//   }
 
-  return initPieces;
-};
+//   return initPieces;
+// };
 
 export default function JanggiBoard() {
   const [board, setBoard] = useState<{ position: Position; piece: Piece | null }[][]>([]);
-  const [pieces, setPieces] = useState<Piece[]>(getInitPieces());
+  const [pieces, setPieces] = useState<Piece[]>([]);
+  const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
 
-  const initializeBoard = useCallback(() => {
+  const initializePieces = useCallback(() => {
+    const initPieces: Piece[] = [];
+
+    for (const country of [CountryType.CHO, CountryType.HAN]) {
+      const piecesInfo = [
+        { type: PieceType.SOLDIER, r: 4, c: [1, 3, 5, 7, 9] },
+        { type: PieceType.CANNON, r: 3, c: [2, 8] },
+        { type: PieceType.KING, r: 2, c: [5] },
+        { type: PieceType.CAR, r: 1, c: [1, 9] },
+        { type: PieceType.ELEPHANT, r: 1, c: [2, 7] }, // TODO: change depending on user's choice
+        { type: PieceType.HORSE, r: 1, c: [3, 8] }, // TODO: change depending on user's choice
+        { type: PieceType.SCHOLAR, r: 1, c: [4, 6] },
+      ];
+
+      piecesInfo.forEach(p => {
+        p.c.forEach(c => {
+          initPieces.push(
+            new Piece(
+              p.type,
+              { r: country === CountryType.CHO ? p.r : ROW_LEN + 1 - p.r, c: c },
+              country,
+              `images/${country}_${p.type}.png`,
+            ),
+          );
+        });
+      });
+    }
+
+    setPieces(initPieces);
+  }, []);
+
+  const updateBoard = useCallback(() => {
     const initBoard: { position: Position; piece: Piece | null }[][] = [];
 
     rows.forEach(r => {
@@ -71,7 +103,7 @@ export default function JanggiBoard() {
     });
 
     setBoard(initBoard);
-  }, []);
+  }, [pieces]);
 
   const getLineBoardTileClassName = (index: number) => {
     if ([4, 11, 60, 67].includes(index)) {
@@ -83,11 +115,47 @@ export default function JanggiBoard() {
     }
   };
 
+  const isSamePosition = (p1: Position, p2: Position) => {
+    return p1.r === p2.r && p1.c === p2.c;
+  };
+
+  const onClickTile = (position: Position, piece: Piece | null) => {
+    if (!selectedPiece) {
+      if (piece) setSelectedPiece(piece);
+      return;
+    }
+
+    // selectedPiece already exists
+    if (piece) {
+      if (
+        !isSamePosition(selectedPiece.position, piece.position) &&
+        selectedPiece.isOpponent(piece)
+      ) {
+        console.log('먹음!');
+      }
+    } else {
+      setPieces(prev => {
+        return prev.map(p => {
+          if (isSamePosition(selectedPiece.position, p.position)) {
+            p.setPosition(position);
+          }
+          return p;
+        });
+      });
+    }
+
+    setSelectedPiece(null);
+  };
+
+  useEffect(() => {
+    updateBoard();
+  }, [pieces, updateBoard]);
+
   useEffect(() => {
     // TODO: determine country randomly
     // TODO: table setting options (use modal)
-    initializeBoard();
-  }, [initializeBoard]);
+    initializePieces();
+  }, [initializePieces]);
 
   return (
     <div className={styles.janggiBoard}>
@@ -105,7 +173,8 @@ export default function JanggiBoard() {
               r={tile.position.r}
               c={tile.position.c}
               piece={tile.piece}
-              key={`(${tile.position.r}, ${tile.position.c})`}
+              onClickTile={onClickTile}
+              key={`${tile.position.r},${tile.position.c}`}
             />
           ));
         })}

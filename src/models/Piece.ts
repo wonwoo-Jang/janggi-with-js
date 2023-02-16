@@ -14,4 +14,12 @@ export class Piece {
     this.position = position;
     this.possibleMoves = [];
   }
+
+  setPosition(newPosition: Position) {
+    this.position = newPosition;
+  }
+
+  isOpponent(otherPiece: Piece) {
+    return this.country !== otherPiece.country;
+  }
 }
