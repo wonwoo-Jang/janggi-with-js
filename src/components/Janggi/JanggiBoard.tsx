@@ -73,6 +73,16 @@ export default function JanggiBoard() {
     setBoard(initBoard);
   }, []);
 
+  const getLineBoardTileClassName = (index: number) => {
+    if ([4, 11, 60, 67].includes(index)) {
+      return `${styles.helpTile} ${styles.slash}`;
+    } else if ([3, 12, 59, 68].includes(index)) {
+      return `${styles.helpTile} ${styles.backSlash}`;
+    } else {
+      return styles.helpTile;
+    }
+  };
+
   useEffect(() => {
     // TODO: determine country randomly
     // TODO: table setting options (use modal)
@@ -92,7 +102,7 @@ export default function JanggiBoard() {
         {Array((ROW_LEN - 1) * (COL_LEN - 1))
           .fill(0)
           .map((v, i) => (
-            <div className={styles.helpTile} key={i} />
+            <div className={getLineBoardTileClassName(i)} key={i} />
           ))}
       </div>
       <div className={styles.squareBoard}>
