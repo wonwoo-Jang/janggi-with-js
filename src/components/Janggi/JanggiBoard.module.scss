@@ -1,16 +1,8 @@
 @use '@styles/variables.scss' as v;
 
 .janggiBoard {
-  margin: 0 auto;
-  width: fit-content;
-  background-color: v.$background-brown;
   position: relative;
-}
-
-.backgroundBoard {
-  display: grid;
-  grid-template-rows: 0.8fr repeat(9, 1fr) 0.8fr;
-  grid-template-columns: 0.8fr repeat(8, 1fr) 0.8fr;
+  margin: 0 auto;
   width: calc(80vh * 0.96);
   height: calc(80vh * 1.06);
   background-color: v.$background-brown;

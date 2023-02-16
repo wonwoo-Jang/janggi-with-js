@@ -91,13 +91,6 @@ export default function JanggiBoard() {
 
   return (
     <div className={styles.janggiBoard}>
-      <div className={styles.backgroundBoard}>
-        {Array((ROW_LEN + 1) * (COL_LEN + 1))
-          .fill(0)
-          .map((v, i) => (
-            <div className={styles.helpTile} key={i} />
-          ))}
-      </div>
       <div className={styles.lineBoard}>
         {Array((ROW_LEN - 1) * (COL_LEN - 1))
           .fill(0)
