@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import { CountryType, Piece, PieceType } from '@customTypes/janggi';
+import { Piece } from '@models/Piece';
+
+import { CountryType, PieceType, Position } from '@customTypes/janggi';
 
 import Tile from './Tile';
 
@@ -27,12 +29,14 @@ const getInitPieces = () => {
 
     pieces.forEach(p => {
       p.c.forEach(c => {
-        initPieces.push({
-          type: p.type,
-          position: { r: country === CountryType.CHO ? p.r : ROW_LEN + 1 - p.r, c: c },
-          country: country,
-          image: `images/${country}_${p.type}.png`,
-        });
+        initPieces.push(
+          new Piece(
+            p.type,
+            { r: country === CountryType.CHO ? p.r : ROW_LEN + 1 - p.r, c: c },
+            country,
+            `images/${country}_${p.type}.png`,
+          ),
+        );
       });
     });
   }
@@ -41,23 +45,28 @@ const getInitPieces = () => {
 };
 
 export default function JanggiBoard() {
-  const [board, setBoard] = useState<{ r: number; c: number; piece: Piece | null }[][]>([]);
+  const [board, setBoard] = useState<{ position: Position; piece: Piece | null }[][]>([]);
   const [pieces, setPieces] = useState<Piece[]>(getInitPieces());
 
   const initializeBoard = useCallback(() => {
-    const initBoard: { r: number; c: number; piece: Piece | null }[][] = [];
+    const initBoard: { position: Position; piece: Piece | null }[][] = [];
 
     rows.forEach(r => {
-      const row: { r: number; c: number; piece: Piece | null }[] = [];
+      const row: { position: Position; piece: Piece | null }[] = [];
+
       columns.forEach(c => {
+        const position: Position = { r, c };
         let piece: Piece | null = null;
+
         pieces.forEach(p => {
           if (p.position.r === r && p.position.c === c) {
             piece = p;
           }
         });
-        row.push({ r, c, piece });
+
+        row.push({ position, piece });
       });
+
       initBoard.push(row);
     });
 
@@ -85,15 +94,16 @@ export default function JanggiBoard() {
           .map((v, i) => (
             <div className={styles.helpTile} key={i} />
           ))}
-        <span className={styles.diagonal}></span>
-        <span className={styles.diagonal}></span>
-        <span className={styles.diagonal}></span>
-        <span className={styles.diagonal}></span>
       </div>
       <div className={styles.squareBoard}>
         {board.map(row => {
           return row.map(tile => (
-            <Tile r={tile.r} c={tile.c} piece={tile.piece} key={`${tile.r}_${tile.c}`} />
+            <Tile
+              r={tile.position.r}
+              c={tile.position.c}
+              piece={tile.piece}
+              key={`(${tile.position.r}, ${tile.position.c})`}
+            />
           ));
         })}
       </div>

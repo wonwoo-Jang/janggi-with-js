@@ -17,11 +17,3 @@ export enum PieceType {
   SCHOLAR = 'scholar',
   SOLDIER = 'soldier',
 }
-
-// TODO: change to Class
-export interface Piece {
-  type: PieceType;
-  position: Position;
-  country: CountryType;
-  image: string;
-}

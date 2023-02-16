@@ -1,4 +1,6 @@
-import { Piece, PieceType } from '@customTypes/janggi';
+import { Piece } from '@models/Piece';
+
+import { PieceType } from '@customTypes/janggi';
 
 import styles from './Tile.module.scss';
 
