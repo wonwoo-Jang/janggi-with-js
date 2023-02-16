@@ -7,7 +7,7 @@
   position: relative;
 }
 
-.borderBoard {
+.backgroundBoard {
   display: grid;
   grid-template-rows: 0.8fr repeat(9, 1fr) 0.8fr;
   grid-template-columns: 0.8fr repeat(8, 1fr) 0.8fr;
@@ -41,6 +41,20 @@
     justify-content: center;
     align-items: center;
     background-color: v.$background-brown;
+  }
+
+  .helpTile:nth-child(5),
+  .helpTile:nth-child(12),
+  .helpTile:nth-child(61),
+  .helpTile:nth-child(68) {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="100%" x2="100%" y2="0" stroke="rgb(92, 61, 46)" /></svg>');
+  }
+
+  .helpTile:nth-child(4),
+  .helpTile:nth-child(13),
+  .helpTile:nth-child(60),
+  .helpTile:nth-child(69) {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="100%" y2="100%" stroke="rgb(92, 61, 46)" /></svg>');
   }
 }
 
