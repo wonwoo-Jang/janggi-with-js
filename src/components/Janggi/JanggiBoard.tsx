@@ -2,8 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { CountryType, Piece, PieceType } from '@customTypes/janggi';
 
-import styles from './JanggiBoard.module.scss';
 import Tile from './Tile';
+
+import styles from './JanggiBoard.module.scss';
 
 const ROW_LEN = 10;
 const COL_LEN = 9;

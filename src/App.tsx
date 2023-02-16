@@ -12,8 +12,6 @@ import ReviewPage from '@pages/review';
 import SignUpPage from '@pages/signup';
 import SocialPage from '@pages/social';
 
-import Header from '@components/Header';
-
 import '@styles/global.scss';
 
 function AppRoutes() {
@@ -38,10 +36,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <Header />
-        <main>
-          <AppRoutes />
-        </main>
+        <AppRoutes />
       </div>
     </BrowserRouter>
   );

@@ -21,14 +21,7 @@
     "import/order": [
       "error",
       {
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          ["sibling", "parent", "index"],
-          "type",
-          "unknown"
-        ],
+        "groups": ["builtin", "external", "internal", ["sibling", "parent", "index"], "unknown"],
         "pathGroups": [
           {
             "pattern": "react*",
@@ -64,6 +57,23 @@
             "pattern": "@utils/*",
             "group": "internal",
             "position": "after"
+          },
+          {
+            "pattern": "@styles/*",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "./**/*.scss",
+            "group": "unknown"
+          },
+          {
+            "pattern": "../**/*.scss",
+            "group": "unknown"
+          },
+          {
+            "pattern": "*.scss",
+            "group": "unknown"
           }
         ],
         "pathGroupsExcludedImportTypes": [],
