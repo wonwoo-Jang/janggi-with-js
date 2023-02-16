@@ -1,0 +1,32 @@
+@use '@styles/variables.scss' as v;
+
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background-color: v.$border-brown;
+  }
+
+  .piece {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center 3px;
+
+    &.small {
+      width: 70%;
+      height: 70%;
+    }
+
+    &:hover {
+      cursor: grab;
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}

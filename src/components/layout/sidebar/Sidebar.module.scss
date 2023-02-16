@@ -1,0 +1,17 @@
+.sidebar {
+  width: 150px;
+  background-color: cadetblue;
+  transition: width 0.3s ease-in-out;
+}
+
+@media screen and (max-width: 1024px) {
+  .sidebar {
+    width: 60px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    width: 0;
+  }
+}
