@@ -1,7 +1,7 @@
-export interface Position {
-  r: number; // row
-  c: number; // column
-}
+// export interface Position {
+//   r: number; // row
+//   c: number; // column
+// }
 
 export enum CountryType {
   CHO = 'cho',

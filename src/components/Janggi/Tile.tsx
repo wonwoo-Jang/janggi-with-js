@@ -1,8 +1,7 @@
-import { Dispatch, SetStateAction } from 'react';
-
 import { Piece } from '@models/Piece';
+import { Position } from '@models/Position';
 
-import { PieceType, Position } from '@customTypes/janggi';
+import { PieceType } from '@customTypes/janggi';
 
 import styles from './Tile.module.scss';
 
@@ -15,7 +14,7 @@ interface TileProps {
 
 export default function Tile({ r, c, piece, onClickTile }: TileProps) {
   return (
-    <div className={styles.tile} onClick={() => onClickTile({ r, c }, piece)}>
+    <div className={styles.tile} onClick={() => onClickTile(new Position(r, c), piece)}>
       {piece && (
         <div
           className={`${styles.piece} ${
