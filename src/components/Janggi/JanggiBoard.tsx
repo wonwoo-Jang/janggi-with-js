@@ -68,18 +68,18 @@ export default function JanggiBoard() {
     // TODO: determine country randomly
     // TODO: table setting options (use modal)
     initializeBoard();
-  }, []);
+  }, [initializeBoard]);
 
   return (
     <div className={styles.janggiBoard}>
-      <div className={styles.lineBoard}>
+      <div className={styles.borderBoard}>
         {Array(110)
           .fill(0)
           .map((v, i) => (
             <div className={styles.helpTile} key={i} />
           ))}
       </div>
-      <div className={styles.borderBoard}>
+      <div className={styles.lineBoard}>
         {Array(72)
           .fill(0)
           .map((v, i) => (

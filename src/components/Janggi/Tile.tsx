@@ -16,7 +16,7 @@ export default function Tile({ r, c, piece }: TileProps) {
           className={`${styles.piece} ${
             [PieceType.SCHOLAR, PieceType.SOLDIER].includes(piece.type) && styles.small
           }`}
-          style={{ backgroundImage: `url(${piece.image})`, width: '50px', height: '50px' }}
+          style={{ backgroundImage: `url(${piece.image})` }}
         ></div>
       )}
     </div>
