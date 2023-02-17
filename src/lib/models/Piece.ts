@@ -17,11 +17,11 @@ export class Piece {
     this.possibleMoves = [];
   }
 
-  setPosition(newPosition: Position) {
+  setPosition(newPosition: Position): void {
     this.position = newPosition;
   }
 
-  isSamePiece(otherPiece: Piece) {
+  isSamePiece(otherPiece: Piece): boolean {
     return (
       this.position.isSamePosition(otherPiece.position) &&
       this.country === otherPiece.country &&
@@ -29,7 +29,7 @@ export class Piece {
     );
   }
 
-  isOpponent(otherPiece: Piece) {
+  isOpponent(otherPiece: Piece): boolean {
     return this.country !== otherPiece.country;
   }
 }

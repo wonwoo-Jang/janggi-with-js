@@ -5,6 +5,7 @@ import { Position } from '@models/Position';
 
 import { CountryType, PieceType } from '@customTypes/janggi';
 
+import Referee from './referee/Referee';
 import Tile from './Tile';
 
 import styles from './JanggiBoard.module.scss';
@@ -18,6 +19,7 @@ export default function JanggiBoard() {
   const [board, setBoard] = useState<{ position: Position; piece: Piece | null }[][]>([]);
   const [pieces, setPieces] = useState<Piece[]>([]);
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
+  const referee = new Referee();
 
   const initializePieces = useCallback(() => {
     const initPieces: Piece[] = [];
@@ -114,6 +116,12 @@ export default function JanggiBoard() {
 
   const onClickTile = (position: Position, clickedPiece: Piece | null) => {
     if (selectedPiece) {
+      const isValidMove: boolean = referee.isValidMove(position, selectedPiece, board);
+      if (!isValidMove) {
+        setSelectedPiece(null);
+        return;
+      }
+
       if (clickedPiece) {
         if (selectedPiece.isOpponent(clickedPiece)) {
           takePiece(clickedPiece);
