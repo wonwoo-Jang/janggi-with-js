@@ -50,30 +50,33 @@ export default function JanggiBoard() {
     setPieces(initPieces);
   }, []);
 
-  const updateBoard = useCallback(() => {
-    const initBoard: { position: Position; piece: Piece | null }[][] = [];
+  const updateBoard = useCallback(
+    (pieces: Piece[]) => {
+      const initBoard: { position: Position; piece: Piece | null }[][] = [];
 
-    rows.forEach(r => {
-      const row: { position: Position; piece: Piece | null }[] = [];
+      rows.forEach(r => {
+        const row: { position: Position; piece: Piece | null }[] = [];
 
-      columns.forEach(c => {
-        const position: Position = new Position(r, c);
-        let piece: Piece | null = null;
+        columns.forEach(c => {
+          const position: Position = new Position(r, c);
+          let piece: Piece | null = null;
 
-        pieces.forEach(p => {
-          if (p.position.r === r && p.position.c === c) {
-            piece = p;
-          }
+          pieces.forEach(p => {
+            if (p.position.r === r && p.position.c === c) {
+              piece = p;
+            }
+          });
+
+          row.push({ position, piece });
         });
 
-        row.push({ position, piece });
+        initBoard.push(row);
       });
 
-      initBoard.push(row);
-    });
-
-    setBoard(initBoard);
-  }, [pieces]);
+      setBoard(initBoard);
+    },
+    [pieces],
+  );
 
   const getLineBoardTileClassName = (index: number) => {
     if ([4, 11, 60, 67].includes(index)) {
@@ -85,35 +88,52 @@ export default function JanggiBoard() {
     }
   };
 
-  const onClickTile = (position: Position, piece: Piece | null) => {
-    if (!selectedPiece) {
-      if (piece) setSelectedPiece(piece);
-      return;
-    }
+  const movePiece = (piece: Piece, newPosition: Position) => {
+    setPieces(prev => {
+      const updatedPieces = prev.map(p => {
+        if (piece.isSamePiece(p)) {
+          p.setPosition(newPosition);
+        }
+        return p;
+      });
+      return updatedPieces;
+    });
+  };
 
-    // selectedPiece already exists
-    if (piece) {
-      if (selectedPiece.isOpponent(piece)) {
-        console.log('먹음!');
+  const removePiece = (piece: Piece) => {
+    setPieces(prev => {
+      return prev.filter(p => !p.isSamePiece(piece));
+    });
+  };
+
+  const takePiece = (targetPiece: Piece) => {
+    if (!selectedPiece) return;
+    removePiece(targetPiece);
+    movePiece(selectedPiece, targetPiece.position);
+  };
+
+  const onClickTile = (position: Position, clickedPiece: Piece | null) => {
+    if (selectedPiece) {
+      if (clickedPiece) {
+        if (selectedPiece.isOpponent(clickedPiece)) {
+          takePiece(clickedPiece);
+          setSelectedPiece(null);
+        } else if (!selectedPiece.isSamePiece(clickedPiece)) {
+          setSelectedPiece(clickedPiece);
+        } else {
+          setSelectedPiece(null);
+        }
+      } else {
+        movePiece(selectedPiece, position);
         setSelectedPiece(null);
-      } else if (!selectedPiece.position.isSamePosition(piece.position)) {
-        setSelectedPiece(piece);
       }
     } else {
-      setPieces(prev => {
-        return prev.map(p => {
-          if (selectedPiece.position.isSamePosition(p.position)) {
-            p.setPosition(position);
-          }
-          return p;
-        });
-      });
-      setSelectedPiece(null);
+      if (clickedPiece) setSelectedPiece(clickedPiece);
     }
   };
 
   useEffect(() => {
-    updateBoard();
+    updateBoard(pieces);
   }, [pieces, updateBoard]);
 
   useEffect(() => {

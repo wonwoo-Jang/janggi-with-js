@@ -21,6 +21,14 @@ export class Piece {
     this.position = newPosition;
   }
 
+  isSamePiece(otherPiece: Piece) {
+    return (
+      this.position.isSamePosition(otherPiece.position) &&
+      this.country === otherPiece.country &&
+      this.type === otherPiece.type
+    );
+  }
+
   isOpponent(otherPiece: Piece) {
     return this.country !== otherPiece.country;
   }
