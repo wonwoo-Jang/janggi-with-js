@@ -1,17 +1,17 @@
 export class Position {
-  r: number;
-  c: number;
+  x: number;
+  y: number;
 
-  constructor(r: number, c: number) {
-    this.r = r;
-    this.c = c;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
   }
 
   isSamePosition(otherPosition: Position) {
-    return this.r === otherPosition.r && this.c === otherPosition.c;
+    return this.x === otherPosition.x && this.y === otherPosition.y;
   }
 
   toString() {
-    return `(${this.r},${this.c})`;
+    return `(${this.x},${this.y})`;
   }
 }

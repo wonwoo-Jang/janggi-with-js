@@ -1,10 +1,10 @@
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board, CountryType } from '@customTypes/janggi';
+import { Board, CountryType, PieceType } from '@customTypes/janggi';
 
 export const pieceOccupyingTile = (position: Position, board: Board): Piece | null => {
-  return board[10 - position.r][position.c - 1].piece;
+  return board[10 - position.x][position.y - 1].piece;
 };
 
 export const isTileOccupiedByOpponent = (

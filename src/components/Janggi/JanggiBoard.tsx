@@ -17,10 +17,10 @@ const columns = Array.from({ length: COL_LEN }, (v, i) => i + 1);
 
 const initializeBoard = () => {
   const initBoard: Board = [];
-  rows.forEach(r => {
+  rows.forEach(x => {
     const row: TileI[] = [];
-    columns.forEach(c => {
-      row.push({ position: new Position(r, c), piece: null });
+    columns.forEach(y => {
+      row.push({ position: new Position(x, y), piece: null });
     });
     initBoard.push(row);
   });
@@ -38,21 +38,21 @@ export default function JanggiBoard() {
 
     for (const country of [CountryType.CHO, CountryType.HAN]) {
       const initPiecesInfo = [
-        { type: PieceType.SOLDIER, r: 4, c: [1, 3, 5, 7, 9] },
-        { type: PieceType.CANNON, r: 3, c: [2, 8] },
-        { type: PieceType.KING, r: 2, c: [5] },
-        { type: PieceType.CAR, r: 1, c: [1, 9] },
-        { type: PieceType.ELEPHANT, r: 1, c: [2, 7] }, // TODO: (feat) change depending on user's choice
-        { type: PieceType.HORSE, r: 1, c: [3, 8] }, // TODO: (feat) change depending on user's choice
-        { type: PieceType.SCHOLAR, r: 1, c: [4, 6] },
+        { type: PieceType.SOLDIER, x: 4, y: [1, 3, 5, 7, 9] },
+        { type: PieceType.CANNON, x: 3, y: [2, 8] },
+        { type: PieceType.KING, x: 2, y: [5] },
+        { type: PieceType.CAR, x: 1, y: [1, 9] },
+        { type: PieceType.ELEPHANT, x: 1, y: [2, 7] }, // TODO: (feat) change depending on user's choice
+        { type: PieceType.HORSE, x: 1, y: [3, 8] }, // TODO: (feat) change depending on user's choice
+        { type: PieceType.SCHOLAR, x: 1, y: [4, 6] },
       ];
 
       initPiecesInfo.forEach(p => {
-        p.c.forEach(c => {
+        p.y.forEach(y => {
           initPieces.push(
             new Piece(
               p.type,
-              new Position(country === CountryType.CHO ? p.r : ROW_LEN + 1 - p.r, c),
+              new Position(country === CountryType.CHO ? p.x : ROW_LEN + 1 - p.x, y),
               country,
               `images/${country}_${p.type}.png`,
             ),

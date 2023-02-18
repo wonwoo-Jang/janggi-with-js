@@ -33,8 +33,6 @@ export const isValidSoldierMove = (
   country: CountryType,
   board: Board,
 ): boolean => {
-  if (isTileOccupiedByMyCountry(country, newPosition, board)) return false;
-
   // TODO: (feat) change direction depending on my country
   const direction = country === CountryType.CHO ? 1 : -1;
 
@@ -42,18 +40,18 @@ export const isValidSoldierMove = (
   const isMovingDiagonallyFromPalaceLeftCorner =
     (initPosition.isSamePosition(new Position(8, 4)) ||
       initPosition.isSamePosition(new Position(3, 4))) &&
-    newPosition.r - initPosition.r === direction &&
-    newPosition.c - initPosition.c === 1;
+    newPosition.x - initPosition.x === direction &&
+    newPosition.y - initPosition.y === 1;
   const isMovingDiagonallyFromPalaceRightCorner =
     (initPosition.isSamePosition(new Position(8, 6)) ||
       initPosition.isSamePosition(new Position(3, 6))) &&
-    newPosition.r - initPosition.r === direction &&
-    newPosition.c - initPosition.c === -1;
+    newPosition.x - initPosition.x === direction &&
+    newPosition.y - initPosition.y === -1;
   const isMovingDiagonallyFromPalaceCenter =
     (initPosition.isSamePosition(new Position(2, 5)) ||
       initPosition.isSamePosition(new Position(9, 5))) &&
-    newPosition.r - initPosition.r === direction &&
-    Math.abs(newPosition.c - initPosition.c) === 1;
+    newPosition.x - initPosition.x === direction &&
+    Math.abs(newPosition.y - initPosition.y) === 1;
 
   if (
     isMovingDiagonallyFromPalaceLeftCorner ||
@@ -64,9 +62,9 @@ export const isValidSoldierMove = (
   }
 
   const isMovingOneSpaceUp =
-    newPosition.r - initPosition.r === direction && newPosition.c === initPosition.c;
+    newPosition.x - initPosition.x === direction && newPosition.y === initPosition.y;
   const isMovingOneSpaceAside =
-    Math.abs(newPosition.c - initPosition.c) === 1 && newPosition.r === initPosition.r;
+    Math.abs(newPosition.y - initPosition.y) === 1 && newPosition.x === initPosition.x;
 
   return isMovingOneSpaceUp || isMovingOneSpaceAside;
 };
