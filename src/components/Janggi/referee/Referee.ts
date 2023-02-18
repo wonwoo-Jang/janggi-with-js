@@ -26,7 +26,7 @@ export default class Referee {
       case PieceType.SOLDIER:
         return isValidSoldierMove(newPosition, position, country, board);
       case PieceType.HORSE:
-        return isValidHorseMove(newPosition, position, country, board);
+        return isValidHorseMove(newPosition, position, board);
       default:
         return true;
     }
