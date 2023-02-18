@@ -3,17 +3,26 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggi';
 
-export const isTileOccupied = (position: Position, board: Board): Piece | null => {
+export const pieceOccupyingTile = (position: Position, board: Board): Piece | null => {
   return board[10 - position.r][position.c - 1].piece;
 };
 
 export const isTileOccupiedByOpponent = (
+  myCountry: CountryType,
   position: Position,
-  country: CountryType,
   board: Board,
-) => {
-  const piece = isTileOccupied(position, board);
-  return piece && piece.country !== country;
+): boolean => {
+  const piece = pieceOccupyingTile(position, board);
+  return Boolean(piece && piece.country !== myCountry);
+};
+
+export const isTileOccupiedByMyCountry = (
+  myCountry: CountryType,
+  position: Position,
+  board: Board,
+): boolean => {
+  const occupyingPiece = pieceOccupyingTile(position, board);
+  return Boolean(occupyingPiece && occupyingPiece.country === myCountry);
 };
 
 // 리팩토링 안되나 이거

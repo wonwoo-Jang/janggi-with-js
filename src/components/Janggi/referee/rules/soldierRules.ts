@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggi';
 
-import { isInPalace, isTileOccupied } from './generalRules';
+import { isInPalace, isTileOccupiedByMyCountry } from './generalRules';
 
 export const getPossibleSoldierMove = (
   position: Position,
@@ -33,8 +33,7 @@ export const isValidSoldierMove = (
   country: CountryType,
   board: Board,
 ): boolean => {
-  const occupyingPiece = isTileOccupied(newPosition, board);
-  if (occupyingPiece && occupyingPiece.country === country) return false;
+  if (isTileOccupiedByMyCountry(country, newPosition, board)) return false;
 
   // TODO: (feat) change direction depending on my country
   const direction = country === CountryType.CHO ? 1 : -1;
