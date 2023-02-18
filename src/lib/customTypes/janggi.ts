@@ -1,3 +1,6 @@
+import { Piece } from '@models/Piece';
+import { Position } from '@models/Position';
+
 export enum CountryType {
   CHO = 'cho',
   HAN = 'han',
@@ -12,3 +15,10 @@ export enum PieceType {
   SCHOLAR = 'scholar',
   SOLDIER = 'soldier',
 }
+
+export interface TileI {
+  position: Position;
+  piece: Piece | null;
+}
+
+export type Board = TileI[][];

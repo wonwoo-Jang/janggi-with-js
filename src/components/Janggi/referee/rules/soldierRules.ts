@@ -1,14 +1,14 @@
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { CountryType } from '@customTypes/janggi';
+import { Board, CountryType } from '@customTypes/janggi';
 
 import { isInPalace, isTileOccupied } from './generalRules';
 
 export const getPossibleSoldierMove = (
   position: Position,
   country: CountryType,
-  board: { position: Position; piece: Piece }[][],
+  board: Board,
 ): Position[] => {
   // 위 왼쪽 오른쪽
   // const { r, c } = position;
@@ -31,7 +31,7 @@ export const isValidSoldierMove = (
   newPosition: Position,
   initPosition: Position,
   country: CountryType,
-  board: { position: Position; piece: Piece | null }[][],
+  board: Board,
 ): boolean => {
   const occupyingPiece = isTileOccupied(newPosition, board);
   if (occupyingPiece && occupyingPiece.country === country) return false;

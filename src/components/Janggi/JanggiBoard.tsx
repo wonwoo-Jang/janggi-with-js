@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { CountryType, PieceType } from '@customTypes/janggi';
+import { Board, CountryType, PieceType, TileI } from '@customTypes/janggi';
 
 import Referee from './referee/Referee';
 import Tile from './Tile';
@@ -16,7 +16,7 @@ const rows = Array.from({ length: ROW_LEN }, (v, i) => ROW_LEN - i);
 const columns = Array.from({ length: COL_LEN }, (v, i) => i + 1);
 
 export default function JanggiBoard() {
-  const [board, setBoard] = useState<{ position: Position; piece: Piece | null }[][]>([]);
+  const [board, setBoard] = useState<Board>([]);
   const [pieces, setPieces] = useState<Piece[]>([]);
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
   const referee = new Referee();
@@ -55,10 +55,10 @@ export default function JanggiBoard() {
   // TODO: (refactor) separate initailzing and updating
   const updateBoard = useCallback(
     (pieces: Piece[]) => {
-      const initBoard: { position: Position; piece: Piece | null }[][] = [];
+      const initBoard: Board = [];
 
       rows.forEach(r => {
-        const row: { position: Position; piece: Piece | null }[] = [];
+        const row: TileI[] = [];
 
         columns.forEach(c => {
           const position: Position = new Position(r, c);

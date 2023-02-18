@@ -1,19 +1,16 @@
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { CountryType } from '@customTypes/janggi';
+import { Board, CountryType } from '@customTypes/janggi';
 
-export const isTileOccupied = (
-  position: Position,
-  board: { position: Position; piece: Piece | null }[][],
-): Piece | null => {
+export const isTileOccupied = (position: Position, board: Board): Piece | null => {
   return board[10 - position.r][position.c - 1].piece;
 };
 
 export const isTileOccupiedByOpponent = (
   position: Position,
   country: CountryType,
-  board: { position: Position; piece: Piece | null }[][],
+  board: Board,
 ) => {
   const piece = isTileOccupied(position, board);
   return piece && piece.country !== country;
