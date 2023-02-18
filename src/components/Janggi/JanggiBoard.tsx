@@ -25,17 +25,17 @@ export default function JanggiBoard() {
     const initPieces: Piece[] = [];
 
     for (const country of [CountryType.CHO, CountryType.HAN]) {
-      const piecesInfo = [
+      const initPiecesInfo = [
         { type: PieceType.SOLDIER, r: 4, c: [1, 3, 5, 7, 9] },
         { type: PieceType.CANNON, r: 3, c: [2, 8] },
         { type: PieceType.KING, r: 2, c: [5] },
         { type: PieceType.CAR, r: 1, c: [1, 9] },
-        { type: PieceType.ELEPHANT, r: 1, c: [2, 7] }, // TODO: change depending on user's choice
-        { type: PieceType.HORSE, r: 1, c: [3, 8] }, // TODO: change depending on user's choice
+        { type: PieceType.ELEPHANT, r: 1, c: [2, 7] }, // TODO: (feat) change depending on user's choice
+        { type: PieceType.HORSE, r: 1, c: [3, 8] }, // TODO: (feat) change depending on user's choice
         { type: PieceType.SCHOLAR, r: 1, c: [4, 6] },
       ];
 
-      piecesInfo.forEach(p => {
+      initPiecesInfo.forEach(p => {
         p.c.forEach(c => {
           initPieces.push(
             new Piece(
@@ -52,6 +52,7 @@ export default function JanggiBoard() {
     setPieces(initPieces);
   }, []);
 
+  // TODO: (refactor) separate initailzing and updating
   const updateBoard = useCallback(
     (pieces: Piece[]) => {
       const initBoard: { position: Position; piece: Piece | null }[][] = [];
@@ -80,63 +81,52 @@ export default function JanggiBoard() {
     [pieces],
   );
 
-  const getLineBoardTileClassName = (index: number) => {
-    if ([4, 11, 60, 67].includes(index)) {
-      return `${styles.helpTile} ${styles.slash}`;
-    } else if ([3, 12, 59, 68].includes(index)) {
-      return `${styles.helpTile} ${styles.backSlash}`;
-    } else {
-      return styles.helpTile;
-    }
+  const grabPiece = (piece: Piece) => {
+    setSelectedPiece(piece);
   };
 
-  const movePiece = (piece: Piece, newPosition: Position) => {
+  const resetSelectedPiece = () => {
+    setSelectedPiece(null);
+  };
+
+  const movePiece = (piece: Piece, newPosition: Position, attackedPiece: Piece | null) => {
     setPieces(prev => {
-      const updatedPieces = prev.map(p => {
-        if (piece.isSamePiece(p)) {
+      const updatePieces = prev.reduce((result, p) => {
+        if (p.isSamePiece(piece)) {
+          // move selectedPiece to new position
           p.setPosition(newPosition);
         }
-        return p;
-      });
-      return updatedPieces;
+        if (!attackedPiece || (attackedPiece && !p.isSamePiece(attackedPiece))) {
+          // remove attacked piece (filter)
+          result.push(p);
+        }
+        return result;
+      }, [] as Piece[]);
+
+      return updatePieces;
     });
   };
 
-  const removePiece = (piece: Piece) => {
-    setPieces(prev => {
-      return prev.filter(p => !p.isSamePiece(piece));
-    });
-  };
-
-  const takePiece = (targetPiece: Piece) => {
-    if (!selectedPiece) return;
-    removePiece(targetPiece);
-    movePiece(selectedPiece, targetPiece.position);
+  const dropPiece = (piece: Piece, newPositon: Position, attackedPiece: Piece | null) => {
+    const isValidMove: boolean = referee.isValidMove(newPositon, piece, board);
+    if (isValidMove) {
+      movePiece(piece, newPositon, attackedPiece);
+    }
+    resetSelectedPiece();
   };
 
   const onClickTile = (position: Position, clickedPiece: Piece | null) => {
-    if (selectedPiece) {
-      const isValidMove: boolean = referee.isValidMove(position, selectedPiece, board);
-      if (!isValidMove) {
-        setSelectedPiece(null);
-        return;
-      }
-
-      if (clickedPiece) {
-        if (selectedPiece.isOpponent(clickedPiece)) {
-          takePiece(clickedPiece);
-          setSelectedPiece(null);
-        } else if (!selectedPiece.isSamePiece(clickedPiece)) {
-          setSelectedPiece(clickedPiece);
-        } else {
-          setSelectedPiece(null);
-        }
+    if (clickedPiece && (!selectedPiece || !clickedPiece.isOpponent(selectedPiece))) {
+      // grab the clicked piece if no piece has been selected yet or the clicked piece is our country
+      grabPiece(clickedPiece);
+    } else if (selectedPiece) {
+      if (clickedPiece && clickedPiece.isSamePiece(selectedPiece)) {
+        // reset `selectedPiece` if the clicked piece is the same as the previously selected one (toggle)
+        resetSelectedPiece();
       } else {
-        movePiece(selectedPiece, position);
-        setSelectedPiece(null);
+        // (attack and) move
+        dropPiece(selectedPiece, position, clickedPiece);
       }
-    } else {
-      if (clickedPiece) setSelectedPiece(clickedPiece);
     }
   };
 
@@ -145,10 +135,24 @@ export default function JanggiBoard() {
   }, [pieces, updateBoard]);
 
   useEffect(() => {
-    // TODO: determine country randomly
-    // TODO: table setting options (use modal)
+    // TODO:(feat) determine country randomly
+    // TODO: (feat) table setting options (using modal)
     initializePieces();
   }, [initializePieces]);
+
+  // TODO: (refactor) move to `contants.ts`
+  const SLASH_TILES = [4, 11, 60, 67];
+  const BACK_SLASH_TILES = [3, 12, 59, 68];
+
+  const getLineBoardTileClassName = (index: number) => {
+    if (SLASH_TILES.includes(index)) {
+      return `${styles.helpTile} ${styles.slash}`;
+    } else if (BACK_SLASH_TILES.includes(index)) {
+      return `${styles.helpTile} ${styles.backSlash}`;
+    } else {
+      return styles.helpTile;
+    }
+  };
 
   return (
     <div className={styles.janggiBoard}>
@@ -163,8 +167,7 @@ export default function JanggiBoard() {
         {board.map(row => {
           return row.map(tile => (
             <Tile
-              r={tile.position.r}
-              c={tile.position.c}
+              position={tile.position}
               piece={tile.piece}
               onClickTile={onClickTile}
               key={`${tile.position.r},${tile.position.c}`}
