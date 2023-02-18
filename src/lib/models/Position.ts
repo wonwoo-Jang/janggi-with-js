@@ -10,4 +10,8 @@ export class Position {
   isSamePosition(otherPosition: Position) {
     return this.r === otherPosition.r && this.c === otherPosition.c;
   }
+
+  toString() {
+    return `(${this.r},${this.c})`;
+  }
 }
