@@ -81,7 +81,7 @@ export default function JanggiBoard() {
     [pieces],
   );
 
-  const grabPiece = (piece: Piece) => {
+  const selectPiece = (piece: Piece) => {
     setSelectedPiece(piece);
   };
 
@@ -105,25 +105,20 @@ export default function JanggiBoard() {
     setPieces(updatedPieces);
   };
 
-  const dropPiece = (piece: Piece, newPositon: Position, attackedPiece: Piece | null) => {
-    const isValidMove: boolean = referee.isValidMove(newPositon, piece, board);
-    if (isValidMove) {
-      movePiece(piece, newPositon, attackedPiece);
-    }
-    resetSelectedPiece();
-  };
-
   const onClickTile = (position: Position, clickedPiece: Piece | null) => {
-    if (clickedPiece && (!selectedPiece || !clickedPiece.isOpponent(selectedPiece))) {
-      // grab the clicked piece if no piece has been selected yet or the clicked piece is our country
-      grabPiece(clickedPiece);
-    } else if (selectedPiece) {
-      if (clickedPiece && clickedPiece.isSamePiece(selectedPiece)) {
+    if (selectedPiece && (!clickedPiece || clickedPiece.isOpponent(selectedPiece))) {
+      const isValidMove: boolean = referee.isValidMove(position, selectedPiece, board);
+      if (isValidMove) {
+        movePiece(selectedPiece, position, clickedPiece);
+      }
+      resetSelectedPiece();
+    } else if (clickedPiece) {
+      if (selectedPiece && clickedPiece.isSamePiece(selectedPiece)) {
         // reset `selectedPiece` if the clicked piece is the same as the previously selected one (toggle)
         resetSelectedPiece();
       } else {
-        // (attack and) move
-        dropPiece(selectedPiece, position, clickedPiece);
+        // select the clicked piece if no piece has been selected yet or the clicked piece is our country (except itself)
+        selectPiece(clickedPiece);
       }
     }
   };
