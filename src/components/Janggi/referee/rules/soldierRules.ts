@@ -35,45 +35,39 @@ export const isValidSoldierMove = (
 ): boolean => {
   const occupyingPiece = isTileOccupied(newPosition, board);
   if (occupyingPiece && occupyingPiece.country === country) return false;
+
+  // TODO: (feat) change direction depending on my country
   const direction = country === CountryType.CHO ? 1 : -1;
-  if (
-    // 귀
+
+  // 궁성 내 대각선 이동
+  const isMovingDiagonallyFromPalaceLeftCorner =
     (initPosition.isSamePosition(new Position(8, 4)) ||
       initPosition.isSamePosition(new Position(3, 4))) &&
     newPosition.r - initPosition.r === direction &&
-    newPosition.c - initPosition.c === 1
-  ) {
-    return true;
-  } else if (
-    // 귀
+    newPosition.c - initPosition.c === 1;
+  const isMovingDiagonallyFromPalaceRightCorner =
     (initPosition.isSamePosition(new Position(8, 6)) ||
       initPosition.isSamePosition(new Position(3, 6))) &&
     newPosition.r - initPosition.r === direction &&
-    newPosition.c - initPosition.c === -1
-  ) {
-    return true;
-  } else if (
-    // 궁중
+    newPosition.c - initPosition.c === -1;
+  const isMovingDiagonallyFromPalaceCenter =
     (initPosition.isSamePosition(new Position(2, 5)) ||
       initPosition.isSamePosition(new Position(9, 5))) &&
     newPosition.r - initPosition.r === direction &&
-    Math.abs(newPosition.c - initPosition.c) === 1
+    Math.abs(newPosition.c - initPosition.c) === 1;
+
+  if (
+    isMovingDiagonallyFromPalaceLeftCorner ||
+    isMovingDiagonallyFromPalaceRightCorner ||
+    isMovingDiagonallyFromPalaceCenter
   ) {
     return true;
   }
 
-  if (
-    (newPosition.r - initPosition.r === direction && newPosition.c === initPosition.c) ||
-    (Math.abs(newPosition.c - initPosition.c) === 1 && newPosition.r === initPosition.r)
-  ) {
-    if (occupyingPiece) {
-      // attack
-    }
-    return true;
-  } else {
-    return false;
-  }
-  // const possibleMoves = getPossibleSoldierMove(position, country, board);
-  // const isValid = possibleMoves.some(p => newPosition.isSamePosition(p));
-  // return isValid;
+  const isMovingOneSpaceUp =
+    newPosition.r - initPosition.r === direction && newPosition.c === initPosition.c;
+  const isMovingOneSpaceAside =
+    Math.abs(newPosition.c - initPosition.c) === 1 && newPosition.r === initPosition.r;
+
+  return isMovingOneSpaceUp || isMovingOneSpaceAside;
 };
