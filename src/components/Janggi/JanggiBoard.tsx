@@ -90,21 +90,19 @@ export default function JanggiBoard() {
   };
 
   const movePiece = (piece: Piece, newPosition: Position, attackedPiece: Piece | null) => {
-    setPieces(prev => {
-      const updatePieces = prev.reduce((result, p) => {
-        if (p.isSamePiece(piece)) {
-          // move selectedPiece to new position
-          p.setPosition(newPosition);
-        }
-        if (!attackedPiece || (attackedPiece && !p.isSamePiece(attackedPiece))) {
-          // remove attacked piece (filter)
-          result.push(p);
-        }
-        return result;
-      }, [] as Piece[]);
+    const updatedPieces = pieces.reduce((result, p) => {
+      if (p.isSamePiece(piece)) {
+        // move selectedPiece to new position
+        p.setPosition(newPosition);
+      }
+      if (!attackedPiece || (attackedPiece && !p.isSamePiece(attackedPiece))) {
+        // remove attacked piece (filter alive pieces)
+        result.push(p);
+      }
+      return result;
+    }, [] as Piece[]);
 
-      return updatePieces;
-    });
+    setPieces(updatedPieces);
   };
 
   const dropPiece = (piece: Piece, newPositon: Position, attackedPiece: Piece | null) => {
