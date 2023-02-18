@@ -15,8 +15,20 @@ const COL_LEN = 9;
 const rows = Array.from({ length: ROW_LEN }, (v, i) => ROW_LEN - i);
 const columns = Array.from({ length: COL_LEN }, (v, i) => i + 1);
 
+const initializeBoard = () => {
+  const initBoard: Board = [];
+  rows.forEach(r => {
+    const row: TileI[] = [];
+    columns.forEach(c => {
+      row.push({ position: new Position(r, c), piece: null });
+    });
+    initBoard.push(row);
+  });
+  return initBoard;
+};
+
 export default function JanggiBoard() {
-  const [board, setBoard] = useState<Board>([]);
+  const [board, setBoard] = useState<Board>(initializeBoard());
   const [pieces, setPieces] = useState<Piece[]>([]);
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
   const referee = new Referee();
@@ -52,34 +64,16 @@ export default function JanggiBoard() {
     setPieces(initPieces);
   }, []);
 
-  // TODO: (refactor) separate initailzing and updating
-  const updateBoard = useCallback(
-    (pieces: Piece[]) => {
-      const initBoard: Board = [];
-
-      rows.forEach(r => {
-        const row: TileI[] = [];
-
-        columns.forEach(c => {
-          const position: Position = new Position(r, c);
-          let piece: Piece | null = null;
-
-          pieces.forEach(p => {
-            if (p.position.r === r && p.position.c === c) {
-              piece = p;
-            }
-          });
-
-          row.push({ position, piece });
-        });
-
-        initBoard.push(row);
+  const updateBoard = useCallback((pieces: Piece[]) => {
+    const updatedBoard = board.map(row => {
+      return row.map(tile => {
+        const piece = pieces.find(p => p.position.isSamePosition(tile.position));
+        tile.piece = piece ?? null;
+        return tile;
       });
-
-      setBoard(initBoard);
-    },
-    [pieces],
-  );
+    });
+    setBoard(updatedBoard);
+  }, []);
 
   const selectPiece = (piece: Piece) => {
     setSelectedPiece(piece);
