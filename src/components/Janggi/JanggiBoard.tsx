@@ -170,7 +170,7 @@ export default function JanggiBoard() {
               position={tile.position}
               piece={tile.piece}
               onClickTile={onClickTile}
-              key={`${tile.position.r},${tile.position.c}`}
+              key={`${tile.position}`}
             />
           ));
         })}
