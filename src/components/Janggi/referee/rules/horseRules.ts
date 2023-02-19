@@ -3,7 +3,12 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggi';
 
-import { isNeckBlocked, isTileOccupiedByMyCountry, pieceOccupyingTile } from './generalRules';
+import {
+  isNeckBlocked,
+  isTileOccupied,
+  isTileOccupiedByMyCountry,
+  pieceOccupyingTile,
+} from './generalRules';
 
 export const isValidHorseMove = (
   newPosition: Position,
@@ -20,11 +25,11 @@ export const isValidHorseMove = (
 
   const neckX = diffX < 0 ? Math.ceil(diffX / 2) : Math.floor(diffX / 2);
   const neckY = diffY < 0 ? Math.ceil(diffY / 2) : Math.floor(diffY / 2);
-  const isNeckOpen = !pieceOccupyingTile(
+  const isNeckBlocked = isTileOccupied(
     new Position(initPosition.x + neckX, initPosition.y + neckY),
     board,
   );
-  return isNeckOpen;
+  return !isNeckBlocked;
 };
 
 export const getPossibleHorseMove = (horse: Piece, board: Board): Position[] => {

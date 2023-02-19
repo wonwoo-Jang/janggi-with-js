@@ -16,6 +16,10 @@ export const pieceOccupyingTile = (position: Position, board: Board): Piece | nu
   return board[10 - position.x][position.y - 1].piece;
 };
 
+export const isTileOccupied = (position: Position, board: Board): boolean => {
+  return Boolean(pieceOccupyingTile(position, board));
+};
+
 export const isTileOccupiedByOpponent = (
   myCountry: CountryType,
   position: Position,
@@ -62,8 +66,9 @@ export const isNeckBlocked = (
   for (let i = 1; i <= neckNum; i++) {
     const neckX = dx < 0 ? i : -i;
     const neckY = dy < 0 ? i : -i;
-    const isNeckBlocked = Boolean(
-      pieceOccupyingTile(new Position(position.x + neckX, position.y + neckY), board),
+    const isNeckBlocked = isTileOccupied(
+      new Position(position.x + neckX, position.y + neckY),
+      board,
     );
     if (isNeckBlocked) return true;
   }
