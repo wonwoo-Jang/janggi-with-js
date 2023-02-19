@@ -38,10 +38,11 @@ export const getPossibleHorseMove = (horse: Piece, board: Board): Position[] => 
   for (let i = 0; i < POSITION_NUM; i++) {
     const position = new Position(currX + dx[i], currY + dy[i]);
     if (isMovable(horse.country, position, board)) {
+      console.log(i);
       const neckX = dx[i] < 0 ? 1 : -1;
       const neckY = dy[i] < 0 ? 1 : -1;
       const isNeckOpen = !pieceOccupyingTile(
-        new Position(position.x - neckX, position.y - neckY),
+        new Position(position.x + neckX, position.y + neckY),
         board,
       );
       if (isNeckOpen) possibleMoves.push(position);

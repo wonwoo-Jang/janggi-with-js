@@ -19,7 +19,6 @@ export default function Tile({ position, piece, highlight, onClickTile }: TilePr
         [PieceType.SCHOLAR, PieceType.SOLDIER].includes(piece.type) && styles.small
       }`
     : '';
-  console.log(highlight);
 
   return (
     <div className={tileClassName} onClick={() => onClickTile(position, piece)}>

@@ -4,15 +4,15 @@ import { Position } from '@models/Position';
 import { Board, PieceType } from '@customTypes/janggi';
 
 import { isTileOccupiedByMyCountry } from './rules/generalRules';
-import { isValidHorseMove } from './rules/horseRules';
-import { isValidSoldierMove } from './rules/soldierRules';
+import { getPossibleHorseMove, isValidHorseMove } from './rules/horseRules';
+import { getPossibleSoldierMoves, isValidSoldierMove } from './rules/soldierRules';
 
 export default class Referee {
-  isTileOccupied = (position: Position, board: Board) => {
+  isTileOccupied(position: Position, board: Board): boolean {
     return Boolean(board[10 - position.x][position.y]);
-  };
+  }
 
-  isValidMove(newPosition: Position, piece: Piece, board: Board) {
+  isValidMove(newPosition: Position, piece: Piece, board: Board): boolean {
     console.log('referee checking valid move');
 
     const { type, country, position } = piece;
@@ -28,7 +28,15 @@ export default class Referee {
     }
   }
 
-  getPossibleMoves() {
+  getPossibleMoves(piece: Piece, board: Board): Position[] {
     console.log('getting possible moves');
+    switch (piece.type) {
+      case PieceType.SOLDIER:
+        return getPossibleSoldierMoves(piece, board);
+      case PieceType.HORSE:
+        return getPossibleHorseMove(piece, board);
+      default:
+        return [];
+    }
   }
 }

@@ -8,25 +8,22 @@
 
   &.highlight {
     cursor: pointer;
-  }
 
-  &.highlight::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20%;
-    height: 20%;
-    border: 2px solid v.$border-brown;
-    border-radius: 50%;
-    opacity: 0.5;
-    cursor: pointer;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20%;
+      height: 20%;
+      border: 2px solid v.$border-brown;
+      border-radius: 50%;
+      opacity: 0.6;
+    }
   }
 
   &:hover {
-    background-color: burlywood;
-
     &.highlight::after {
       opacity: 0.9;
     }
@@ -45,11 +42,12 @@
     }
 
     &:hover {
-      cursor: grab;
+      // cursor: grab;
+      cursor: pointer;
     }
 
-    &:active {
-      cursor: grabbing;
-    }
+    // &:active {
+    //   cursor: grabbing;
+    // }
   }
 }

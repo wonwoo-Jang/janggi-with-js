@@ -64,22 +64,30 @@ export default function JanggiBoard() {
     setPieces(initPieces);
   }, []);
 
-  const updateBoard = useCallback((pieces: Piece[]) => {
-    const updatedBoard = board.map(row => {
-      return row.map(tile => {
-        const piece = pieces.find(p => p.position.isSamePosition(tile.position));
-        tile.piece = piece ?? null;
-        return tile;
+  const updateBoard = useCallback(
+    (pieces: Piece[], selectedPiece: Piece | null) => {
+      const updatedBoard = board.map(row => {
+        return row.map(tile => {
+          const piece = pieces.find(p => p.position.isSamePosition(tile.position));
+          tile.piece = piece ?? null;
+          tile.highlight = Boolean(
+            selectedPiece && selectedPiece.possibleMoves.some(p => p.isSamePosition(tile.position)),
+          );
+          return tile;
+        });
       });
-    });
-    setBoard(updatedBoard);
-  }, []);
+      setBoard(updatedBoard);
+    },
+    [selectedPiece],
+  );
 
   const selectPiece = (piece: Piece) => {
+    piece.possibleMoves = referee.getPossibleMoves(piece, board);
     setSelectedPiece(piece);
   };
 
   const resetSelectedPiece = () => {
+    if (selectedPiece) selectedPiece.possibleMoves = [];
     setSelectedPiece(null);
   };
 
@@ -118,8 +126,8 @@ export default function JanggiBoard() {
   };
 
   useEffect(() => {
-    updateBoard(pieces);
-  }, [pieces, updateBoard]);
+    updateBoard(pieces, selectedPiece);
+  }, [pieces, selectedPiece, updateBoard]);
 
   useEffect(() => {
     // TODO:(feat) determine country randomly
