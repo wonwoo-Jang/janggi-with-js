@@ -54,3 +54,21 @@ export const isInBoard = (position: Position): boolean => {
 export const isMovable = (myCountry: CountryType, position: Position, board: Board): boolean => {
   return isInBoard(position) && !isTileOccupiedByMyCountry(myCountry, position, board);
 };
+
+export const isNeckBlocked = (
+  dx: number,
+  dy: number,
+  neckNum: number,
+  position: Position,
+  board: Board,
+): boolean => {
+  for (let i = 1; i <= neckNum; i++) {
+    const neckX = dx < 0 ? i : -i;
+    const neckY = dy < 0 ? i : -i;
+    const isNeckBlocked = Boolean(
+      pieceOccupyingTile(new Position(position.x + neckX, position.y + neckY), board),
+    );
+    if (isNeckBlocked) return true;
+  }
+  return false;
+};
