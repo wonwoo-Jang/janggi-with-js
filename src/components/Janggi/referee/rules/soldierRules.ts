@@ -3,29 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggi';
 
-import { isInPalace, isTileOccupiedByMyCountry } from './generalRules';
-
-export const getPossibleSoldierMove = (
-  position: Position,
-  country: CountryType,
-  board: Board,
-): Position[] => {
-  // 위 왼쪽 오른쪽
-  // const { r, c } = position;
-  // const direction = country === CountryType.CHO ? 1 : -1;
-  // const possibleMoves: Position[] = [];
-  // if (r + direction < 11) {
-  //   const newPosition = new Position(r + direction, c);
-  //   if (!isTileOccupied(newPosition, board)) {
-  //     possibleMoves.push(newPosition);
-
-  //   }
-  // }
-  // if (c + 1 < 10) possibleMoves.push(new Position(r, c + 1));
-  // if (c - 1 > 0) possibleMoves.push(new Position(r, c - 1));
-  // return possibleMoves;
-  return [];
-};
+import { isInPalace, isMovable, isTileOccupiedByMyCountry } from './generalRules';
 
 export const isValidSoldierMove = (
   newPosition: Position,
@@ -34,20 +12,20 @@ export const isValidSoldierMove = (
   board: Board,
 ): boolean => {
   // TODO: (feat) change direction depending on my country
-  const direction = country === CountryType.CHO ? 1 : -1;
+  const direction: number = country === CountryType.CHO ? 1 : -1;
 
   // 궁성 내 대각선 이동
-  const isMovingDiagonallyFromPalaceLeftCorner =
+  const isMovingDiagonallyFromPalaceLeftCorner: boolean =
     (initPosition.isSamePosition(new Position(8, 4)) ||
       initPosition.isSamePosition(new Position(3, 4))) &&
     newPosition.x - initPosition.x === direction &&
     newPosition.y - initPosition.y === 1;
-  const isMovingDiagonallyFromPalaceRightCorner =
+  const isMovingDiagonallyFromPalaceRightCorner: boolean =
     (initPosition.isSamePosition(new Position(8, 6)) ||
       initPosition.isSamePosition(new Position(3, 6))) &&
     newPosition.x - initPosition.x === direction &&
     newPosition.y - initPosition.y === -1;
-  const isMovingDiagonallyFromPalaceCenter =
+  const isMovingDiagonallyFromPalaceCenter: boolean =
     (initPosition.isSamePosition(new Position(2, 5)) ||
       initPosition.isSamePosition(new Position(9, 5))) &&
     newPosition.x - initPosition.x === direction &&
@@ -61,10 +39,29 @@ export const isValidSoldierMove = (
     return true;
   }
 
-  const isMovingOneSpaceUp =
+  const isMovingOneSpaceUp: boolean =
     newPosition.x - initPosition.x === direction && newPosition.y === initPosition.y;
-  const isMovingOneSpaceAside =
+  const isMovingOneSpaceAside: boolean =
     Math.abs(newPosition.y - initPosition.y) === 1 && newPosition.x === initPosition.x;
 
   return isMovingOneSpaceUp || isMovingOneSpaceAside;
+};
+
+export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[] => {
+  const possibleMoves: Position[] = [];
+
+  const POSITION_NUM = 3;
+  const direction: number = soldier.country === CountryType.CHO ? 1 : -1;
+  const dx: number[] = [direction, 0, 0];
+  const dy: number[] = [0, -1, 1];
+  const { x: currX, y: currY } = soldier.position;
+
+  for (let i = 0; i < POSITION_NUM; i++) {
+    const position = new Position(currX + dx[i], currY + dy[i]);
+    if (isMovable(soldier.country, position, board)) {
+      possibleMoves.push(position);
+    }
+  }
+
+  return possibleMoves;
 };
