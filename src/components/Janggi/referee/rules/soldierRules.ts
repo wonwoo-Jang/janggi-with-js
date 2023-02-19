@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggi';
 
-import { isInPalace, isTileOccupiedByMyCountry } from './generalRules';
+import { isInPalace, isTileOccupiedByMyCountry, PALACE } from './generalRules';
 
 export const isValidSoldierMove = (
   newPosition: Position,
@@ -67,23 +67,23 @@ export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[
   // special move (can move diagonally inside the palace)
   const diagonalMoveInPalace: Position[] = [];
 
+  // 나라 알면 new Position 생성할 필요 없이 아예 궁성 위치 특정해서 옮길 수 있음
+  // 나중에 리팩토링
+  // 근데 그럼 딥카피해서 줘야 함 PALACE가 바뀌면 안 되니까
   if (
-    soldier.position.isSamePosition(new Position(8, 4)) ||
-    soldier.position.isSamePosition(new Position(3, 4))
+    soldier.position.isSamePosition(PALACE.han.topRight) ||
+    soldier.position.isSamePosition(PALACE.cho.topLeft)
   ) {
-    // move diagonally from palace left corner
     diagonalMoveInPalace.push(new Position(currX + direction, currY + 1));
   } else if (
-    soldier.position.isSamePosition(new Position(8, 6)) ||
-    soldier.position.isSamePosition(new Position(3, 6))
+    soldier.position.isSamePosition(PALACE.han.topLeft) ||
+    soldier.position.isSamePosition(PALACE.cho.topRight)
   ) {
-    // move diagonally from palce right corner
     diagonalMoveInPalace.push(new Position(currX + direction, currY - 1));
   } else if (
-    soldier.position.isSamePosition(new Position(9, 5)) ||
-    soldier.position.isSamePosition(new Position(2, 5))
+    soldier.position.isSamePosition(PALACE.han.center) ||
+    soldier.position.isSamePosition(PALACE.cho.center)
   ) {
-    // move diagonally from palce center
     diagonalMoveInPalace.push(new Position(currX + direction, currY - 1));
     diagonalMoveInPalace.push(new Position(currX + direction, currY + 1));
   }

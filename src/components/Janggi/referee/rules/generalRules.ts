@@ -5,6 +5,23 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType, PieceType } from '@customTypes/janggi';
 
+export const PALACE = {
+  [CountryType.CHO]: {
+    topLeft: new Position(3, 4),
+    topRight: new Position(3, 6),
+    bottomLeft: new Position(1, 4),
+    bottomRight: new Position(1, 6),
+    center: new Position(2, 5),
+  },
+  [CountryType.HAN]: {
+    topLeft: new Position(8, 6),
+    topRight: new Position(8, 4),
+    center: new Position(9, 5),
+    bottomLeft: new Position(10, 6),
+    bottomRight: new Position(10, 4),
+  },
+};
+
 export const isInBoard = (position: Position): boolean => {
   const isValidRangeX: boolean = position.x >= 1 && position.x <= ROW_LEN;
   const isValidRangeY: boolean = position.y >= 1 && position.y <= COLUMN_LEN;
