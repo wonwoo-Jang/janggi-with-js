@@ -27,6 +27,7 @@
     "no-undef": "off",
     "react/react-in-jsx-scope": "off",
     "newline-per-chained-call": "off",
+    "prefer-const": "warn",
     "import/order": [
       "error",
       {
