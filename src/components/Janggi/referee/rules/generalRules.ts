@@ -1,3 +1,5 @@
+import { COLUMN_LEN, ROW_LEN } from '@components/Janggi/JanggiBoard';
+
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
@@ -41,4 +43,14 @@ const PALACE_POSITIONS: Position[] = [
 
 export const isInPalace = (position: Position): boolean => {
   return PALACE_POSITIONS.some(p => position.isSamePosition(p));
+};
+
+export const isInBoard = (position: Position): boolean => {
+  const isValidRangeX: boolean = position.x >= 1 && position.x <= ROW_LEN;
+  const isValidRangeY: boolean = position.y >= 1 && position.y <= COLUMN_LEN;
+  return isValidRangeX && isValidRangeY;
+};
+
+export const isMovable = (myCountry: CountryType, position: Position, board: Board): boolean => {
+  return isInBoard(position) && !isTileOccupiedByMyCountry(myCountry, position, board);
 };
