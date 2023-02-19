@@ -1,12 +1,35 @@
 @use '@styles/variables.scss' as v;
 
 .tile {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
 
+  &.highlight {
+    cursor: pointer;
+  }
+
+  &.highlight::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20%;
+    height: 20%;
+    border: 2px solid v.$border-brown;
+    border-radius: 50%;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+
   &:hover {
-    background-color: v.$border-brown;
+    background-color: burlywood;
+
+    &.highlight::after {
+      opacity: 0.9;
+    }
   }
 
   .piece {

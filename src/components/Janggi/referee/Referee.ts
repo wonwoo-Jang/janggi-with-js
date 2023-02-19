@@ -1,22 +1,18 @@
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { PieceType } from '@customTypes/janggi';
+import { Board, PieceType } from '@customTypes/janggi';
 
 import { isTileOccupiedByMyCountry } from './rules/generalRules';
 import { isValidHorseMove } from './rules/horseRules';
 import { isValidSoldierMove } from './rules/soldierRules';
 
 export default class Referee {
-  isTileOccupied = (position: Position, board: { position: Position; piece: Piece | null }[][]) => {
+  isTileOccupied = (position: Position, board: Board) => {
     return Boolean(board[10 - position.x][position.y]);
   };
 
-  isValidMove(
-    newPosition: Position,
-    piece: Piece,
-    board: { position: Position; piece: Piece | null }[][],
-  ) {
+  isValidMove(newPosition: Position, piece: Piece, board: Board) {
     console.log('referee checking valid move');
 
     const { type, country, position } = piece;

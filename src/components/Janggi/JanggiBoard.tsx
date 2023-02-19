@@ -10,17 +10,17 @@ import Tile from './Tile';
 
 import styles from './JanggiBoard.module.scss';
 
-const ROW_LEN = 10;
-const COL_LEN = 9;
+export const ROW_LEN = 10;
+export const COLUMN_LEN = 9;
 const rows = Array.from({ length: ROW_LEN }, (v, i) => ROW_LEN - i);
-const columns = Array.from({ length: COL_LEN }, (v, i) => i + 1);
+const columns = Array.from({ length: COLUMN_LEN }, (v, i) => i + 1);
 
 const initializeBoard = () => {
   const initBoard: Board = [];
   rows.forEach(x => {
     const row: TileI[] = [];
     columns.forEach(y => {
-      row.push({ position: new Position(x, y), piece: null });
+      row.push({ position: new Position(x, y), piece: null, highlight: false });
     });
     initBoard.push(row);
   });
@@ -144,7 +144,7 @@ export default function JanggiBoard() {
   return (
     <div className={styles.janggiBoard}>
       <div className={styles.lineBoard}>
-        {Array((ROW_LEN - 1) * (COL_LEN - 1))
+        {Array((ROW_LEN - 1) * (COLUMN_LEN - 1))
           .fill(0)
           .map((v, i) => (
             <div className={getLineBoardTileClassName(i)} key={i} />
@@ -157,6 +157,7 @@ export default function JanggiBoard() {
               position={tile.position}
               piece={tile.piece}
               onClickTile={onClickTile}
+              highlight={tile.highlight}
               key={`${tile.position}`}
             />
           ));

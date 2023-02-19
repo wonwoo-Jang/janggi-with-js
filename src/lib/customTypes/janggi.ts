@@ -19,6 +19,7 @@ export enum PieceType {
 export interface TileI {
   position: Position;
   piece: Piece | null;
+  highlight: boolean;
 }
 
 export type Board = TileI[][];
