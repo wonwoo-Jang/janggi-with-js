@@ -29,23 +29,25 @@ export const isValidHorseMove = (
 
 export const getPossibleHorseMove = (horse: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];
-
-  const POSITION_NUM = 8;
-  const dx = [2, 2, 1, -1, -2, -2, -1, 1]; // better to avoid hard coding...
-  const dy = [-1, 1, 2, 2, 1, -1, -2, -2]; // ditto
+  const directions = [-1, 1];
   const { x: currX, y: currY } = horse.position;
 
-  for (let i = 0; i < POSITION_NUM; i++) {
-    const position = new Position(currX + dx[i], currY + dy[i]);
-    if (isMovable(horse.country, position, board)) {
-      // 멱 막혀있는지 확인
-      const neckX = dx[i] < 0 ? 1 : -1;
-      const neckY = dy[i] < 0 ? 1 : -1;
-      const isNeckOpen = !pieceOccupyingTile(
-        new Position(position.x + neckX, position.y + neckY),
-        board,
-      );
-      if (isNeckOpen) possibleMoves.push(position);
+  for (const dx of directions) {
+    for (const dy of directions) {
+      const verticalPosition: Position = new Position(currX + dx * 2, currY + dy * 1);
+      const horizontalPosition: Position = new Position(currX + dx * 1, currY + dy * 2);
+
+      [verticalPosition, horizontalPosition].forEach(position => {
+        if (isMovable(horse.country, position, board)) {
+          const neckX = dx < 0 ? 1 : -1;
+          const neckY = dy < 0 ? 1 : -1;
+          const isNeckOpen = !pieceOccupyingTile(
+            new Position(position.x + neckX, position.y + neckY),
+            board,
+          );
+          if (isNeckOpen) possibleMoves.push(position);
+        }
+      });
     }
   }
 
