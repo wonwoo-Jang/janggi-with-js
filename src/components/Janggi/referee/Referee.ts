@@ -17,15 +17,17 @@ export default class Referee {
 
     const { type, country, position } = piece;
     if (isTileOccupiedByMyCountry(country, newPosition, board)) return false;
+    const isValid = piece.possibleMoves.some(p => p.isSamePosition(newPosition));
+    return isValid;
 
-    switch (type) {
-      case PieceType.SOLDIER:
-        return isValidSoldierMove(newPosition, position, country, board);
-      case PieceType.HORSE:
-        return isValidHorseMove(newPosition, position, board);
-      default:
-        return true;
-    }
+    // switch (type) {
+    //   case PieceType.SOLDIER:
+    //     return isValidSoldierMove(newPosition, position, country, board);
+    //   case PieceType.HORSE:
+    //     return isValidHorseMove(newPosition, position, board);
+    //   default:
+    //     return true;
+    // }
   }
 
   getPossibleMoves(piece: Piece, board: Board): Position[] {
@@ -35,6 +37,7 @@ export default class Referee {
         return getPossibleSoldierMoves(piece, board);
       case PieceType.HORSE:
         return getPossibleHorseMove(piece, board);
+
       default:
         return [];
     }

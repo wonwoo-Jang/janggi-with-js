@@ -38,7 +38,7 @@ export const getPossibleHorseMove = (horse: Piece, board: Board): Position[] => 
   for (let i = 0; i < POSITION_NUM; i++) {
     const position = new Position(currX + dx[i], currY + dy[i]);
     if (isMovable(horse.country, position, board)) {
-      console.log(i);
+      // 멱 막혀있는지 확인
       const neckX = dx[i] < 0 ? 1 : -1;
       const neckY = dy[i] < 0 ? 1 : -1;
       const isNeckOpen = !pieceOccupyingTile(

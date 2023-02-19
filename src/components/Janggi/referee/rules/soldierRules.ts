@@ -49,9 +49,10 @@ export const isValidSoldierMove = (
 
 export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];
-
-  const POSITION_NUM = 3;
   const direction: number = soldier.country === CountryType.CHO ? 1 : -1;
+
+  // normal move
+  const POSITION_NUM = 3;
   const dx: number[] = [direction, 0, 0];
   const dy: number[] = [0, -1, 1];
   const { x: currX, y: currY } = soldier.position;
@@ -62,6 +63,36 @@ export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[
       possibleMoves.push(position);
     }
   }
+
+  // special move (can move diagonally inside the palace)
+  const diagonalMoveInPalace: Position[] = [];
+
+  if (
+    soldier.position.isSamePosition(new Position(8, 4)) ||
+    soldier.position.isSamePosition(new Position(3, 4))
+  ) {
+    // move diagonally from palace left corner
+    diagonalMoveInPalace.push(new Position(currX + direction, currY + 1));
+  } else if (
+    soldier.position.isSamePosition(new Position(8, 6)) ||
+    soldier.position.isSamePosition(new Position(3, 6))
+  ) {
+    // move diagonally from palce right corner
+    diagonalMoveInPalace.push(new Position(currX + direction, currY - 1));
+  } else if (
+    soldier.position.isSamePosition(new Position(9, 5)) ||
+    soldier.position.isSamePosition(new Position(2, 5))
+  ) {
+    // move diagonally from palce center
+    diagonalMoveInPalace.push(new Position(currX + direction, currY - 1));
+    diagonalMoveInPalace.push(new Position(currX + direction, currY + 1));
+  }
+
+  diagonalMoveInPalace.forEach(position => {
+    if (isMovable(soldier.country, position, board)) {
+      possibleMoves.push(position);
+    }
+  });
 
   return possibleMoves;
 };
