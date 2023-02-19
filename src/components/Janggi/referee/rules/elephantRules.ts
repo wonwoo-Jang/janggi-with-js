@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggi';
 
-import { isMovable, isNeckBlocked, pieceOccupyingTile } from './generalRules';
+import { isNeckBlocked, isTileOccupiedByMyCountry } from './generalRules';
 
 export const getPossibleElephantMoves = (elephant: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];
@@ -17,7 +17,7 @@ export const getPossibleElephantMoves = (elephant: Piece, board: Board): Positio
 
       [verticalPosition, horizontalPosition].forEach(position => {
         if (
-          isMovable(elephant.country, position, board) &&
+          !isTileOccupiedByMyCountry(elephant.country, position, board) &&
           !isNeckBlocked(dx, dy, 2, position, board)
         ) {
           possibleMoves.push(position);

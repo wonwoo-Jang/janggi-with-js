@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggi';
 
-import { isMovable, isNeckBlocked, pieceOccupyingTile } from './generalRules';
+import { isNeckBlocked, isTileOccupiedByMyCountry, pieceOccupyingTile } from './generalRules';
 
 export const isValidHorseMove = (
   newPosition: Position,
@@ -39,7 +39,7 @@ export const getPossibleHorseMove = (horse: Piece, board: Board): Position[] => 
 
       [verticalPosition, horizontalPosition].forEach(position => {
         if (
-          isMovable(horse.country, position, board) &&
+          !isTileOccupiedByMyCountry(horse.country, position, board) &&
           !isNeckBlocked(dx, dy, 1, position, board)
         ) {
           possibleMoves.push(position);

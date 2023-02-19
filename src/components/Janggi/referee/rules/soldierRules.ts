@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggi';
 
-import { isInPalace, isMovable, isTileOccupiedByMyCountry } from './generalRules';
+import { isInPalace, isTileOccupiedByMyCountry } from './generalRules';
 
 export const isValidSoldierMove = (
   newPosition: Position,
@@ -59,7 +59,7 @@ export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[
 
   for (let i = 0; i < POSITION_NUM; i++) {
     const position = new Position(currX + dx[i], currY + dy[i]);
-    if (isMovable(soldier.country, position, board)) {
+    if (!isTileOccupiedByMyCountry(soldier.country, position, board)) {
       possibleMoves.push(position);
     }
   }
@@ -89,7 +89,7 @@ export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[
   }
 
   diagonalMoveInPalace.forEach(position => {
-    if (isMovable(soldier.country, position, board)) {
+    if (!isTileOccupiedByMyCountry(soldier.country, position, board)) {
       possibleMoves.push(position);
     }
   });

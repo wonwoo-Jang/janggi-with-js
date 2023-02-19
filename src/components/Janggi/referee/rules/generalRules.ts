@@ -5,7 +5,14 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType, PieceType } from '@customTypes/janggi';
 
+export const isInBoard = (position: Position): boolean => {
+  const isValidRangeX: boolean = position.x >= 1 && position.x <= ROW_LEN;
+  const isValidRangeY: boolean = position.y >= 1 && position.y <= COLUMN_LEN;
+  return isValidRangeX && isValidRangeY;
+};
+
 export const pieceOccupyingTile = (position: Position, board: Board): Piece | null => {
+  if (!isInBoard(position)) return null;
   return board[10 - position.x][position.y - 1].piece;
 };
 
@@ -43,16 +50,6 @@ const PALACE_POSITIONS: Position[] = [
 
 export const isInPalace = (position: Position): boolean => {
   return PALACE_POSITIONS.some(p => position.isSamePosition(p));
-};
-
-export const isInBoard = (position: Position): boolean => {
-  const isValidRangeX: boolean = position.x >= 1 && position.x <= ROW_LEN;
-  const isValidRangeY: boolean = position.y >= 1 && position.y <= COLUMN_LEN;
-  return isValidRangeX && isValidRangeY;
-};
-
-export const isMovable = (myCountry: CountryType, position: Position, board: Board): boolean => {
-  return isInBoard(position) && !isTileOccupiedByMyCountry(myCountry, position, board);
 };
 
 export const isNeckBlocked = (
