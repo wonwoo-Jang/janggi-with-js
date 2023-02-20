@@ -3,34 +3,31 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggi';
 
-import { isInPalace, isTileOccupiedByMyCountry, PALACE } from './generalRules';
+import {
+  CORNER_NUM,
+  getPalaceCenterDiagonalMoves,
+  isInPalace,
+  isTileOccupiedByMyCountry,
+  palaceCornerPositions,
+  diagDx,
+  diagDy,
+  DIRECTION_NUM,
+  linearDx,
+  linearDy,
+} from './generalRules';
 
 // same as king move
 export const getPossibleScholarMoves = (scholar: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];
   const { x: currX, y: currY } = scholar.position;
 
-  const dx = [1, -1, 0, 0];
-  const dy = [0, 0, -1, 1];
-
-  const DIRECTION_NUM = 4;
+  // linear move
   for (let i = 0; i < DIRECTION_NUM; i++) {
-    const position: Position = new Position(currX + dx[i], currY + dy[i]);
+    const position: Position = new Position(currX + linearDx[i], currY + linearDy[i]);
     if (isInPalace(position) && !isTileOccupiedByMyCountry(scholar.country, position, board)) {
       possibleMoves.push(position);
     }
   }
-
-  // diagonal moves
-  const palaceDx = [1, 1, -1, -1];
-  const palaceDy = [1, -1, 1, -1];
-  const CORNER_NUM = 4;
-  const palaceCornerPositions: Position[][] = [
-    [PALACE.cho.bottomLeft, PALACE.han.topRight],
-    [PALACE.cho.bottomRight, PALACE.han.topLeft],
-    [PALACE.cho.topLeft, PALACE.han.bottomRight],
-    [PALACE.cho.topRight, PALACE.han.bottomLeft],
-  ];
 
   // diagonal move at the corner
   for (let i = 0; i < CORNER_NUM; i++) {
@@ -38,7 +35,7 @@ export const getPossibleScholarMoves = (scholar: Piece, board: Board): Position[
       corner.isSamePosition(scholar.position),
     );
     if (isAtPalaceCorner) {
-      const diagonalMove: Position = new Position(currX + palaceDx[i], currY + palaceDy[i]);
+      const diagonalMove: Position = new Position(currX + diagDx[i], currY + diagDy[i]);
       if (!isTileOccupiedByMyCountry(scholar.country, diagonalMove, board)) {
         possibleMoves.push(diagonalMove);
       }
@@ -47,20 +44,8 @@ export const getPossibleScholarMoves = (scholar: Piece, board: Board): Position[
   }
 
   // diagonal moves at the center of the palace
-  if (
-    scholar.position.isSamePosition(PALACE.cho.center) ||
-    scholar.position.isSamePosition(PALACE.han.center)
-  ) {
-    for (let i = 0; i < DIRECTION_NUM; i++) {
-      const position: Position = new Position(
-        scholar.position.x + palaceDx[i],
-        scholar.position.y + palaceDy[i],
-      );
-      if (!isTileOccupiedByMyCountry(scholar.country, position, board)) {
-        possibleMoves.push(position);
-      }
-    }
-  }
+  const palaceCenterDiagonalMoves = getPalaceCenterDiagonalMoves(scholar, board);
+  possibleMoves.push(...palaceCenterDiagonalMoves);
 
   return possibleMoves;
 };

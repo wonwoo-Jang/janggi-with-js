@@ -3,7 +3,7 @@ import { COLUMN_LEN, ROW_LEN } from '@components/Janggi/JanggiBoard';
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board, CountryType, PieceType } from '@customTypes/janggi';
+import { Board, CountryType } from '@customTypes/janggi';
 
 export const PALACE = {
   [CountryType.CHO]: {
@@ -98,4 +98,39 @@ export const isNeckBlocked = (
     if (isNeckBlocked) return true;
   }
   return false;
+};
+
+export const linearDx = [1, -1, 0, 0];
+export const linearDy = [0, 0, -1, 1];
+
+export const diagDx = [1, 1, -1, -1];
+export const diagDy = [1, -1, 1, -1];
+export const CORNER_NUM = 4;
+export const DIRECTION_NUM = 4;
+export const palaceCornerPositions: Position[][] = [
+  [PALACE.cho.bottomLeft, PALACE.han.topRight],
+  [PALACE.cho.bottomRight, PALACE.han.topLeft],
+  [PALACE.cho.topLeft, PALACE.han.bottomRight],
+  [PALACE.cho.topRight, PALACE.han.bottomLeft],
+];
+
+export const getPalaceCenterDiagonalMoves = (piece: Piece, board: Board): Position[] => {
+  const possibleMoves: Position[] = [];
+
+  if (
+    piece.position.isSamePosition(PALACE.cho.center) ||
+    piece.position.isSamePosition(PALACE.han.center)
+  ) {
+    for (let i = 0; i < DIRECTION_NUM; i++) {
+      const position: Position = new Position(
+        piece.position.x + diagDx[i],
+        piece.position.y + diagDy[i],
+      );
+      if (!isTileOccupiedByMyCountry(piece.country, position, board)) {
+        possibleMoves.push(position);
+      }
+    }
+  }
+
+  return possibleMoves;
 };
