@@ -5,7 +5,12 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggi';
 
-import { isTileOccupied, isTileOccupiedByOpponent, PALACE } from './generalRules';
+import {
+  isTileOccupied,
+  isTileOccupiedByMyCountry,
+  isTileOccupiedByOpponent,
+  PALACE,
+} from './generalRules';
 
 const getLinearMoves = (
   dx: number,
@@ -59,7 +64,7 @@ export const getPossibleCarMoves = (car: Piece, board: Board): Position[] => {
   ];
   let palaceIndex = -1;
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < DIRECTION_NUM; i++) {
     const isAtPalaceCorner = palaceCornerPositions[i].some(corner =>
       corner.isSamePosition(car.position),
     );
@@ -69,16 +74,24 @@ export const getPossibleCarMoves = (car: Piece, board: Board): Position[] => {
     }
   }
 
+  if (palaceIndex !== -1) {
+    const palaceMoves = getLinearMoves(palaceDx[palaceIndex], palaceDy[palaceIndex], 2, car, board);
+    possibleMoves.push(...palaceMoves);
+  }
+
   if (
     car.position.isSamePosition(PALACE.cho.center) ||
     car.position.isSamePosition(PALACE.han.center)
   ) {
-    console.log('Center');
-  }
-
-  if (palaceIndex !== -1) {
-    const palaceMoves = getLinearMoves(palaceDx[palaceIndex], palaceDy[palaceIndex], 2, car, board);
-    possibleMoves.push(...palaceMoves);
+    for (let i = 0; i < DIRECTION_NUM; i++) {
+      const position: Position = new Position(
+        car.position.x + palaceDx[i],
+        car.position.y + palaceDy[i],
+      );
+      if (!isTileOccupiedByMyCountry(car.country, position, board)) {
+        possibleMoves.push(position);
+      }
+    }
   }
 
   return possibleMoves;
