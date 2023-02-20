@@ -8,6 +8,7 @@ import { getPossibleElephantMoves } from './rules/elephantRules';
 import { isTileOccupiedByMyCountry } from './rules/generalRules';
 import { getPossibleHorseMove, isValidHorseMove } from './rules/horseRules';
 import { getPossibleKingMoves } from './rules/kingRules';
+import { getPossibleScholarMoves } from './rules/scholarRules';
 import { getPossibleSoldierMoves, isValidSoldierMove } from './rules/soldierRules';
 
 export default class Referee {
@@ -40,6 +41,8 @@ export default class Referee {
         return getPossibleElephantMoves(piece, board);
       case PieceType.CAR:
         return getPossibleCarMoves(piece, board);
+      case PieceType.SCHOLAR:
+        return getPossibleScholarMoves(piece, board);
       case PieceType.KING:
         return getPossibleKingMoves(piece, board);
       default:

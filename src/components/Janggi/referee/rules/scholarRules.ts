@@ -5,10 +5,10 @@ import { Board } from '@customTypes/janggi';
 
 import { isInPalace, isTileOccupiedByMyCountry, PALACE } from './generalRules';
 
-// same as scholar move
-export const getPossibleKingMoves = (king: Piece, board: Board): Position[] => {
+// same as king move
+export const getPossibleScholarMoves = (scholar: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];
-  const { x: currX, y: currY } = king.position;
+  const { x: currX, y: currY } = scholar.position;
 
   const dx = [1, -1, 0, 0];
   const dy = [0, 0, -1, 1];
@@ -16,7 +16,7 @@ export const getPossibleKingMoves = (king: Piece, board: Board): Position[] => {
   const DIRECTION_NUM = 4;
   for (let i = 0; i < DIRECTION_NUM; i++) {
     const position: Position = new Position(currX + dx[i], currY + dy[i]);
-    if (isInPalace(position) && !isTileOccupiedByMyCountry(king.country, position, board)) {
+    if (isInPalace(position) && !isTileOccupiedByMyCountry(scholar.country, position, board)) {
       possibleMoves.push(position);
     }
   }
@@ -35,11 +35,11 @@ export const getPossibleKingMoves = (king: Piece, board: Board): Position[] => {
   // diagonal move at the corner
   for (let i = 0; i < CORNER_NUM; i++) {
     const isAtPalaceCorner = palaceCornerPositions[i].some(corner =>
-      corner.isSamePosition(king.position),
+      corner.isSamePosition(scholar.position),
     );
     if (isAtPalaceCorner) {
       const diagonalMove: Position = new Position(currX + palaceDx[i], currY + palaceDy[i]);
-      if (!isTileOccupiedByMyCountry(king.country, diagonalMove, board)) {
+      if (!isTileOccupiedByMyCountry(scholar.country, diagonalMove, board)) {
         possibleMoves.push(diagonalMove);
       }
       break;
@@ -48,15 +48,15 @@ export const getPossibleKingMoves = (king: Piece, board: Board): Position[] => {
 
   // diagonal moves at the center of the palace
   if (
-    king.position.isSamePosition(PALACE.cho.center) ||
-    king.position.isSamePosition(PALACE.han.center)
+    scholar.position.isSamePosition(PALACE.cho.center) ||
+    scholar.position.isSamePosition(PALACE.han.center)
   ) {
     for (let i = 0; i < DIRECTION_NUM; i++) {
       const position: Position = new Position(
-        king.position.x + palaceDx[i],
-        king.position.y + palaceDy[i],
+        scholar.position.x + palaceDx[i],
+        scholar.position.y + palaceDy[i],
       );
-      if (!isTileOccupiedByMyCountry(king.country, position, board)) {
+      if (!isTileOccupiedByMyCountry(scholar.country, position, board)) {
         possibleMoves.push(position);
       }
     }
