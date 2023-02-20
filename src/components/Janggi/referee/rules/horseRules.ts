@@ -4,10 +4,10 @@ import { Position } from '@models/Position';
 import { Board } from '@customTypes/janggi';
 
 import {
+  isInBoard,
   isNeckBlocked,
   isTileOccupied,
   isTileOccupiedByMyCountry,
-  pieceOccupyingTile,
 } from './generalRules';
 
 export const isValidHorseMove = (
@@ -32,6 +32,7 @@ export const isValidHorseMove = (
   return !isNeckBlocked;
 };
 
+// 상이랑 행마 로직이 같음
 export const getPossibleHorseMove = (horse: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];
   const directions = [-1, 1];
@@ -42,14 +43,15 @@ export const getPossibleHorseMove = (horse: Piece, board: Board): Position[] => 
       const verticalPosition: Position = new Position(currX + dx * 2, currY + dy * 1);
       const horizontalPosition: Position = new Position(currX + dx * 1, currY + dy * 2);
 
-      [verticalPosition, horizontalPosition].forEach(position => {
+      for (const position of [verticalPosition, horizontalPosition]) {
         if (
+          isInBoard(position) &&
           !isTileOccupiedByMyCountry(horse.country, position, board) &&
           !isNeckBlocked(dx, dy, 1, position, board)
         ) {
           possibleMoves.push(position);
         }
-      });
+      }
     }
   }
 

@@ -10,10 +10,6 @@ import { getPossibleHorseMove, isValidHorseMove } from './rules/horseRules';
 import { getPossibleSoldierMoves, isValidSoldierMove } from './rules/soldierRules';
 
 export default class Referee {
-  isTileOccupied(position: Position, board: Board): boolean {
-    return Boolean(board[10 - position.x][position.y]);
-  }
-
   isValidMove(newPosition: Position, piece: Piece, board: Board): boolean {
     console.log('referee checking valid move');
 

@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggi';
 
-import { isInPalace, isTileOccupiedByMyCountry, PALACE } from './generalRules';
+import { isInBoard, isInPalace, isTileOccupiedByMyCountry, PALACE } from './generalRules';
 
 export const isValidSoldierMove = (
   newPosition: Position,
@@ -57,15 +57,16 @@ export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[
   const dy: number[] = [0, -1, 1];
   const { x: currX, y: currY } = soldier.position;
 
+  // 여기랑 아래랑 내용이 거의 비슷함
   for (let i = 0; i < POSITION_NUM; i++) {
     const position = new Position(currX + dx[i], currY + dy[i]);
-    if (!isTileOccupiedByMyCountry(soldier.country, position, board)) {
+    if (isInBoard(position) && !isTileOccupiedByMyCountry(soldier.country, position, board)) {
       possibleMoves.push(position);
     }
   }
 
   // special move (can move diagonally inside the palace)
-  const diagonalMoveInPalace: Position[] = [];
+  const diagonalMovesInPalace: Position[] = [];
 
   // 나라 알면 new Position 생성할 필요 없이 아예 궁성 위치 특정해서 옮길 수 있음
   // 나중에 리팩토링
@@ -74,22 +75,22 @@ export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[
     soldier.position.isSamePosition(PALACE.han.topRight) ||
     soldier.position.isSamePosition(PALACE.cho.topLeft)
   ) {
-    diagonalMoveInPalace.push(new Position(currX + direction, currY + 1));
+    diagonalMovesInPalace.push(new Position(currX + direction, currY + 1));
   } else if (
     soldier.position.isSamePosition(PALACE.han.topLeft) ||
     soldier.position.isSamePosition(PALACE.cho.topRight)
   ) {
-    diagonalMoveInPalace.push(new Position(currX + direction, currY - 1));
+    diagonalMovesInPalace.push(new Position(currX + direction, currY - 1));
   } else if (
     soldier.position.isSamePosition(PALACE.han.center) ||
     soldier.position.isSamePosition(PALACE.cho.center)
   ) {
-    diagonalMoveInPalace.push(new Position(currX + direction, currY - 1));
-    diagonalMoveInPalace.push(new Position(currX + direction, currY + 1));
+    diagonalMovesInPalace.push(new Position(currX + direction, currY - 1));
+    diagonalMovesInPalace.push(new Position(currX + direction, currY + 1));
   }
 
-  diagonalMoveInPalace.forEach(position => {
-    if (!isTileOccupiedByMyCountry(soldier.country, position, board)) {
+  diagonalMovesInPalace.forEach(position => {
+    if (isInBoard(position) && !isTileOccupiedByMyCountry(soldier.country, position, board)) {
       possibleMoves.push(position);
     }
   });
