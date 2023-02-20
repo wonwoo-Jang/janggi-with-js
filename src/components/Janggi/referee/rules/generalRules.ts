@@ -69,9 +69,17 @@ const PALACE_POSITIONS: Position[] = [
   new Position(10, 6),
 ];
 
+const PALACE_X: number[] = [1, 2, 3, 8, 9, 10];
+const PALACE_Y: number[] = [4, 5, 6];
+
 export const isInPalace = (position: Position): boolean => {
-  return PALACE_POSITIONS.some(p => position.isSamePosition(p));
+  const isXInPalace: boolean = PALACE_X.includes(position.x);
+  const isYInPalace: boolean = PALACE_Y.includes(position.y);
+  return isXInPalace && isYInPalace;
 };
+
+// isAtCorner
+// isAtCenter
 
 export const isNeckBlocked = (
   dx: number,
