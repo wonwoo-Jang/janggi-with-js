@@ -3,7 +3,7 @@ import { COLUMN_LEN, ROW_LEN } from '@components/Janggi/JanggiBoard';
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board, PieceType } from '@customTypes/janggi';
+import { Board, CountryType, PieceType } from '@customTypes/janggi';
 
 import { isInBoard, isTileOccupied, pieceOccupyingTile } from './generalRules';
 
@@ -30,15 +30,15 @@ const getBridge = (
 const getLinearMoves = (
   dx: number, // direction of x to move (down: -1, up: 1)
   dy: number, // direction of y to move (left: -1, right: 1)
-  minDistance: number,
   maxDistance: number,
-  cannon: Piece,
+  myCountry: CountryType,
+  bridge: Piece,
   board: Board,
 ): Position[] => {
   const linearMoves: Position[] = [];
-  const { x: currX, y: currY } = cannon.position;
+  const { x: currX, y: currY } = bridge.position;
 
-  for (let i = minDistance; i <= maxDistance; i++) {
+  for (let i = 1; i <= maxDistance; i++) {
     const position = new Position(currX + i * dx, currY + i * dy);
     if (!isInBoard(position)) break;
 
@@ -47,7 +47,7 @@ const getLinearMoves = (
       linearMoves.push(position);
     } else {
       const occupyingPiece: Piece = pieceOccupyingTile(position, board) as Piece;
-      if (occupyingPiece.isOpponent(cannon) && occupyingPiece.type !== PieceType.CANNON) {
+      if (occupyingPiece.country !== myCountry && occupyingPiece.type !== PieceType.CANNON) {
         // oppenent except cannon is at the destination
         linearMoves.push(position);
       }
@@ -59,7 +59,6 @@ const getLinearMoves = (
 
 export const getPossibleCannonMoves = (cannon: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];
-  const { x: currX, y: currY } = cannon.position;
 
   // linear moves
   const directions = [1, -1];
@@ -69,9 +68,9 @@ export const getPossibleCannonMoves = (cannon: Piece, board: Board): Position[] 
       const verticalMoves = getLinearMoves(
         d,
         0,
-        Math.abs(verticalBridge.position.x - currX) + 1,
         ROW_LEN - 1,
-        cannon,
+        cannon.country,
+        verticalBridge,
         board,
       );
       possibleMoves.push(...verticalMoves);
@@ -82,9 +81,9 @@ export const getPossibleCannonMoves = (cannon: Piece, board: Board): Position[] 
       const horizontalMoves = getLinearMoves(
         0,
         d,
-        Math.abs(horizontalBridge.position.y - currY) + 1,
         COLUMN_LEN - 1,
-        cannon,
+        cannon.country,
+        horizontalBridge,
         board,
       );
       possibleMoves.push(...horizontalMoves);
