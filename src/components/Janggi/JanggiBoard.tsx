@@ -67,6 +67,14 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
     setPieces(initPieces);
   }, []);
 
+  const updatePossibleMoves = () => {
+    console.log('asd');
+    pieces.map(p => {
+      p.possibleMoves = getPossibleMoves(p, board);
+      return p;
+    });
+  };
+
   const updateBoard = useCallback(
     (pieces: Piece[], selectedPiece: Piece | null) => {
       const updatedBoard = board.map(row => {
@@ -76,6 +84,7 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
           tile.highlight = Boolean(
             selectedPiece && selectedPiece.possibleMoves.some(p => p.isSamePosition(tile.position)),
           );
+          console.log('update');
           return tile;
         });
       });
@@ -85,12 +94,10 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
   );
 
   const selectPiece = (piece: Piece) => {
-    piece.possibleMoves = getPossibleMoves(piece, board);
     setSelectedPiece(piece);
   };
 
   const resetSelectedPiece = () => {
-    if (selectedPiece) selectedPiece.possibleMoves = [];
     setSelectedPiece(null);
   };
 
@@ -131,6 +138,10 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
   useEffect(() => {
     updateBoard(pieces, selectedPiece);
   }, [pieces, selectedPiece, updateBoard]);
+
+  useEffect(() => {
+    updatePossibleMoves();
+  }, [pieces]);
 
   useEffect(() => {
     // TODO:(feat) determine country randomly
