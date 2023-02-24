@@ -16,6 +16,8 @@ import {
   diagDy,
 } from './generalRules';
 
+// almost the same as `getLinearMoves` function in `cannonRules.ts`
+// TODO: integrate `getLinearMoves` in carRules and cannonRules
 const getLinearMoves = (
   dx: number, // direction of x to move (down: -1, up: 1)
   dy: number, // direction of y to move (left: -1, right: 1)

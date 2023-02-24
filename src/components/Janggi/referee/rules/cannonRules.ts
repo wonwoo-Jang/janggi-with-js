@@ -27,6 +27,8 @@ const getBridge = (
   return bridge?.type !== PieceType.CANNON ? bridge : null;
 };
 
+// almost the same as `getLinearMoves` function in `carRules.ts`
+// TODO: integrate `getLinearMoves` in cannonRules carRules
 const getLinearMoves = (
   dx: number, // direction of x to move (down: -1, up: 1)
   dy: number, // direction of y to move (left: -1, right: 1)
@@ -38,6 +40,7 @@ const getLinearMoves = (
   const linearMoves: Position[] = [];
   const { x: currX, y: currY } = bridge.position;
 
+  // i: distance from current position
   for (let i = 1; i <= maxDistance; i++) {
     const position = new Position(currX + i * dx, currY + i * dy);
     if (!isInBoard(position)) break;
