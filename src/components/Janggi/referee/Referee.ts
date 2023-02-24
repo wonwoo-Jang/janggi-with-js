@@ -31,25 +31,25 @@ export default class Referee {
     // }
   }
 
-  getPossibleMoves(piece: Piece, board: Board): Position[] {
-    console.log('getting possible moves');
-    switch (piece.type) {
-      case PieceType.SOLDIER:
-        return getPossibleSoldierMoves(piece, board);
-      case PieceType.HORSE:
-        return getPossibleHorseMove(piece, board);
-      case PieceType.ELEPHANT:
-        return getPossibleElephantMoves(piece, board);
-      case PieceType.CANNON:
-        return getPossibleCannonMoves(piece, board);
-      case PieceType.CAR:
-        return getPossibleCarMoves(piece, board);
-      case PieceType.SCHOLAR:
-        return getPossibleScholarMoves(piece, board);
-      case PieceType.KING:
-        return getPossibleKingMoves(piece, board);
-      default:
-        return [];
-    }
-  }
+  // getPossibleMoves(piece: Piece, board: Board): Position[] {
+  //   console.log('getting possible moves');
+  //   switch (piece.type) {
+  //     case PieceType.SOLDIER:
+  //       return getPossibleSoldierMoves(piece, board);
+  //     case PieceType.HORSE:
+  //       return getPossibleHorseMove(piece, board);
+  //     case PieceType.ELEPHANT:
+  //       return getPossibleElephantMoves(piece, board);
+  //     case PieceType.CANNON:
+  //       return getPossibleCannonMoves(piece, board);
+  //     case PieceType.CAR:
+  //       return getPossibleCarMoves(piece, board);
+  //     case PieceType.SCHOLAR:
+  //       return getPossibleScholarMoves(piece, board);
+  //     case PieceType.KING:
+  //       return getPossibleKingMoves(piece, board);
+  //     default:
+  //       return [];
+  //   }
+  // }
 }

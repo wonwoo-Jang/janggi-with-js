@@ -5,7 +5,6 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType, PieceType, TileI } from '@customTypes/janggi';
 
-import Referee from './referee/Referee';
 import Tile from './Tile';
 
 import styles from './JanggiBoard.module.scss';
@@ -27,11 +26,15 @@ const initializeBoard = () => {
   return initBoard;
 };
 
-export default function JanggiBoard() {
+interface JanggiBoardProps {
+  getPossibleMoves(piece: Piece, board: Board): Position[];
+  isValidMove(newPosition: Position, piece: Piece, board: Board): boolean;
+}
+
+export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoardProps) {
   const [board, setBoard] = useState<Board>(initializeBoard());
   const [pieces, setPieces] = useState<Piece[]>([]);
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
-  const referee = new Referee();
 
   const initializePieces = useCallback(() => {
     const initPieces: Piece[] = [];
@@ -82,7 +85,7 @@ export default function JanggiBoard() {
   );
 
   const selectPiece = (piece: Piece) => {
-    piece.possibleMoves = referee.getPossibleMoves(piece, board);
+    piece.possibleMoves = getPossibleMoves(piece, board);
     setSelectedPiece(piece);
   };
 
@@ -109,8 +112,8 @@ export default function JanggiBoard() {
 
   const onClickTile = (position: Position, clickedPiece: Piece | null) => {
     if (selectedPiece && (!clickedPiece || clickedPiece.isOpponent(selectedPiece))) {
-      const isValidMove: boolean = referee.isValidMove(position, selectedPiece, board);
-      if (isValidMove) {
+      const validMove: boolean = isValidMove(position, selectedPiece, board);
+      if (validMove) {
         movePiece(selectedPiece, position, clickedPiece);
       }
       resetSelectedPiece();
