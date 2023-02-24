@@ -9,22 +9,49 @@ import Tile from './Tile';
 
 import styles from './JanggiBoard.module.scss';
 
+// TODO: move to `const`
 export const ROW_LEN = 10;
 export const COLUMN_LEN = 9;
 const rows = Array.from({ length: ROW_LEN }, (v, i) => ROW_LEN - i);
 const columns = Array.from({ length: COLUMN_LEN }, (v, i) => i + 1);
 
-const initializeBoard = () => {
-  const initBoard: Board = [];
-  rows.forEach(x => {
-    const row: TileI[] = [];
-    columns.forEach(y => {
-      row.push({ position: new Position(x, y), piece: null, highlight: false });
-    });
-    initBoard.push(row);
-  });
-  return initBoard;
-};
+// TODO: move to `const`
+const initialBoard = rows.reduce((board, x) => {
+  const newRow = columns.reduce((row, y) => {
+    row.push({ position: new Position(x, y), piece: null, highlight: false });
+    return row;
+  }, [] as TileI[]);
+  board.push(newRow);
+  return board;
+}, [] as Board);
+
+// TODO: move to `const`
+const initPiecesInfo = [
+  { type: PieceType.SOLDIER, x: 4, y: [1, 3, 5, 7, 9] },
+  { type: PieceType.CANNON, x: 3, y: [2, 8] },
+  { type: PieceType.KING, x: 2, y: [5] },
+  { type: PieceType.CAR, x: 1, y: [1, 9] },
+  { type: PieceType.ELEPHANT, x: 1, y: [2, 7] }, // TODO: (feat) change depending on user's choice
+  { type: PieceType.HORSE, x: 1, y: [3, 8] }, // TODO: (feat) change depending on user's choice
+  { type: PieceType.SCHOLAR, x: 1, y: [4, 6] },
+];
+
+// TODO: move to `const`
+const initialPieces = initPiecesInfo.reduce((pieces, info) => {
+  for (const y of info.y) {
+    for (const country of [CountryType.CHO, CountryType.HAN]) {
+      pieces.push(
+        new Piece(
+          info.type,
+          new Position(country === CountryType.CHO ? info.x : ROW_LEN + 1 - info.x, y),
+          country,
+          `images/${country}_${info.type}.png`,
+        ),
+      );
+    }
+  }
+  return pieces;
+}, [] as Piece[]);
 
 interface JanggiBoardProps {
   getPossibleMoves(piece: Piece, board: Board): Position[];
@@ -32,43 +59,11 @@ interface JanggiBoardProps {
 }
 
 export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoardProps) {
-  const [board, setBoard] = useState<Board>(initializeBoard());
-  const [pieces, setPieces] = useState<Piece[]>([]);
+  const [board, setBoard] = useState<Board>(initialBoard);
+  const [pieces, setPieces] = useState<Piece[]>(initialPieces);
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
 
-  const initializePieces = useCallback(() => {
-    const initPieces: Piece[] = [];
-
-    for (const country of [CountryType.CHO, CountryType.HAN]) {
-      const initPiecesInfo = [
-        { type: PieceType.SOLDIER, x: 4, y: [1, 3, 5, 7, 9] },
-        { type: PieceType.CANNON, x: 3, y: [2, 8] },
-        { type: PieceType.KING, x: 2, y: [5] },
-        { type: PieceType.CAR, x: 1, y: [1, 9] },
-        { type: PieceType.ELEPHANT, x: 1, y: [2, 7] }, // TODO: (feat) change depending on user's choice
-        { type: PieceType.HORSE, x: 1, y: [3, 8] }, // TODO: (feat) change depending on user's choice
-        { type: PieceType.SCHOLAR, x: 1, y: [4, 6] },
-      ];
-
-      initPiecesInfo.forEach(p => {
-        p.y.forEach(y => {
-          initPieces.push(
-            new Piece(
-              p.type,
-              new Position(country === CountryType.CHO ? p.x : ROW_LEN + 1 - p.x, y),
-              country,
-              `images/${country}_${p.type}.png`,
-            ),
-          );
-        });
-      });
-    }
-
-    setPieces(initPieces);
-  }, []);
-
-  const updatePossibleMoves = () => {
-    console.log('asd');
+  const initializePossibleMoves = () => {
     pieces.map(p => {
       p.possibleMoves = getPossibleMoves(p, board);
       return p;
@@ -84,7 +79,6 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
           tile.highlight = Boolean(
             selectedPiece && selectedPiece.possibleMoves.some(p => p.isSamePosition(tile.position)),
           );
-          console.log('update');
           return tile;
         });
       });
@@ -101,13 +95,25 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
     setSelectedPiece(null);
   };
 
+  // 실제 보드를 바꾸면 일부만 먼저 랜더링이 되어 깜박임 현상이 발생함
+  // 따라서 복사본을 이용해 이동 가능 경로만 따로 업데이트
+  const getBoardPreview = (movedPiece: Piece, newPosition: Position) => {
+    const boardPreview: Board = board.map(row => row.map(tile => ({ ...tile }))); // deep copy
+    boardPreview[ROW_LEN - movedPiece.position.x][movedPiece.position.y - 1].piece = null;
+    boardPreview[ROW_LEN - newPosition.x][newPosition.y - 1].piece = movedPiece;
+    return boardPreview;
+  };
+
   const movePiece = (piece: Piece, newPosition: Position, attackedPiece: Piece | null) => {
+    const boardPreview = getBoardPreview(piece, newPosition);
     const updatedPieces = pieces.reduce((result, p) => {
       if (p.isSamePiece(piece)) {
         // move selectedPiece to new position
         p.setPosition(newPosition);
       }
       if (!attackedPiece || (attackedPiece && !p.isSamePiece(attackedPiece))) {
+        // update all possible moves
+        p.possibleMoves = getPossibleMoves(p, boardPreview);
         // remove attacked piece (filter alive pieces)
         result.push(p);
       }
@@ -140,14 +146,10 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
   }, [pieces, selectedPiece, updateBoard]);
 
   useEffect(() => {
-    updatePossibleMoves();
-  }, [pieces]);
-
-  useEffect(() => {
     // TODO:(feat) determine country randomly
     // TODO: (feat) table setting options (using modal)
-    initializePieces();
-  }, [initializePieces]);
+    initializePossibleMoves();
+  }, []);
 
   // TODO: (refactor) move to `contants.ts`
   const SLASH_TILES = [4, 11, 60, 67];

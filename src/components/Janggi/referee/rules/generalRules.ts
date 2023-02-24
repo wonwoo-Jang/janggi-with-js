@@ -30,7 +30,7 @@ export const isInBoard = (position: Position): boolean => {
 
 export const pieceOccupyingTile = (position: Position, board: Board): Piece | null => {
   if (!isInBoard(position)) return null;
-  return board[10 - position.x][position.y - 1].piece;
+  return board[ROW_LEN - position.x][position.y - 1].piece;
 };
 
 export const isTileOccupied = (position: Position, board: Board): boolean => {
