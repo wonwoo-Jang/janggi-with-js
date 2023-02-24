@@ -61,9 +61,7 @@ export const getPossibleCarMoves = (car: Piece, board: Board): Position[] => {
 
   // diagonal moves at the corner of the palace
   for (let i = 0; i < CORNER_NUM; i++) {
-    const isAtPalaceCorner = palaceCornerPositions[i].some(corner =>
-      corner.isSamePosition(car.position),
-    );
+    const isAtPalaceCorner = palaceCornerPositions[i].some(corner => corner.isSamePosition(car.position));
     if (isAtPalaceCorner) {
       const diagonalMoves = getLinearMoves(diagDx[i], diagDy[i], 2, car, board);
       possibleMoves.push(...diagonalMoves);

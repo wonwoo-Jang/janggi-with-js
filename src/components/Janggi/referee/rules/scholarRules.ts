@@ -31,9 +31,7 @@ export const getPossibleScholarMoves = (scholar: Piece, board: Board): Position[
 
   // diagonal move at the corner
   for (let i = 0; i < CORNER_NUM; i++) {
-    const isAtPalaceCorner = palaceCornerPositions[i].some(corner =>
-      corner.isSamePosition(scholar.position),
-    );
+    const isAtPalaceCorner = palaceCornerPositions[i].some(corner => corner.isSamePosition(scholar.position));
     if (isAtPalaceCorner) {
       const diagonalMove: Position = new Position(currX + diagDx[i], currY + diagDy[i]);
       if (!isTileOccupiedByMyCountry(scholar.country, diagonalMove, board)) {

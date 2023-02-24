@@ -37,20 +37,12 @@ export const isTileOccupied = (position: Position, board: Board): boolean => {
   return Boolean(pieceOccupyingTile(position, board));
 };
 
-export const isTileOccupiedByOpponent = (
-  myCountry: CountryType,
-  position: Position,
-  board: Board,
-): boolean => {
+export const isTileOccupiedByOpponent = (myCountry: CountryType, position: Position, board: Board): boolean => {
   const piece = pieceOccupyingTile(position, board);
   return Boolean(piece && piece.country !== myCountry);
 };
 
-export const isTileOccupiedByMyCountry = (
-  myCountry: CountryType,
-  position: Position,
-  board: Board,
-): boolean => {
+export const isTileOccupiedByMyCountry = (myCountry: CountryType, position: Position, board: Board): boolean => {
   const occupyingPiece = pieceOccupyingTile(position, board);
   return Boolean(occupyingPiece && occupyingPiece.country === myCountry);
 };
@@ -81,20 +73,11 @@ export const isInPalace = (position: Position): boolean => {
 // isAtCorner
 // isAtCenter
 
-export const isNeckBlocked = (
-  dx: number,
-  dy: number,
-  neckNum: number,
-  position: Position,
-  board: Board,
-): boolean => {
+export const isNeckBlocked = (dx: number, dy: number, neckNum: number, position: Position, board: Board): boolean => {
   for (let i = 1; i <= neckNum; i++) {
     const neckX = dx < 0 ? i : -i;
     const neckY = dy < 0 ? i : -i;
-    const isNeckBlocked = isTileOccupied(
-      new Position(position.x + neckX, position.y + neckY),
-      board,
-    );
+    const isNeckBlocked = isTileOccupied(new Position(position.x + neckX, position.y + neckY), board);
     if (isNeckBlocked) return true;
   }
   return false;
@@ -117,15 +100,9 @@ export const palaceCornerPositions: Position[][] = [
 export const getPalaceCenterDiagonalMoves = (piece: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];
 
-  if (
-    piece.position.isSamePosition(PALACE.cho.center) ||
-    piece.position.isSamePosition(PALACE.han.center)
-  ) {
+  if (piece.position.isSamePosition(PALACE.cho.center) || piece.position.isSamePosition(PALACE.han.center)) {
     for (let i = 0; i < DIRECTION_NUM; i++) {
-      const position: Position = new Position(
-        piece.position.x + diagDx[i],
-        piece.position.y + diagDy[i],
-      );
+      const position: Position = new Position(piece.position.x + diagDx[i], piece.position.y + diagDy[i]);
       if (!isTileOccupiedByMyCountry(piece.country, position, board)) {
         possibleMoves.push(position);
       }

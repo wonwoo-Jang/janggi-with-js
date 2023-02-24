@@ -68,27 +68,13 @@ export const getPossibleCannonMoves = (cannon: Piece, board: Board): Position[] 
   for (const d of directions) {
     const verticalBridge = getBridge(d, 0, ROW_LEN - 1, cannon, board);
     if (verticalBridge) {
-      const verticalMoves = getLinearMoves(
-        d,
-        0,
-        ROW_LEN - 1,
-        cannon.country,
-        verticalBridge,
-        board,
-      );
+      const verticalMoves = getLinearMoves(d, 0, ROW_LEN - 1, cannon.country, verticalBridge, board);
       possibleMoves.push(...verticalMoves);
     }
 
     const horizontalBridge = getBridge(0, d, COLUMN_LEN - 1, cannon, board);
     if (horizontalBridge) {
-      const horizontalMoves = getLinearMoves(
-        0,
-        d,
-        COLUMN_LEN - 1,
-        cannon.country,
-        horizontalBridge,
-        board,
-      );
+      const horizontalMoves = getLinearMoves(0, d, COLUMN_LEN - 1, cannon.country, horizontalBridge, board);
       possibleMoves.push(...horizontalMoves);
     }
   }

@@ -15,9 +15,7 @@ interface TileProps {
 export default function Tile({ position, piece, highlight, onClickTile }: TileProps) {
   const tileClassName = `${styles.tile} ${highlight && styles.highlight}`;
   const pieceClassName = piece
-    ? `${styles.piece} ${
-        [PieceType.SCHOLAR, PieceType.SOLDIER].includes(piece.type) && styles.small
-      }`
+    ? `${styles.piece} ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(piece.type) && styles.small}`
     : '';
 
   return (

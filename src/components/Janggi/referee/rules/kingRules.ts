@@ -31,9 +31,7 @@ export const getPossibleKingMoves = (king: Piece, board: Board): Position[] => {
 
   // diagonal move at the corner of the palace
   for (let i = 0; i < CORNER_NUM; i++) {
-    const isAtPalaceCorner = palaceCornerPositions[i].some(corner =>
-      corner.isSamePosition(king.position),
-    );
+    const isAtPalaceCorner = palaceCornerPositions[i].some(corner => corner.isSamePosition(king.position));
     if (isAtPalaceCorner) {
       const diagonalMove: Position = new Position(currX + diagDx[i], currY + diagDy[i]);
       if (!isTileOccupiedByMyCountry(king.country, diagonalMove, board)) {
