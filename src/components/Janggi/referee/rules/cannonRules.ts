@@ -5,7 +5,16 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType, PieceType } from '@customTypes/janggi';
 
-import { isInBoard, isTileOccupied, pieceOccupyingTile } from './generalRules';
+import {
+  CORNER_NUM,
+  diagDx,
+  diagDy,
+  isInBoard,
+  isTileOccupied,
+  PALACE,
+  palaceCornerPositions,
+  pieceOccupyingTile,
+} from './generalRules';
 
 // 포다리 찾는 함수
 const getBridge = (
@@ -49,6 +58,7 @@ const getLinearMoves = (
       // destination is empty
       linearMoves.push(position);
     } else {
+      // TODO: refactor? (the same logic as diagonal moves)
       const occupyingPiece: Piece = pieceOccupyingTile(position, board) as Piece;
       if (occupyingPiece.country !== myCountry && occupyingPiece.type !== PieceType.CANNON) {
         // oppenent except cannon is at the destination
@@ -76,6 +86,28 @@ export const getPossibleCannonMoves = (cannon: Piece, board: Board): Position[] 
     if (horizontalBridge) {
       const horizontalMoves = getLinearMoves(0, d, COLUMN_LEN - 1, cannon.country, horizontalBridge, board);
       possibleMoves.push(...horizontalMoves);
+    }
+  }
+
+  // diagonal moves at the corner of the palace
+  const { x: currX, y: currY } = cannon.position;
+
+  for (let i = 0; i < CORNER_NUM; i++) {
+    const isAtPalaceCorner = palaceCornerPositions[i].some(corner => corner.isSamePosition(cannon.position));
+    if (isAtPalaceCorner) {
+      const currPositionCountry = [1, 2, 3].includes(currX) ? CountryType.CHO : CountryType.HAN;
+      const bridge = pieceOccupyingTile(PALACE[currPositionCountry].center, board);
+
+      if (bridge && bridge.type !== PieceType.CANNON) {
+        // TODO: refactor? (the same logic as linear moves)
+        const position = new Position(currX + 2 * diagDx[i], currY + 2 * diagDy[i]);
+        const occupyingPiece: Piece | null = pieceOccupyingTile(position, board);
+        if (!occupyingPiece || (occupyingPiece.isOpponent(cannon) && occupyingPiece.type !== PieceType.CANNON)) {
+          // destination is empty or oppenent except cannon is at the destination
+          possibleMoves.push(position);
+        }
+      }
+      break;
     }
   }
 

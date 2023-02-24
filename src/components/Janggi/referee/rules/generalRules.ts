@@ -70,8 +70,8 @@ export const isInPalace = (position: Position): boolean => {
   return isXInPalace && isYInPalace;
 };
 
-// isAtCorner
-// isAtCenter
+// TODO: isAtPalaceCorner
+// TODO: isAtPalaceCenter
 
 export const isNeckBlocked = (dx: number, dy: number, neckNum: number, position: Position, board: Board): boolean => {
   for (let i = 1; i <= neckNum; i++) {
