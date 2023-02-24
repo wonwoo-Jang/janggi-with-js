@@ -3,6 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, PieceType } from '@customTypes/janggi';
 
+import { getPossibleCannonMoves } from './rules/cannonRules';
 import { getPossibleCarMoves } from './rules/carRules';
 import { getPossibleElephantMoves } from './rules/elephantRules';
 import { isTileOccupiedByMyCountry } from './rules/generalRules';
@@ -39,6 +40,8 @@ export default class Referee {
         return getPossibleHorseMove(piece, board);
       case PieceType.ELEPHANT:
         return getPossibleElephantMoves(piece, board);
+      case PieceType.CANNON:
+        return getPossibleCannonMoves(piece, board);
       case PieceType.CAR:
         return getPossibleCarMoves(piece, board);
       case PieceType.SCHOLAR:
