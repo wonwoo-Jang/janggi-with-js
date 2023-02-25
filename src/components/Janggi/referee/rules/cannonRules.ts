@@ -24,8 +24,6 @@ const getBridge = (
   cannon: Piece,
   board: Board,
 ): Piece | null => {
-  console.log('board: ', board);
-  console.log('cannon:', cannon);
   let bridge: Piece | null = null;
   const { x: currX, y: currY } = cannon.position;
   for (let i = 1; i <= maxDistance; i++) {
@@ -33,7 +31,6 @@ const getBridge = (
     bridge = pieceOccupyingTile(position, board);
     if (bridge) break;
   }
-  console.log('bridge:', bridge);
 
   // cannon can not be a bridge
   return bridge?.type !== PieceType.CANNON ? bridge : null;
