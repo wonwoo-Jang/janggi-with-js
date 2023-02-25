@@ -38,7 +38,17 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
     if (selectedPiece.isSliding()) {
       const diffX = selectedPiece.position.x - destination.x;
       const diffY = destination.y - selectedPiece.position.y;
-      const translatePosition = `translate${diffX ? 'Y' : 'X'}(calc(80vh * 0.1 * ${diffX || diffY}))`;
+      let translatePosition = '';
+      if (diffX && diffY) {
+        // diagonal
+        translatePosition = `translate(calc(80vh * 0.1 * ${diffY}), calc(80vh * 0.1 * ${diffX}))`;
+      } else if (diffX) {
+        // vertical
+        translatePosition = `translate${'Y'}(calc(80vh * 0.1 * ${diffX}))`;
+      } else if (diffY) {
+        // horizontal
+        translatePosition = `translate${'X'}(calc(80vh * 0.1 * ${diffY}))`;
+      }
       const $pieceDiv = selectedRef.current;
       $pieceDiv.style.transform = translatePosition;
       $pieceDiv.style.zIndex = '10';
