@@ -102,6 +102,14 @@ export default function Referee() {
     setPieces(updatedPieces);
   };
 
+  // update all possible moves depending on the board
+  const updatePossibleMoves = (newBoard: Board) => {
+    pieces.map(p => {
+      p.possibleMoves = getPossibleMoves(p, newBoard);
+      return p;
+    });
+  };
+
   // update board depending on the pieces
   const updateBoard = useCallback(() => {
     const updatedBoard = board.map(row => {
@@ -113,23 +121,12 @@ export default function Referee() {
       });
     });
     setBoard(updatedBoard);
+    updatePossibleMoves(updatedBoard);
   }, [pieces]);
-
-  // update all possible moves depending on the board
-  const updatePossibleMoves = useCallback(() => {
-    pieces.map(p => {
-      p.possibleMoves = getPossibleMoves(p, board);
-      return p;
-    });
-  }, [board]);
 
   useEffect(() => {
     updateBoard();
   }, [updateBoard]);
-
-  useEffect(() => {
-    updatePossibleMoves();
-  }, [updatePossibleMoves]);
 
   return <JanggiBoard board={board} isValidMove={isValidMove} movePiece={movePiece} />;
 }
