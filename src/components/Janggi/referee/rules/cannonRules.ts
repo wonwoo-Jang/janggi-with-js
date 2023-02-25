@@ -24,6 +24,8 @@ const getBridge = (
   cannon: Piece,
   board: Board,
 ): Piece | null => {
+  console.log('board: ', board);
+  console.log('cannon:', cannon);
   let bridge: Piece | null = null;
   const { x: currX, y: currY } = cannon.position;
   for (let i = 1; i <= maxDistance; i++) {
@@ -31,6 +33,7 @@ const getBridge = (
     bridge = pieceOccupyingTile(position, board);
     if (bridge) break;
   }
+  console.log('bridge:', bridge);
 
   // cannon can not be a bridge
   return bridge?.type !== PieceType.CANNON ? bridge : null;
@@ -39,8 +42,8 @@ const getBridge = (
 // almost the same as `getLinearMoves` function in `carRules.ts`
 // TODO: integrate `getLinearMoves` in cannonRules carRules
 const getLinearMoves = (
-  dx: number, // direction of x to move (down: -1, up: 1)
-  dy: number, // direction of y to move (left: -1, right: 1)
+  dx: number, // direction of x to move (down: -1, up: 1, stay: 0)
+  dy: number, // direction of y to move (left: -1, right: 1, stay: 0)
   maxDistance: number,
   myCountry: CountryType,
   bridge: Piece,
@@ -49,7 +52,7 @@ const getLinearMoves = (
   const linearMoves: Position[] = [];
   const { x: currX, y: currY } = bridge.position;
 
-  // i: distance from current position
+  // i: distance from current birdge position
   for (let i = 1; i <= maxDistance; i++) {
     const position = new Position(currX + i * dx, currY + i * dy);
     if (!isInBoard(position)) break;

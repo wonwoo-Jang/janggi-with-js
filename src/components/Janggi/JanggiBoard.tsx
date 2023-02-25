@@ -70,22 +70,19 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
     });
   };
 
-  const updateBoard = useCallback(
-    (pieces: Piece[], selectedPiece: Piece | null) => {
-      const updatedBoard = board.map(row => {
-        return row.map(tile => {
-          const piece = pieces.find(p => p.position.isSamePosition(tile.position));
-          tile.piece = piece ?? null;
-          tile.highlight = Boolean(
-            selectedPiece && selectedPiece.possibleMoves.some(p => p.isSamePosition(tile.position)),
-          );
-          return tile;
-        });
+  const updateBoard = useCallback((pieces: Piece[], selectedPiece: Piece | null) => {
+    const updatedBoard = board.map(row => {
+      return row.map(tile => {
+        const piece = pieces.find(p => p.position.isSamePosition(tile.position));
+        tile.piece = piece ?? null;
+        tile.highlight = Boolean(
+          selectedPiece && selectedPiece.possibleMoves.some(p => p.isSamePosition(tile.position)),
+        );
+        return tile;
       });
-      setBoard(updatedBoard);
-    },
-    [selectedPiece],
-  );
+    });
+    setBoard(updatedBoard);
+  }, []);
 
   const selectPiece = (piece: Piece) => {
     setSelectedPiece(piece);
@@ -105,16 +102,12 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
   };
 
   const movePiece = (piece: Piece, newPosition: Position, attackedPiece: Piece | null) => {
+    piece.setPosition(newPosition); // move selectedPiece to the new position
     const boardPreview = getBoardPreview(piece, newPosition);
     const updatedPieces = pieces.reduce((result, p) => {
-      if (p.isSamePiece(piece)) {
-        // move selectedPiece to new position
-        p.setPosition(newPosition);
-      }
+      // update all possible moves and remove attacked piece (filter alive pieces)
       if (!attackedPiece || (attackedPiece && !p.isSamePiece(attackedPiece))) {
-        // update all possible moves
         p.possibleMoves = getPossibleMoves(p, boardPreview);
-        // remove attacked piece (filter alive pieces)
         result.push(p);
       }
       return result;
@@ -180,8 +173,8 @@ export default function JanggiBoard({ isValidMove, getPossibleMoves }: JanggiBoa
             <Tile
               position={tile.position}
               piece={tile.piece}
-              onClickTile={onClickTile}
               highlight={tile.highlight}
+              onClickTile={onClickTile}
               key={`${tile.position}`}
             />
           ));
