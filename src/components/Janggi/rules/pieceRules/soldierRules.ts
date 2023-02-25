@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggi';
 
-import { isInBoard, isInPalace, isTileOccupiedByMyCountry, PALACE } from './generalRules';
+import { isInBoard, isInPalace, isTileOccupiedByMyCountry, PALACE } from '../generalRules';
 
 export const isValidSoldierMove = (
   newPosition: Position,

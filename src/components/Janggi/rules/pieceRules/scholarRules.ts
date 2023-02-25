@@ -14,7 +14,7 @@ import {
   DIRECTION_NUM,
   linearDx,
   linearDy,
-} from './generalRules';
+} from '../generalRules';
 
 // same as king move
 export const getPossibleScholarMoves = (scholar: Piece, board: Board): Position[] => {

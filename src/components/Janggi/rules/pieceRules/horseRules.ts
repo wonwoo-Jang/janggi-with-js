@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggi';
 
-import { isInBoard, isNeckBlocked, isTileOccupied, isTileOccupiedByMyCountry } from './generalRules';
+import { isInBoard, isNeckBlocked, isTileOccupied, isTileOccupiedByMyCountry } from '../generalRules';
 
 export const isValidHorseMove = (newPosition: Position, initPosition: Position, board: Board): boolean => {
   const diffX = newPosition.x - initPosition.x;

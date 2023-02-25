@@ -14,7 +14,7 @@ import {
   palaceCornerPositions,
   diagDx,
   diagDy,
-} from './generalRules';
+} from '../generalRules';
 
 // almost the same as `getLinearMoves` function in `cannonRules.ts`
 // TODO: integrate `getLinearMoves` in carRules and cannonRules

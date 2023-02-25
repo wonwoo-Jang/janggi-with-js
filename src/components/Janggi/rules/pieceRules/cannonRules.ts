@@ -14,7 +14,7 @@ import {
   PALACE,
   palaceCornerPositions,
   pieceOccupyingTile,
-} from './generalRules';
+} from '../generalRules';
 
 // 포다리 찾는 함수
 const getBridge = (

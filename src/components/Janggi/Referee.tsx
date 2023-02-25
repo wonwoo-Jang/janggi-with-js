@@ -6,14 +6,16 @@ import { Position } from '@models/Position';
 import { Board, CountryType, PieceType, TileI } from '@customTypes/janggi';
 
 import JanggiBoard, { COLUMN_LEN, ROW_LEN } from './JanggiBoard';
-import { getPossibleCannonMoves } from './referee/rules/cannonRules';
-import { getPossibleCarMoves } from './referee/rules/carRules';
-import { getPossibleElephantMoves } from './referee/rules/elephantRules';
-import { isTileOccupiedByMyCountry } from './referee/rules/generalRules';
-import { getPossibleHorseMove } from './referee/rules/horseRules';
-import { getPossibleKingMoves } from './referee/rules/kingRules';
-import { getPossibleScholarMoves } from './referee/rules/scholarRules';
-import { getPossibleSoldierMoves } from './referee/rules/soldierRules';
+import { isTileOccupiedByMyCountry } from './rules/generalRules';
+import {
+  getPossibleCannonMoves,
+  getPossibleCarMoves,
+  getPossibleElephantMoves,
+  getPossibleHorseMove,
+  getPossibleKingMoves,
+  getPossibleScholarMoves,
+  getPossibleSoldierMoves,
+} from './rules/pieceRules';
 
 const rows = Array.from({ length: ROW_LEN }, (v, i) => ROW_LEN - i);
 const columns = Array.from({ length: COLUMN_LEN }, (v, i) => i + 1);

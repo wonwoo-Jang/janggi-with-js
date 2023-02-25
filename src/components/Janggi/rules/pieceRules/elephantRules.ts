@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggi';
 
-import { isInBoard, isNeckBlocked, isTileOccupiedByMyCountry } from './generalRules';
+import { isInBoard, isNeckBlocked, isTileOccupiedByMyCountry } from '../generalRules';
 
 // 마랑 행마 로직이 같음
 export const getPossibleElephantMoves = (elephant: Piece, board: Board): Position[] => {
