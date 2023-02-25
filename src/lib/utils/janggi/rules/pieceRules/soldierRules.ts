@@ -25,7 +25,7 @@ export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[
     }
   }
 
-  // special move (can move diagonally inside the palace)
+  // diagonal moves in the palace
   const diagonalMovesInPalace: Position[] = [];
 
   // 나라 알면 new Position 생성할 필요 없이 아예 궁성 위치 특정해서 옮길 수 있음

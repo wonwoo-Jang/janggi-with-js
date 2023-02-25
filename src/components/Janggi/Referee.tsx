@@ -55,13 +55,12 @@ const initialPieces = initPiecesInfo.reduce((pieces, info) => {
   return pieces;
 }, [] as Piece[]);
 
-// update board
+// in charge of overall game progress
 export default function Referee() {
   const [board, setBoard] = useState<Board>(initialBoard);
   const [pieces, setPieces] = useState<Piece[]>(initialPieces);
 
   const getPossibleMoves = (piece: Piece, board: Board): Position[] => {
-    console.log('getting possible moves');
     switch (piece.type) {
       case PieceType.SOLDIER:
         return getPossibleSoldierMoves(piece, board);
@@ -82,8 +81,8 @@ export default function Referee() {
     }
   };
 
+  // check if the new position is belongs to possible moves
   const isValidMove = (newPosition: Position, piece: Piece, board: Board): boolean => {
-    console.log('referee checking valid move');
     if (isTileOccupiedByMyCountry(piece.country, newPosition, board)) return false;
     const isValid = piece.possibleMoves.some(p => p.isSamePosition(newPosition));
     return isValid;

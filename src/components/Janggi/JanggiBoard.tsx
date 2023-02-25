@@ -20,7 +20,7 @@ interface JanggiBoardProps {
 // draw board
 export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoardProps) {
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
-  const [selectedRef, setSelectedRef] = useState<React.RefObject<HTMLDivElement> | null>(null);
+  const [selectedRef, setSelectedRef] = useState<React.RefObject<HTMLDivElement> | null>(null); // for move effect
 
   const selectPiece = (piece: Piece, pieceRef: React.RefObject<HTMLDivElement>) => {
     setSelectedPiece(piece);
@@ -37,7 +37,7 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
 
     const diffX = selectedPiece.position.x - destination.x;
     const diffY = destination.y - selectedPiece.position.y;
-    let translatePosition = '';
+    let translatePosition = '0';
 
     if (diffX && diffY) {
       // diagonal move
@@ -72,6 +72,7 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
 
   const onClickTile = (position: Position, clickedPiece: Piece | null, pieceRef: React.RefObject<HTMLDivElement>) => {
     if (selectedPiece && (!clickedPiece || clickedPiece.isOpponent(selectedPiece))) {
+      // previously selected piece exists, and seems movable to the destination
       const validMove: boolean = isValidMove(position, selectedPiece, board);
       if (validMove) {
         moveSmoothly(position, clickedPiece);
