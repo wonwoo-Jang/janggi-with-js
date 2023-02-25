@@ -41,7 +41,7 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
       const translatePosition = `translate${diffX ? 'Y' : 'X'}(calc(80vh * 0.1 * ${diffX || diffY}))`;
       const $pieceDiv = selectedRef.current;
       $pieceDiv.style.transform = translatePosition;
-      $pieceDiv.style.zIndex = '1';
+      $pieceDiv.style.zIndex = '10';
     } else {
       console.log('jump!');
     }
@@ -98,6 +98,7 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
               highlight={Boolean(
                 selectedPiece && selectedPiece.possibleMoves.some(p => p.isSamePosition(tile.position)),
               )}
+              selected={Boolean(selectedPiece && tile.piece?.isSamePiece(selectedPiece))}
               onClickTile={onClickTile}
               key={`${tile.position}`}
             />

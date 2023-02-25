@@ -11,14 +11,17 @@ interface TileProps {
   position: Position;
   piece: Piece | null;
   highlight: boolean;
+  selected: boolean;
   onClickTile(position: Position, piece: Piece | null, pieceRef: React.RefObject<HTMLDivElement>): void;
 }
 
-export default function Tile({ position, piece, highlight, onClickTile }: TileProps) {
+export default function Tile({ position, piece, highlight, selected, onClickTile }: TileProps) {
   const pieceRef = useRef<HTMLDivElement>(null);
   const tileClassName = `${styles.tile} ${highlight && styles.highlight} ${piece && styles.pieceTile}`;
   const pieceClassName = piece
-    ? `${styles.piece} ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(piece.type) && styles.small}`
+    ? `${styles.piece} ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(piece.type) && styles.small} ${
+        selected && styles.selected
+      }`
     : '';
 
   return (
