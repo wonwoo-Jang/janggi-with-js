@@ -6,9 +6,7 @@ import { Position } from '@models/Position';
 import { Board, CountryType, PieceType, TileI } from '@customTypes/janggi';
 
 import { ROW_NUM, COLUMNS, ROWS } from '@utils/janggi/constants';
-
-import JanggiBoard from './JanggiBoard';
-import { isTileOccupiedByMyCountry } from './rules/generalRules';
+import { isTileOccupiedByMyCountry } from '@utils/janggi/rules/generalRules';
 import {
   getPossibleCannonMoves,
   getPossibleCarMoves,
@@ -17,7 +15,9 @@ import {
   getPossibleKingMoves,
   getPossibleScholarMoves,
   getPossibleSoldierMoves,
-} from './rules/pieceRules';
+} from '@utils/janggi/rules/pieceRules';
+
+import JanggiBoard from './JanggiBoard';
 
 const initialBoard = ROWS.reduce((board, x) => {
   const newRow = COLUMNS.reduce((row, y) => {

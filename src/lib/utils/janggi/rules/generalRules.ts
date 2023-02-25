@@ -3,16 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggi';
 
-import {
-  PALACE_X,
-  PALACE_Y,
-  PALACE,
-  DIRECTION_NUM,
-  diagDx,
-  diagDy,
-  COLUMN_NUM,
-  ROW_NUM,
-} from '@utils/janggi/constants';
+import { PALACE_X, PALACE_Y, PALACE, DIRECTION_NUM, diagDx, diagDy, COLUMN_NUM, ROW_NUM } from '../constants';
 
 export const isInBoard = (position: Position): boolean => {
   const isValidRangeX: boolean = position.x >= 1 && position.x <= ROW_NUM;
