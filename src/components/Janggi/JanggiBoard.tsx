@@ -35,31 +35,39 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
   const moveSmoothly = (destination: Position, clickedPiece: Piece | null) => {
     if (!selectedPiece || !selectedRef?.current) return;
 
-    if (selectedPiece.isSliding()) {
-      const diffX = selectedPiece.position.x - destination.x;
-      const diffY = destination.y - selectedPiece.position.y;
-      let translatePosition = '';
-      if (diffX && diffY) {
-        // diagonal
-        translatePosition = `translate(calc(80vh * 0.1 * ${diffY}), calc(80vh * 0.1 * ${diffX}))`;
-      } else if (diffX) {
-        // vertical
-        translatePosition = `translate${'Y'}(calc(80vh * 0.1 * ${diffX}))`;
-      } else if (diffY) {
-        // horizontal
-        translatePosition = `translate${'X'}(calc(80vh * 0.1 * ${diffY}))`;
-      }
-      const $pieceDiv = selectedRef.current;
-      $pieceDiv.style.transform = translatePosition;
-      $pieceDiv.style.zIndex = '10';
-    } else {
-      console.log('jump!');
+    const diffX = selectedPiece.position.x - destination.x;
+    const diffY = destination.y - selectedPiece.position.y;
+    let translatePosition = '';
+
+    if (diffX && diffY) {
+      // diagonal move
+      translatePosition = `calc(80vh * 0.1 * ${diffY}) calc(80vh * 0.1 * ${diffX})`;
+    } else if (diffX) {
+      // vertical move
+      translatePosition = `0 calc(80vh * 0.1 * ${diffX})`;
+    } else if (diffY) {
+      // horizontal move
+      translatePosition = `calc(80vh * 0.1 * ${diffY}) 0`;
+    }
+
+    // move
+    const $pieceDiv = selectedRef.current;
+    $pieceDiv.style.zIndex = '10';
+    $pieceDiv.style.translate = translatePosition;
+
+    // jump
+    if (selectedPiece.isJumping()) {
+      $pieceDiv.style.scale = '1.8';
+      // shrink from the midpoint
+      setTimeout(() => {
+        $pieceDiv.style.scale = '1';
+      }, 180);
     }
 
     // update board after move effect
     setTimeout(() => {
       movePiece(selectedPiece, destination, clickedPiece);
-    }, 300);
+    }, 500);
   };
 
   const onClickTile = (position: Position, clickedPiece: Piece | null, pieceRef: React.RefObject<HTMLDivElement>) => {
