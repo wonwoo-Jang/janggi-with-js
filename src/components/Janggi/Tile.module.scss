@@ -41,6 +41,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center 3px;
+    transition: transform 0.3s ease-in-out;
 
     &.small {
       width: 70%;

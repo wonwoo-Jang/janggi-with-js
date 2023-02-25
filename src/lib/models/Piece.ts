@@ -32,4 +32,12 @@ export class Piece {
   isOpponent(otherPiece: Piece): boolean {
     return this.country !== otherPiece.country;
   }
+
+  isSliding(): boolean {
+    return [PieceType.CAR, PieceType.KING, PieceType.SCHOLAR, PieceType.SOLDIER].includes(this.type);
+  }
+
+  isJumping(): boolean {
+    return [PieceType.CANNON, PieceType.ELEPHANT, PieceType.HORSE].includes(this.type);
+  }
 }

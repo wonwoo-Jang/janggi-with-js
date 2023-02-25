@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
@@ -20,20 +20,43 @@ interface JanggiBoardProps {
 // draw board
 export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoardProps) {
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
+  const [selectedRef, setSelectedRef] = useState<React.RefObject<HTMLDivElement> | null>(null);
 
-  const selectPiece = (piece: Piece) => {
+  const selectPiece = (piece: Piece, pieceRef: React.RefObject<HTMLDivElement>) => {
     setSelectedPiece(piece);
+    setSelectedRef(pieceRef);
   };
 
   const resetSelectedPiece = () => {
     setSelectedPiece(null);
+    setSelectedRef(null);
   };
 
-  const onClickTile = (position: Position, clickedPiece: Piece | null) => {
+  const moveSmoothly = (destination: Position, clickedPiece: Piece | null) => {
+    if (!selectedPiece || !selectedRef?.current) return;
+
+    if (selectedPiece.isSliding()) {
+      const diffX = selectedPiece.position.x - destination.x;
+      const diffY = destination.y - selectedPiece.position.y;
+      const translatePosition = `translate${diffX ? 'Y' : 'X'}(calc(80vh * 0.1 * ${diffX || diffY}))`;
+      const $pieceDiv = selectedRef.current;
+      $pieceDiv.style.transform = translatePosition;
+      $pieceDiv.style.zIndex = '1';
+    } else {
+      console.log('jump!');
+    }
+
+    // update board after move effect
+    setTimeout(() => {
+      movePiece(selectedPiece, destination, clickedPiece);
+    }, 300);
+  };
+
+  const onClickTile = (position: Position, clickedPiece: Piece | null, pieceRef: React.RefObject<HTMLDivElement>) => {
     if (selectedPiece && (!clickedPiece || clickedPiece.isOpponent(selectedPiece))) {
       const validMove: boolean = isValidMove(position, selectedPiece, board);
       if (validMove) {
-        movePiece(selectedPiece, position, clickedPiece);
+        moveSmoothly(position, clickedPiece);
       }
       resetSelectedPiece();
     } else if (clickedPiece) {
@@ -42,7 +65,7 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
         resetSelectedPiece();
       } else {
         // select the clicked piece if no piece has been selected yet or the clicked piece is our country (except itself)
-        selectPiece(clickedPiece);
+        selectPiece(clickedPiece, pieceRef);
       }
     }
   };
