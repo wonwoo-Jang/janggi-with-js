@@ -1,6 +1,6 @@
 import { Position } from '@models/Position';
 
-import { CountryType } from '@customTypes/janggi';
+import { CountryType } from '@customTypes/janggiTypes';
 
 export const ROW_NUM = 10;
 export const COLUMN_NUM = 9;

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board } from '@customTypes/janggi';
+import { Board } from '@customTypes/janggiTypes';
 
 import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES } from '@utils/janggi/constants';
 

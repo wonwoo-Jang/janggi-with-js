@@ -1,7 +1,7 @@
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board, CountryType, PieceType } from '@customTypes/janggi';
+import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
 import {
   CORNER_NUM,

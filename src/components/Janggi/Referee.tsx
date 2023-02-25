@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board, CountryType, PieceType, TileI } from '@customTypes/janggi';
+import { Board, CountryType, PieceType, TileI } from '@customTypes/janggiTypes';
 
 import { ROW_NUM, COLUMNS, ROWS } from '@utils/janggi/constants';
 import { isTileOccupiedByMyCountry } from '@utils/janggi/rules/generalRules';

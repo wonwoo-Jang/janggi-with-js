@@ -1,7 +1,7 @@
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board } from '@customTypes/janggi';
+import { Board } from '@customTypes/janggiTypes';
 
 import { isInBoard, isNeckBlocked, isTileOccupiedByMyCountry } from '../generalRules';
 

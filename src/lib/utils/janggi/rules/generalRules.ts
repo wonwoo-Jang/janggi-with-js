@@ -1,7 +1,7 @@
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board, CountryType } from '@customTypes/janggi';
+import { Board, CountryType } from '@customTypes/janggiTypes';
 
 import { PALACE_X, PALACE_Y, PALACE, DIRECTION_NUM, diagDx, diagDy, COLUMN_NUM, ROW_NUM } from '../constants';
 

@@ -1,6 +1,6 @@
 import { Position } from '@models/Position';
 
-import { CountryType, PieceType } from '@customTypes/janggi';
+import { CountryType, PieceType } from '@customTypes/janggiTypes';
 
 export class Piece {
   type: PieceType;

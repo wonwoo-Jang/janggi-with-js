@@ -1,7 +1,7 @@
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { PieceType } from '@customTypes/janggi';
+import { PieceType } from '@customTypes/janggiTypes';
 
 import styles from './Tile.module.scss';
 

@@ -1,7 +1,7 @@
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board } from '@customTypes/janggi';
+import { Board } from '@customTypes/janggiTypes';
 
 import { CORNER_NUM, palaceCornerPositions, diagDx, diagDy, COLUMN_NUM, ROW_NUM } from '@utils/janggi/constants';
 
