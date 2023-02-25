@@ -39,42 +39,42 @@
             "position": "before"
           },
           {
-            "pattern": "@apis/*",
+            "pattern": "@apis/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@pages/*",
+            "pattern": "@pages/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@components/*",
+            "pattern": "@components/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@models/*",
+            "pattern": "@models/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@customTypes/*",
+            "pattern": "@customTypes/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@hooks/*",
+            "pattern": "@hooks/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@utils/*",
+            "pattern": "@utils/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@styles/*",
+            "pattern": "@styles/**",
             "group": "internal",
             "position": "after"
           },

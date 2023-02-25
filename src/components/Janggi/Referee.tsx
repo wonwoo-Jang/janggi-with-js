@@ -5,7 +5,9 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType, PieceType, TileI } from '@customTypes/janggi';
 
-import JanggiBoard, { COLUMN_LEN, ROW_LEN } from './JanggiBoard';
+import { ROW_NUM, COLUMNS, ROWS } from '@utils/janggi/constants';
+
+import JanggiBoard from './JanggiBoard';
 import { isTileOccupiedByMyCountry } from './rules/generalRules';
 import {
   getPossibleCannonMoves,
@@ -17,12 +19,8 @@ import {
   getPossibleSoldierMoves,
 } from './rules/pieceRules';
 
-const rows = Array.from({ length: ROW_LEN }, (v, i) => ROW_LEN - i);
-const columns = Array.from({ length: COLUMN_LEN }, (v, i) => i + 1);
-
-// TODO: move to `const`
-const initialBoard = rows.reduce((board, x) => {
-  const newRow = columns.reduce((row, y) => {
+const initialBoard = ROWS.reduce((board, x) => {
+  const newRow = COLUMNS.reduce((row, y) => {
     row.push({ position: new Position(x, y), piece: null, highlight: false });
     return row;
   }, [] as TileI[]);
@@ -47,7 +45,7 @@ const initialPieces = initPiecesInfo.reduce((pieces, info) => {
       pieces.push(
         new Piece(
           info.type,
-          new Position(country === CountryType.CHO ? info.x : ROW_LEN + 1 - info.x, y),
+          new Position(country === CountryType.CHO ? info.x : ROW_NUM + 1 - info.x, y),
           country,
           `images/${country}_${info.type}.png`,
         ),

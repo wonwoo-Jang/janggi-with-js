@@ -1,5 +1,3 @@
-import { COLUMN_LEN, ROW_LEN } from '@components/Janggi/JanggiBoard';
-
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
@@ -7,14 +5,15 @@ import { Board, CountryType, PieceType } from '@customTypes/janggi';
 
 import {
   CORNER_NUM,
+  palaceCornerPositions,
+  PALACE,
   diagDx,
   diagDy,
-  isInBoard,
-  isTileOccupied,
-  PALACE,
-  palaceCornerPositions,
-  pieceOccupyingTile,
-} from '../generalRules';
+  ROW_NUM,
+  COLUMN_NUM,
+} from '@utils/janggi/constants';
+
+import { isInBoard, isTileOccupied, pieceOccupyingTile } from '../generalRules';
 
 // 포다리 찾는 함수
 const getBridge = (
@@ -76,15 +75,15 @@ export const getPossibleCannonMoves = (cannon: Piece, board: Board): Position[] 
   // linear moves
   const directions = [1, -1];
   for (const d of directions) {
-    const verticalBridge = getBridge(d, 0, ROW_LEN - 1, cannon, board);
+    const verticalBridge = getBridge(d, 0, ROW_NUM - 1, cannon, board);
     if (verticalBridge) {
-      const verticalMoves = getLinearMoves(d, 0, ROW_LEN - 1, cannon.country, verticalBridge, board);
+      const verticalMoves = getLinearMoves(d, 0, ROW_NUM - 1, cannon.country, verticalBridge, board);
       possibleMoves.push(...verticalMoves);
     }
 
-    const horizontalBridge = getBridge(0, d, COLUMN_LEN - 1, cannon, board);
+    const horizontalBridge = getBridge(0, d, COLUMN_NUM - 1, cannon, board);
     if (horizontalBridge) {
-      const horizontalMoves = getLinearMoves(0, d, COLUMN_LEN - 1, cannon.country, horizontalBridge, board);
+      const horizontalMoves = getLinearMoves(0, d, COLUMN_NUM - 1, cannon.country, horizontalBridge, board);
       possibleMoves.push(...horizontalMoves);
     }
   }

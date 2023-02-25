@@ -3,7 +3,9 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggi';
 
-import { isInBoard, isTileOccupiedByMyCountry, PALACE } from '../generalRules';
+import { PALACE } from '@utils/janggi/constants';
+
+import { isInBoard, isTileOccupiedByMyCountry } from '../generalRules';
 
 export const getPossibleSoldierMoves = (soldier: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];

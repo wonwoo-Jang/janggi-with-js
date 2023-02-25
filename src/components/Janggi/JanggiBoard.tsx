@@ -5,13 +5,11 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggi';
 
+import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES } from '@utils/janggi/constants';
+
 import Tile from './Tile';
 
 import styles from './JanggiBoard.module.scss';
-
-// TODO: move to `const`
-export const ROW_LEN = 10;
-export const COLUMN_LEN = 9;
 
 interface JanggiBoardProps {
   board: Board;
@@ -49,10 +47,6 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
     }
   };
 
-  // TODO: (refactor) move to `contants.ts`
-  const SLASH_TILES = [4, 11, 60, 67];
-  const BACK_SLASH_TILES = [3, 12, 59, 68];
-
   const getLineBoardTileClassName = (index: number) => {
     if (SLASH_TILES.includes(index)) {
       return `${styles.helpTile} ${styles.slash}`;
@@ -66,7 +60,7 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
   return (
     <div className={styles.janggiBoard}>
       <div className={styles.lineBoard}>
-        {Array((ROW_LEN - 1) * (COLUMN_LEN - 1))
+        {Array((ROW_NUM - 1) * (COLUMN_NUM - 1))
           .fill(0)
           .map((v, i) => (
             <div className={getLineBoardTileClassName(i)} key={i} />

@@ -4,17 +4,16 @@ import { Position } from '@models/Position';
 import { Board } from '@customTypes/janggi';
 
 import {
-  CORNER_NUM,
-  getPalaceCenterDiagonalMoves,
-  isInPalace,
-  isTileOccupiedByMyCountry,
-  palaceCornerPositions,
-  diagDx,
-  diagDy,
   DIRECTION_NUM,
   linearDx,
   linearDy,
-} from '../generalRules';
+  CORNER_NUM,
+  palaceCornerPositions,
+  diagDx,
+  diagDy,
+} from '@utils/janggi/constants';
+
+import { getPalaceCenterDiagonalMoves, isInPalace, isTileOccupiedByMyCountry } from '../generalRules';
 
 // same as scholar move
 export const getPossibleKingMoves = (king: Piece, board: Board): Position[] => {
