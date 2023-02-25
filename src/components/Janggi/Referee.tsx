@@ -28,18 +28,17 @@ const initialBoard = rows.reduce((board, x) => {
   return board;
 }, [] as Board);
 
-// TODO: move to `const`
 const initPiecesInfo = [
   { type: PieceType.SOLDIER, x: 4, y: [1, 3, 5, 7, 9] },
   { type: PieceType.CANNON, x: 3, y: [2, 8] },
   { type: PieceType.KING, x: 2, y: [5] },
   { type: PieceType.CAR, x: 1, y: [1, 9] },
-  { type: PieceType.ELEPHANT, x: 1, y: [2, 7] }, // TODO: (feat) change depending on user's choice
-  { type: PieceType.HORSE, x: 1, y: [3, 8] }, // TODO: (feat) change depending on user's choice
+  { type: PieceType.ELEPHANT, x: 1, y: [2, 7] }, // TODO: table setting options (using modal)
+  { type: PieceType.HORSE, x: 1, y: [3, 8] }, // TODO: table setting options (using modal)
   { type: PieceType.SCHOLAR, x: 1, y: [4, 6] },
 ];
 
-// TODO: move to `const`
+// TODO: determine country randomly
 const initialPieces = initPiecesInfo.reduce((pieces, info) => {
   for (const y of info.y) {
     for (const country of [CountryType.CHO, CountryType.HAN]) {
@@ -60,25 +59,6 @@ const initialPieces = initPiecesInfo.reduce((pieces, info) => {
 export default function Referee() {
   const [board, setBoard] = useState<Board>(initialBoard);
   const [pieces, setPieces] = useState<Piece[]>(initialPieces);
-
-  const initializePossibleMoves = () => {
-    pieces.map(p => {
-      p.possibleMoves = getPossibleMoves(p, board);
-      return p;
-    });
-  };
-
-  const updateBoard = useCallback((pieces: Piece[]) => {
-    const updatedBoard = board.map(row => {
-      return row.map(tile => {
-        const piece = pieces.find(p => p.position.isSamePosition(tile.position));
-        tile.piece = piece ?? null;
-        tile.highlight = false;
-        return tile;
-      });
-    });
-    setBoard(updatedBoard);
-  }, []);
 
   const getPossibleMoves = (piece: Piece, board: Board): Position[] => {
     console.log('getting possible moves');
@@ -109,22 +89,11 @@ export default function Referee() {
     return isValid;
   };
 
-  // 실제 보드를 바꾸면 일부만 먼저 랜더링이 되어 깜박임 현상이 발생함
-  // 따라서 복사본을 이용해 이동 가능 경로만 따로 업데이트
-  const getBoardPreview = (movedPiece: Piece, newPosition: Position) => {
-    const boardPreview: Board = board.map(row => row.map(tile => ({ ...tile }))); // deep copy
-    boardPreview[ROW_LEN - movedPiece.position.x][movedPiece.position.y - 1].piece = null;
-    boardPreview[ROW_LEN - newPosition.x][newPosition.y - 1].piece = movedPiece;
-    return boardPreview;
-  };
-
   const movePiece = (piece: Piece, newPosition: Position, attackedPiece: Piece | null) => {
     piece.setPosition(newPosition); // move selectedPiece to the new position
-    const boardPreview = getBoardPreview(piece, newPosition);
     const updatedPieces = pieces.reduce((result, p) => {
-      // update all possible moves and remove attacked piece (filter alive pieces)
+      // remove attacked piece (filter alive pieces)
       if (!attackedPiece || (attackedPiece && !p.isSamePiece(attackedPiece))) {
-        p.possibleMoves = getPossibleMoves(p, boardPreview);
         result.push(p);
       }
       return result;
@@ -133,15 +102,34 @@ export default function Referee() {
     setPieces(updatedPieces);
   };
 
-  useEffect(() => {
-    updateBoard(pieces);
-  }, [pieces, updateBoard]);
+  // update board depending on the pieces
+  const updateBoard = useCallback(() => {
+    const updatedBoard = board.map(row => {
+      return row.map(tile => {
+        const piece = pieces.find(p => p.position.isSamePosition(tile.position));
+        tile.piece = piece ?? null;
+        // tile.highlight = false;
+        return tile;
+      });
+    });
+    setBoard(updatedBoard);
+  }, [pieces]);
+
+  // update all possible moves depending on the board
+  const updatePossibleMoves = useCallback(() => {
+    pieces.map(p => {
+      p.possibleMoves = getPossibleMoves(p, board);
+      return p;
+    });
+  }, [board]);
 
   useEffect(() => {
-    // TODO:(feat) determine country randomly
-    // TODO: (feat) table setting options (using modal)
-    initializePossibleMoves();
-  }, []);
+    updateBoard();
+  }, [updateBoard]);
+
+  useEffect(() => {
+    updatePossibleMoves();
+  }, [updatePossibleMoves]);
 
   return <JanggiBoard board={board} isValidMove={isValidMove} movePiece={movePiece} />;
 }
