@@ -9,6 +9,15 @@
     "plugin:prettier/recommended",
     "plugin:import/recommended"
   ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/parsers": { "@typescript-eslint/parser": [".ts", ".tsx"] },
+    "import/resolver": {
+      "typescript": { "alwaysTryTypes": true }
+    }
+  },
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
@@ -18,6 +27,7 @@
     "no-undef": "off",
     "react/react-in-jsx-scope": "off",
     "newline-per-chained-call": "off",
+    "prefer-const": "warn",
     "import/order": [
       "error",
       {
@@ -29,37 +39,42 @@
             "position": "before"
           },
           {
-            "pattern": "@apis/*",
+            "pattern": "@apis/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@pages/*",
+            "pattern": "@pages/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@components/*",
+            "pattern": "@components/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@customTypes/*",
+            "pattern": "@models/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@hooks/*",
+            "pattern": "@customTypes/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@utils/*",
+            "pattern": "@hooks/**",
             "group": "internal",
             "position": "after"
           },
           {
-            "pattern": "@styles/*",
+            "pattern": "@utils/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "@styles/**",
             "group": "internal",
             "position": "after"
           },
@@ -84,14 +99,5 @@
         "newlines-between": "always"
       }
     ]
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
-    },
-    "import/parsers": { "@typescript-eslint/parser": [".ts", ".tsx"] },
-    "import/resolver": {
-      "typescript": { "alwaysTryTypes": true }
-    }
   }
 }

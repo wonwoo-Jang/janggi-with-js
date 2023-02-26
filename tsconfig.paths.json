@@ -9,6 +9,7 @@
       "@pages/*": ["pages/*"],
       "@styles/*": ["styles/*"],
       "@customTypes/*": ["lib/customTypes/*"],
+      "@models/*": ["lib/models/*"],
       "@utils/*": ["lib/utils/*"]
     }
   }

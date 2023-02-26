@@ -1,22 +1,37 @@
-import { Piece, PieceType } from '@customTypes/janggi';
+import { useRef } from 'react';
+
+import { Piece } from '@models/Piece';
+import { Position } from '@models/Position';
+
+import { PieceType } from '@customTypes/janggiTypes';
 
 import styles from './Tile.module.scss';
 
 interface TileProps {
-  r: number;
-  c: number;
+  position: Position;
   piece: Piece | null;
+  highlight: boolean;
+  selected: boolean;
+  onClickTile(position: Position, piece: Piece | null, pieceRef: React.RefObject<HTMLDivElement>): void;
 }
 
-export default function Tile({ r, c, piece }: TileProps) {
+export default function Tile({ position, piece, highlight, selected, onClickTile }: TileProps) {
+  const pieceRef = useRef<HTMLDivElement>(null);
+  const tileClassName = `${styles.tile} ${highlight && styles.highlight} ${piece && styles.pieceTile}`;
+  const pieceClassName = piece
+    ? `${styles.piece} ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(piece.type) && styles.small} ${
+        selected && styles.selected
+      }`
+    : '';
+
   return (
-    <div className={styles.tile}>
+    <div className={tileClassName} onClick={() => onClickTile(position, piece, pieceRef)}>
       {piece && (
         <div
-          className={`${styles.piece} ${
-            [PieceType.SCHOLAR, PieceType.SOLDIER].includes(piece.type) && styles.small
-          }`}
+          className={pieceClassName}
           style={{ backgroundImage: `url(${piece.image})` }}
+          ref={pieceRef}
+          onClick={() => console.log(position)}
         ></div>
       )}
     </div>

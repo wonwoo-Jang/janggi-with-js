@@ -1,7 +1,5 @@
-export interface Position {
-  r: number; // row
-  c: number; // column
-}
+import { Piece } from '@models/Piece';
+import { Position } from '@models/Position';
 
 export enum CountryType {
   CHO = 'cho',
@@ -18,10 +16,10 @@ export enum PieceType {
   SOLDIER = 'soldier',
 }
 
-// TODO: change to Class
-export interface Piece {
-  type: PieceType;
+export interface TileI {
   position: Position;
-  country: CountryType;
-  image: string;
+  piece: Piece | null;
+  highlight: boolean;
 }
+
+export type Board = TileI[][];

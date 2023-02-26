@@ -1,99 +1,126 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 
-import { CountryType, Piece, PieceType } from '@customTypes/janggi';
+import { Piece } from '@models/Piece';
+import { Position } from '@models/Position';
+
+import { Board } from '@customTypes/janggiTypes';
+
+import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES } from '@utils/janggi/constants';
 
 import Tile from './Tile';
 
 import styles from './JanggiBoard.module.scss';
 
-const ROW_LEN = 10;
-const COL_LEN = 9;
-const rows = Array.from({ length: ROW_LEN }, (v, i) => ROW_LEN - i);
-const columns = Array.from({ length: COL_LEN }, (v, i) => i + 1);
+interface JanggiBoardProps {
+  board: Board;
+  isValidMove(newPosition: Position, piece: Piece, board: Board): boolean;
+  movePiece(selectedPiece: Piece, position: Position, clickedPiece: Piece | null): void;
+}
 
-const getInitPieces = () => {
-  const initPieces: Piece[] = [];
+// draw board
+export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoardProps) {
+  const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
+  const [selectedRef, setSelectedRef] = useState<React.RefObject<HTMLDivElement> | null>(null); // for move effect
 
-  for (const country of [CountryType.CHO, CountryType.HAN]) {
-    const pieces = [
-      { type: PieceType.SOLDIER, r: 4, c: [1, 3, 5, 7, 9] },
-      { type: PieceType.CANNON, r: 3, c: [2, 8] },
-      { type: PieceType.KING, r: 2, c: [5] },
-      { type: PieceType.CAR, r: 1, c: [1, 9] },
-      { type: PieceType.ELEPHANT, r: 1, c: [2, 7] }, // TODO: change depending on user's choice
-      { type: PieceType.HORSE, r: 1, c: [3, 8] }, // TODO: change depending on user's choice
-      { type: PieceType.SCHOLAR, r: 1, c: [4, 6] },
-    ];
+  const selectPiece = (piece: Piece, pieceRef: React.RefObject<HTMLDivElement>) => {
+    setSelectedPiece(piece);
+    setSelectedRef(pieceRef);
+  };
 
-    pieces.forEach(p => {
-      p.c.forEach(c => {
-        initPieces.push({
-          type: p.type,
-          position: { r: country === CountryType.CHO ? p.r : ROW_LEN + 1 - p.r, c: c },
-          country: country,
-          image: `images/${country}_${p.type}.png`,
-        });
-      });
-    });
-  }
+  const resetSelectedPiece = () => {
+    setSelectedPiece(null);
+    setSelectedRef(null);
+  };
 
-  return initPieces;
-};
+  const moveSmoothly = (destination: Position, clickedPiece: Piece | null) => {
+    if (!selectedPiece || !selectedRef?.current) return;
 
-export default function JanggiBoard() {
-  const [board, setBoard] = useState<{ r: number; c: number; piece: Piece | null }[][]>([]);
-  const [pieces, setPieces] = useState<Piece[]>(getInitPieces());
+    const diffX = selectedPiece.position.x - destination.x;
+    const diffY = destination.y - selectedPiece.position.y;
+    let translatePosition = '0';
 
-  const initializeBoard = useCallback(() => {
-    const initBoard: { r: number; c: number; piece: Piece | null }[][] = [];
+    if (diffX && diffY) {
+      // diagonal move
+      translatePosition = `calc(80vh * 0.1 * ${diffY}) calc(80vh * 0.1 * ${diffX})`;
+    } else if (diffX) {
+      // vertical move
+      translatePosition = `0 calc(80vh * 0.1 * ${diffX})`;
+    } else if (diffY) {
+      // horizontal move
+      translatePosition = `calc(80vh * 0.1 * ${diffY}) 0`;
+    }
 
-    rows.forEach(r => {
-      const row: { r: number; c: number; piece: Piece | null }[] = [];
-      columns.forEach(c => {
-        let piece: Piece | null = null;
-        pieces.forEach(p => {
-          if (p.position.r === r && p.position.c === c) {
-            piece = p;
-          }
-        });
-        row.push({ r, c, piece });
-      });
-      initBoard.push(row);
-    });
+    // move
+    const $pieceDiv = selectedRef.current;
+    $pieceDiv.style.zIndex = '10';
+    $pieceDiv.style.translate = translatePosition;
 
-    setBoard(initBoard);
-  }, []);
+    // jump
+    if (selectedPiece.isJumping()) {
+      $pieceDiv.style.scale = '1.8';
+      // shrink from the midpoint
+      setTimeout(() => {
+        $pieceDiv.style.scale = '1';
+      }, 180);
+    }
 
-  useEffect(() => {
-    // TODO: determine country randomly
-    // TODO: table setting options (use modal)
-    initializeBoard();
-  }, [initializeBoard]);
+    // update board after move effect
+    setTimeout(() => {
+      movePiece(selectedPiece, destination, clickedPiece);
+    }, 500);
+  };
+
+  const onClickTile = (position: Position, clickedPiece: Piece | null, pieceRef: React.RefObject<HTMLDivElement>) => {
+    if (selectedPiece && (!clickedPiece || clickedPiece.isOpponent(selectedPiece))) {
+      // previously selected piece exists, and seems movable to the destination
+      const validMove: boolean = isValidMove(position, selectedPiece, board);
+      if (validMove) {
+        moveSmoothly(position, clickedPiece);
+      }
+      resetSelectedPiece();
+    } else if (clickedPiece) {
+      if (selectedPiece && clickedPiece.isSamePiece(selectedPiece)) {
+        // reset `selectedPiece` if the clicked piece is the same as the previously selected one (toggle)
+        resetSelectedPiece();
+      } else {
+        // select the clicked piece if no piece has been selected yet or the clicked piece is our country (except itself)
+        selectPiece(clickedPiece, pieceRef);
+      }
+    }
+  };
+
+  const getLineBoardTileClassName = (index: number) => {
+    if (SLASH_TILES.includes(index)) {
+      return `${styles.helpTile} ${styles.slash}`;
+    } else if (BACK_SLASH_TILES.includes(index)) {
+      return `${styles.helpTile} ${styles.backSlash}`;
+    } else {
+      return styles.helpTile;
+    }
+  };
 
   return (
     <div className={styles.janggiBoard}>
-      <div className={styles.backgroundBoard}>
-        {Array((ROW_LEN + 1) * (COL_LEN + 1))
-          .fill(0)
-          .map((v, i) => (
-            <div className={styles.helpTile} key={i} />
-          ))}
-      </div>
       <div className={styles.lineBoard}>
-        {Array((ROW_LEN - 1) * (COL_LEN - 1))
+        {Array((ROW_NUM - 1) * (COLUMN_NUM - 1))
           .fill(0)
           .map((v, i) => (
-            <div className={styles.helpTile} key={i} />
+            <div className={getLineBoardTileClassName(i)} key={i} />
           ))}
-        <span className={styles.diagonal}></span>
-        <span className={styles.diagonal}></span>
-        <span className={styles.diagonal}></span>
-        <span className={styles.diagonal}></span>
       </div>
       <div className={styles.squareBoard}>
         {board.map(row => {
           return row.map(tile => (
-            <Tile r={tile.r} c={tile.c} piece={tile.piece} key={`${tile.r}_${tile.c}`} />
+            <Tile
+              position={tile.position}
+              piece={tile.piece}
+              highlight={Boolean(
+                selectedPiece && selectedPiece.possibleMoves.some(p => p.isSamePosition(tile.position)),
+              )}
+              selected={Boolean(selectedPiece && tile.piece?.isSamePiece(selectedPiece))}
+              onClickTile={onClickTile}
+              key={`${tile.position}`}
+            />
           ));
         })}
       </div>

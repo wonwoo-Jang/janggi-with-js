@@ -1,12 +1,11 @@
-import JanggiBoard from '@components/Janggi/JanggiBoard';
+import Referee from '@components/Janggi/Referee';
 import Layout from '@components/layout/Layout';
 
 export default function PlayPage() {
   return (
     <Layout>
       <div>
-        <span>this is play page</span>
-        <JanggiBoard />
+        <Referee />
       </div>
     </Layout>
   );
