@@ -63,11 +63,3 @@ export const isNeckBlocked = (dx: number, dy: number, neckNum: number, position:
   }
   return false;
 };
-
-export const isCheck = (piece: Piece, possibleMoves: Position[], board: Board): boolean => {
-  for (const position of possibleMoves) {
-    const opponent: Piece | null = pieceOccupyingTile(position, board);
-    if (opponent && opponent.isOpponent(piece) && opponent.isKing()) return true;
-  }
-  return false;
-};

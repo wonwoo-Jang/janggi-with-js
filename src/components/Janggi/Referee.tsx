@@ -6,7 +6,7 @@ import { Position } from '@models/Position';
 import { Board, CountryType, PieceType, TileI } from '@customTypes/janggiTypes';
 
 import { ROW_NUM, COLUMNS, ROWS } from '@utils/janggi/constants';
-import { isCheck, isTileOccupiedByMyCountry } from '@utils/janggi/rules/generalRules';
+import { isTileOccupiedByMyCountry, pieceOccupyingTile } from '@utils/janggi/rules/generalRules';
 import {
   getPossibleCannonMoves,
   getPossibleCarMoves,
@@ -81,6 +81,38 @@ export default function Referee() {
     }
   };
 
+  // 이동 가능 위치를 판별하기 위해 임시로 생성한 boardPreview에서 장군이 나오는지 확인
+  const checkKingCheckPreview = (pieces: Piece[], board: Board): boolean => {
+    for (const piece of pieces) {
+      const poss = getPossibleMoves(piece, board);
+      if (isCheck(piece, poss, board)) return true;
+    }
+    return false;
+  };
+
+  // 장군이라서 못가는 자리까지 전부 제외한 이동 가능 위치
+  const getExactPossibleMoves = (piece: Piece, board: Board): Position[] => {
+    const exactPossibleMoves: Position[] = [];
+    const possibleMoves = getPossibleMoves(piece, board);
+
+    const boardPreview: Board = board.map(row => row.map(tile => ({ ...tile }))); // deep copy (but piece and position are still the original one)
+    const opponents: Piece[] = pieces.filter(p => p.isOpponent(piece));
+    boardPreview[ROW_NUM - piece.position.x][piece.position.y - 1].piece = null; // 기존 자리 비움
+
+    for (const destination of possibleMoves) {
+      const opponent: Piece | null = pieceOccupyingTile(destination, boardPreview); // opponent at destination (if exists)
+      boardPreview[ROW_NUM - destination.x][destination.y - 1].piece = piece; // 목적지로 이동
+      const check = checkKingCheckPreview(
+        (opponent && opponents.filter(op => !op.isSamePiece(opponent))) || opponents,
+        boardPreview,
+      );
+      boardPreview[ROW_NUM - destination.x][destination.y - 1].piece = opponent; // 목적지에 원래 있던 기물 복원
+      if (!check) exactPossibleMoves.push(destination);
+    }
+
+    return exactPossibleMoves;
+  };
+
   // check if the new position is belongs to possible moves
   const isValidMove = (newPosition: Position, piece: Piece, board: Board): boolean => {
     if (isTileOccupiedByMyCountry(piece.country, newPosition, board)) return false;
@@ -101,6 +133,14 @@ export default function Referee() {
     setPieces(updatedPieces);
   };
 
+  const isCheck = (piece: Piece, possibleMoves: Position[], board: Board): boolean => {
+    for (const position of possibleMoves) {
+      const opponent: Piece | null = pieceOccupyingTile(position, board);
+      if (opponent && opponent.isOpponent(piece) && opponent.isKing()) return true;
+    }
+    return false;
+  };
+
   // check if the king is checked
   const checkKingCheck = (newBoard: Board) => {
     for (const piece of pieces) {
@@ -113,7 +153,7 @@ export default function Referee() {
   // update all possible moves depending on the board
   const updatePossibleMoves = (newBoard: Board) => {
     pieces.map(p => {
-      p.possibleMoves = getPossibleMoves(p, newBoard);
+      p.possibleMoves = getExactPossibleMoves(p, newBoard);
       return p;
     });
   };
