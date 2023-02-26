@@ -33,6 +33,10 @@ export class Piece {
     return this.country !== otherPiece.country;
   }
 
+  isKing(): boolean {
+    return this.type === PieceType.KING;
+  }
+
   isSliding(): boolean {
     return [PieceType.CAR, PieceType.KING, PieceType.SCHOLAR, PieceType.SOLDIER].includes(this.type);
   }

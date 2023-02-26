@@ -39,16 +39,6 @@ export const isInPalace = (position: Position): boolean => {
 // TODO: isAtPalaceCorner
 // TODO: isAtPalaceCenter
 
-export const isNeckBlocked = (dx: number, dy: number, neckNum: number, position: Position, board: Board): boolean => {
-  for (let i = 1; i <= neckNum; i++) {
-    const neckX = dx < 0 ? i : -i;
-    const neckY = dy < 0 ? i : -i;
-    const isNeckBlocked = isTileOccupied(new Position(position.x + neckX, position.y + neckY), board);
-    if (isNeckBlocked) return true;
-  }
-  return false;
-};
-
 export const getPalaceCenterDiagonalMoves = (piece: Piece, board: Board): Position[] => {
   const possibleMoves: Position[] = [];
 
@@ -62,4 +52,22 @@ export const getPalaceCenterDiagonalMoves = (piece: Piece, board: Board): Positi
   }
 
   return possibleMoves;
+};
+
+export const isNeckBlocked = (dx: number, dy: number, neckNum: number, position: Position, board: Board): boolean => {
+  for (let i = 1; i <= neckNum; i++) {
+    const neckX = dx < 0 ? i : -i;
+    const neckY = dy < 0 ? i : -i;
+    const isNeckBlocked = isTileOccupied(new Position(position.x + neckX, position.y + neckY), board);
+    if (isNeckBlocked) return true;
+  }
+  return false;
+};
+
+export const isCheck = (piece: Piece, possibleMoves: Position[], board: Board): boolean => {
+  for (const position of possibleMoves) {
+    const opponent: Piece | null = pieceOccupyingTile(position, board);
+    if (opponent && opponent.isOpponent(piece) && opponent.isKing()) return true;
+  }
+  return false;
 };

@@ -6,7 +6,7 @@ import { Position } from '@models/Position';
 import { Board, CountryType, PieceType, TileI } from '@customTypes/janggiTypes';
 
 import { ROW_NUM, COLUMNS, ROWS } from '@utils/janggi/constants';
-import { isTileOccupiedByMyCountry } from '@utils/janggi/rules/generalRules';
+import { isCheck, isTileOccupiedByMyCountry } from '@utils/janggi/rules/generalRules';
 import {
   getPossibleCannonMoves,
   getPossibleCarMoves,
@@ -101,6 +101,15 @@ export default function Referee() {
     setPieces(updatedPieces);
   };
 
+  // check if the king is checked
+  const checkKingCheck = (newBoard: Board) => {
+    for (const piece of pieces) {
+      const possibleMoves = piece.possibleMoves;
+      const check = isCheck(piece, possibleMoves, newBoard);
+      if (check) alert(`${piece.type}장군!`);
+    }
+  };
+
   // update all possible moves depending on the board
   const updatePossibleMoves = (newBoard: Board) => {
     pieces.map(p => {
@@ -121,6 +130,7 @@ export default function Referee() {
     });
     setBoard(updatedBoard);
     updatePossibleMoves(updatedBoard);
+    checkKingCheck(updatedBoard);
   }, [pieces]);
 
   useEffect(() => {
