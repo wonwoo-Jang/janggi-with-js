@@ -46,4 +46,8 @@ export class Piece {
   isJumping(): boolean {
     return [PieceType.CANNON, PieceType.ELEPHANT, PieceType.HORSE].includes(this.type);
   }
+
+  clone(): Piece {
+    return new Piece(this.type, this.position.clone(), this.country, this.image);
+  }
 }

@@ -83,6 +83,23 @@ export default function Referee() {
     }
   };
 
+  const moveTemporarily = (movingPiece: Piece, destination: Position, board: Board) => {
+    board[ROW_NUM - movingPiece.position.x][movingPiece.position.y - 1].piece = null; // move from original position
+    board[ROW_NUM - destination.x][destination.y - 1].piece = movingPiece; // to destination
+    movingPiece.setPosition(destination);
+  };
+
+  const revertTemporaryMove = (
+    movingPiece: Piece,
+    originalPosition: Position,
+    originalPiece: Piece | null,
+    board: Board,
+  ) => {
+    board[ROW_NUM - movingPiece.position.x][movingPiece.position.y - 1].piece = originalPiece; // put the original piece back
+    board[ROW_NUM - originalPosition.x][originalPosition.y - 1].piece = movingPiece; // revert moved position
+    movingPiece.setPosition(originalPosition);
+  };
+
   // 이동 가능 위치를 판별하기 위해 임시로 생성한 boardPreview에서 장군이 나오는지 확인
   const checkKingCheckPreview = (pieces: Piece[], board: Board): boolean => {
     for (const piece of pieces) {
@@ -98,19 +115,19 @@ export default function Referee() {
     const possibleMoves = getPossibleMoves(piece, board);
 
     // 나중에 piece도 제대로 클론되도록 변경
-    const boardPreview: Board = board.map(row => row.map(tile => ({ ...tile }))); // deep copy (but piece and position are still the original one)
     const opponents: Piece[] = pieces.filter(p => p.isOpponent(piece));
-    boardPreview[ROW_NUM - piece.position.x][piece.position.y - 1].piece = null; // 기존 자리 비움
+    const boardPreview: Board = board.map(row => [...row.map(tile => ({ ...tile }))]); // deep copy (but piece and position are still the original one)
+    const movingPiece = piece.clone();
 
     for (const destination of possibleMoves) {
       const opponent: Piece | null = pieceOccupyingTile(destination, boardPreview); // opponent at destination (if exists)
-      boardPreview[ROW_NUM - destination.x][destination.y - 1].piece = piece; // 목적지로 이동
+      moveTemporarily(movingPiece, destination, boardPreview);
       const check = checkKingCheckPreview(
         (opponent && opponents.filter(op => !op.isSamePiece(opponent))) || opponents,
         boardPreview,
       );
-      boardPreview[ROW_NUM - destination.x][destination.y - 1].piece = opponent; // 목적지에 원래 있던 기물 복원
       if (!check) exactPossibleMoves.push(destination);
+      revertTemporaryMove(movingPiece, piece.position, opponent, boardPreview);
     }
 
     return exactPossibleMoves;
