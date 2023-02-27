@@ -22,6 +22,7 @@
       opacity: 0.6;
     }
 
+    // attackable piece
     &.pieceTile::after {
       width: 100%;
       height: 100%;
@@ -29,10 +30,8 @@
     }
   }
 
-  &:hover {
-    &.highlight::after {
-      opacity: 0.9;
-    }
+  &:hover.highlight::after {
+    opacity: 0.9;
   }
 
   .piece {
@@ -52,22 +51,24 @@
       filter: drop-shadow(0px 0px 5px v.$border-brown);
     }
 
-    &.check::after {
-      content: '장군!';
-      width: 30px;
-      height: 30px;
-      border: 2px solid tomato;
-      border-radius: 10px;
-      background-color: rgba(92, 61, 46, 0.7);
-    }
-
     &:hover {
-      // cursor: grab;
       cursor: pointer;
     }
+  }
 
-    // &:active {
-    //   cursor: grabbing;
-    // }
+  .checkBubble {
+    position: absolute;
+    top: calc(80vh * 0.03 * -1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(80vh * 0.1);
+    height: calc(80vh * 0.05);
+    border: 1px solid v.$border-brown;
+    border-radius: 5px;
+    background-color: v.$border-brown-transparent;
+    color: white;
+    font-size: small;
+    cursor: default;
   }
 }

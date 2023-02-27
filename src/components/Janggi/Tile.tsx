@@ -27,13 +27,24 @@ export default function Tile({ position, piece, highlight, selected, onClickTile
   return (
     <div className={tileClassName} onClick={() => onClickTile(position, piece, pieceRef)}>
       {piece && (
-        <div
-          className={pieceClassName}
-          style={{ backgroundImage: `url(${piece.image})` }}
-          ref={pieceRef}
-          onClick={() => console.log(position)}
-        ></div>
+        <>
+          <div
+            className={pieceClassName}
+            style={{ backgroundImage: `url(${piece.image})` }}
+            ref={pieceRef}
+            onClick={() => console.log(position)}
+          />
+          {piece.isCheck && <CheckBubble />}
+        </>
       )}
+    </div>
+  );
+}
+
+function CheckBubble() {
+  return (
+    <div className={styles.checkBubble}>
+      <span>장군!</span>
     </div>
   );
 }
