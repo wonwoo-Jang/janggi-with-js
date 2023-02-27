@@ -21,7 +21,7 @@ export default function Tile({ position, piece, highlight, selected, onClickTile
   const pieceClassName = piece
     ? `${styles.piece} ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(piece.type) && styles.small} ${
         selected && styles.selected
-      }`
+      } ${piece.isCheck && styles.check}`
     : '';
 
   return (

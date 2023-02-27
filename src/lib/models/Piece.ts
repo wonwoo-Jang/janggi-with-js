@@ -8,6 +8,7 @@ export class Piece {
   image: string;
   position: Position;
   possibleMoves: Position[];
+  isCheck: boolean;
 
   constructor(type: PieceType, position: Position, country: CountryType, image: string) {
     this.type = type;
@@ -15,6 +16,7 @@ export class Piece {
     this.image = image;
     this.position = position;
     this.possibleMoves = [];
+    this.isCheck = false;
   }
 
   setPosition(newPosition: Position): void {

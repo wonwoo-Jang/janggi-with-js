@@ -52,6 +52,15 @@
       filter: drop-shadow(0px 0px 5px v.$border-brown);
     }
 
+    &.check::after {
+      content: '장군!';
+      width: 30px;
+      height: 30px;
+      border: 2px solid tomato;
+      border-radius: 10px;
+      background-color: rgba(92, 61, 46, 0.7);
+    }
+
     &:hover {
       // cursor: grab;
       cursor: pointer;

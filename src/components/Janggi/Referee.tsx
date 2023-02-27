@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
@@ -95,6 +95,7 @@ export default function Referee() {
     const exactPossibleMoves: Position[] = [];
     const possibleMoves = getPossibleMoves(piece, board);
 
+    // 나중에 piece도 제대로 클론되도록 변경
     const boardPreview: Board = board.map(row => row.map(tile => ({ ...tile }))); // deep copy (but piece and position are still the original one)
     const opponents: Piece[] = pieces.filter(p => p.isOpponent(piece));
     boardPreview[ROW_NUM - piece.position.x][piece.position.y - 1].piece = null; // 기존 자리 비움
@@ -133,6 +134,11 @@ export default function Referee() {
     setPieces(updatedPieces);
   };
 
+  const resetCheck = () => {
+    pieces.map(p => (p.isCheck = false));
+  };
+
+  // check if the piece has checked the king
   const isCheck = (piece: Piece, possibleMoves: Position[], board: Board): boolean => {
     for (const position of possibleMoves) {
       const opponent: Piece | null = pieceOccupyingTile(position, board);
@@ -142,12 +148,16 @@ export default function Referee() {
   };
 
   // check if the king is checked
-  const checkKingCheck = (newBoard: Board) => {
+  const detectCheck = (newBoard: Board) => {
+    resetCheck(); // 장군 새로 확인하기 전에 이전에 있던 값들 초기화
+    let check = false;
     for (const piece of pieces) {
-      const possibleMoves = piece.possibleMoves;
-      const check = isCheck(piece, possibleMoves, newBoard);
-      if (check) alert(`${piece.type}장군!`);
+      if (isCheck(piece, piece.possibleMoves, newBoard)) {
+        piece.isCheck = true;
+        check = true;
+      }
     }
+    if (check) alert('장군!');
   };
 
   // update all possible moves depending on the board
@@ -170,7 +180,7 @@ export default function Referee() {
     });
     setBoard(updatedBoard);
     updatePossibleMoves(updatedBoard);
-    checkKingCheck(updatedBoard);
+    detectCheck(updatedBoard);
   }, [pieces]);
 
   useEffect(() => {
