@@ -119,6 +119,7 @@ export default function JanggiBoard({ board, showCheckModal, isValidMove, movePi
               highlight={Boolean(
                 selectedPiece && selectedPiece.possibleMoves.some(p => p.isSamePosition(tile.position)),
               )}
+              blocked={Boolean(selectedPiece && selectedPiece.blockedMoves.some(p => p.isSamePosition(tile.position)))}
               selected={Boolean(selectedPiece && tile.piece?.isSamePiece(selectedPiece))}
               onClickTile={onClickTile}
               key={`${tile.position}`}

@@ -8,6 +8,7 @@ export class Piece {
   image: string;
   position: Position;
   possibleMoves: Position[];
+  blockedMoves: Position[]; // if you move to these positions, your king will be checked
   isCheck: boolean;
 
   constructor(type: PieceType, position: Position, country: CountryType, image: string) {
@@ -16,6 +17,7 @@ export class Piece {
     this.image = image;
     this.position = position;
     this.possibleMoves = [];
+    this.blockedMoves = [];
     this.isCheck = false;
   }
 

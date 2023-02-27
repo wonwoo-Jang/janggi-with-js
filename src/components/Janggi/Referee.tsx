@@ -110,9 +110,10 @@ export default function Referee() {
   };
 
   // 장군이라서 못가는 자리까지 전부 제외한 이동 가능 위치
-  const getExactPossibleMoves = (piece: Piece, board: Board): Position[] => {
-    const exactPossibleMoves: Position[] = [];
+  const getExactPossibleMoves = (piece: Piece, board: Board): { possible: Position[]; blocked: Position[] } => {
     const possibleMoves = getPossibleMoves(piece, board);
+    const exactPossibleMoves: Position[] = [];
+    const blockedMoves: Position[] = [];
 
     // 나중에 piece도 제대로 클론되도록 변경
     const opponents: Piece[] = pieces.filter(p => p.isOpponent(piece));
@@ -126,11 +127,11 @@ export default function Referee() {
         (opponent && opponents.filter(op => !op.isSamePiece(opponent))) || opponents,
         boardPreview,
       );
-      if (!check) exactPossibleMoves.push(destination);
+      check ? blockedMoves.push(destination) : exactPossibleMoves.push(destination);
       revertTemporaryMove(movingPiece, piece.position, opponent, boardPreview);
     }
 
-    return exactPossibleMoves;
+    return { possible: exactPossibleMoves, blocked: blockedMoves };
   };
 
   // check if the new position is belongs to possible moves
@@ -189,9 +190,11 @@ export default function Referee() {
   };
 
   // update all possible moves depending on the board
-  const updatePossibleMoves = (newBoard: Board) => {
+  const updatePossibleAndBlockedMoves = (newBoard: Board) => {
     pieces.map(p => {
-      p.possibleMoves = getExactPossibleMoves(p, newBoard);
+      const { possible, blocked } = getExactPossibleMoves(p, newBoard);
+      p.possibleMoves = possible;
+      p.blockedMoves = blocked;
       return p;
     });
   };
@@ -207,7 +210,7 @@ export default function Referee() {
       });
     });
     setBoard(updatedBoard);
-    updatePossibleMoves(updatedBoard);
+    updatePossibleAndBlockedMoves(updatedBoard);
     if (isCheckmate()) {
       alert('외통!');
       return;
