@@ -59,6 +59,7 @@ const initialPieces = initPiecesInfo.reduce((pieces, info) => {
 export default function Referee() {
   const [board, setBoard] = useState<Board>(initialBoard);
   const [pieces, setPieces] = useState<Piece[]>(initialPieces);
+  const [turn, setTurn] = useState<CountryType>(CountryType.CHO);
 
   const getPossibleMoves = (piece: Piece, board: Board): Position[] => {
     switch (piece.type) {
@@ -160,6 +161,10 @@ export default function Referee() {
     if (check) alert('장군!');
   };
 
+  const isCheckmate = (): boolean => {
+    return pieces.every(p => p.country !== turn || p.possibleMoves.length === 0);
+  };
+
   // update all possible moves depending on the board
   const updatePossibleMoves = (newBoard: Board) => {
     pieces.map(p => {
@@ -180,6 +185,10 @@ export default function Referee() {
     });
     setBoard(updatedBoard);
     updatePossibleMoves(updatedBoard);
+    if (isCheckmate()) {
+      alert('외통!');
+      return;
+    }
     detectCheck(updatedBoard);
   }, [pieces]);
 
