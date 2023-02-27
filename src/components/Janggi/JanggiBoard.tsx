@@ -7,18 +7,20 @@ import { Board } from '@customTypes/janggiTypes';
 
 import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES } from '@utils/janggi/constants';
 
+import CheckModal from './CheckModal';
 import Tile from './Tile';
 
 import styles from './JanggiBoard.module.scss';
 
 interface JanggiBoardProps {
   board: Board;
+  showCheckModal: boolean;
   isValidMove(newPosition: Position, piece: Piece, board: Board): boolean;
   movePiece(selectedPiece: Piece, position: Position, clickedPiece: Piece | null): void;
 }
 
 // draw board
-export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoardProps) {
+export default function JanggiBoard({ board, showCheckModal, isValidMove, movePiece }: JanggiBoardProps) {
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
   const [selectedRef, setSelectedRef] = useState<React.RefObject<HTMLDivElement> | null>(null); // for move effect
 
@@ -124,6 +126,7 @@ export default function JanggiBoard({ board, isValidMove, movePiece }: JanggiBoa
           ));
         })}
       </div>
+      {showCheckModal && <CheckModal />}
     </div>
   );
 }

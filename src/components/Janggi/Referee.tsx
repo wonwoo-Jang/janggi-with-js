@@ -60,6 +60,7 @@ export default function Referee() {
   const [board, setBoard] = useState<Board>(initialBoard);
   const [pieces, setPieces] = useState<Piece[]>(initialPieces);
   const [turn, setTurn] = useState<CountryType>(CountryType.CHO);
+  const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
 
   const getPossibleMoves = (piece: Piece, board: Board): Position[] => {
     switch (piece.type) {
@@ -158,7 +159,12 @@ export default function Referee() {
         check = true;
       }
     }
-    if (check) alert('장군!');
+    if (check) {
+      setShowCheckModal(true);
+      setTimeout(() => {
+        setShowCheckModal(false);
+      }, 1000);
+    }
   };
 
   const isCheckmate = (): boolean => {
@@ -196,5 +202,5 @@ export default function Referee() {
     updateBoard();
   }, [updateBoard]);
 
-  return <JanggiBoard board={board} isValidMove={isValidMove} movePiece={movePiece} />;
+  return <JanggiBoard board={board} showCheckModal={showCheckModal} isValidMove={isValidMove} movePiece={movePiece} />;
 }
