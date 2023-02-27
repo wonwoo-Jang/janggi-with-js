@@ -163,7 +163,7 @@ export default function Referee() {
       setShowCheckModal(true);
       setTimeout(() => {
         setShowCheckModal(false);
-      }, 1000);
+      }, 2000);
     }
   };
 

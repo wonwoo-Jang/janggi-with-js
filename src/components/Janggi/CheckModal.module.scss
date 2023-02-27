@@ -1,9 +1,15 @@
+@use '@styles/variables.scss' as v;
+
 .checkModal {
   position: absolute;
-  top: 30px;
-  left: 50px;
-  width: 300px;
-  height: 100px;
-  text-align: center;
-  background-color: khaki;
+  top: calc(80vh * 0.38);
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: calc(80vh * 0.96);
+  height: calc(80vh * 0.2);
+  color: white;
+  font-size: large;
+  background-color: v.$border-brown-transparent;
 }
