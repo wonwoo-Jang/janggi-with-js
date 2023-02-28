@@ -19,7 +19,7 @@
 
 ## 🚀 배포 주소
 
-https://drm2p33sl408w.cloudfront.net
+https://d8xm34ciok47x.cloudfront.net
 
 ## 🎉 시작
 
@@ -61,6 +61,7 @@ https://drm2p33sl408w.cloudfront.net
 | 💡     | comment  | 주석 추가, 수정, 삭제                 |
 | 📝     | docs     | 문서 수정                             |
 | 🔧     | config   | 환경 설정 관련 사항                   |
+| 🚀     | deploy   | 배포 관련                             |
 
 ## ✅ 할일
 
