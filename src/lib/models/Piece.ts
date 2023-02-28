@@ -8,6 +8,8 @@ export class Piece {
   image: string;
   position: Position;
   possibleMoves: Position[];
+  blockedMoves: Position[]; // if you move to these positions, your king will be checked
+  isCheck: boolean;
 
   constructor(type: PieceType, position: Position, country: CountryType, image: string) {
     this.type = type;
@@ -15,6 +17,8 @@ export class Piece {
     this.image = image;
     this.position = position;
     this.possibleMoves = [];
+    this.blockedMoves = [];
+    this.isCheck = false;
   }
 
   setPosition(newPosition: Position): void {
@@ -33,11 +37,19 @@ export class Piece {
     return this.country !== otherPiece.country;
   }
 
+  isKing(): boolean {
+    return this.type === PieceType.KING;
+  }
+
   isSliding(): boolean {
     return [PieceType.CAR, PieceType.KING, PieceType.SCHOLAR, PieceType.SOLDIER].includes(this.type);
   }
 
   isJumping(): boolean {
     return [PieceType.CANNON, PieceType.ELEPHANT, PieceType.HORSE].includes(this.type);
+  }
+
+  clone(): Piece {
+    return new Piece(this.type, this.position.clone(), this.country, this.image);
   }
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
@@ -6,7 +6,7 @@ import { Position } from '@models/Position';
 import { Board, CountryType, PieceType, TileI } from '@customTypes/janggiTypes';
 
 import { ROW_NUM, COLUMNS, ROWS } from '@utils/janggi/constants';
-import { isTileOccupiedByMyCountry } from '@utils/janggi/rules/generalRules';
+import { isTileOccupiedByMyCountry, pieceOccupyingTile } from '@utils/janggi/rules/generalRules';
 import {
   getPossibleCannonMoves,
   getPossibleCarMoves,
@@ -59,6 +59,8 @@ const initialPieces = initPiecesInfo.reduce((pieces, info) => {
 export default function Referee() {
   const [board, setBoard] = useState<Board>(initialBoard);
   const [pieces, setPieces] = useState<Piece[]>(initialPieces);
+  const [turn, setTurn] = useState<CountryType>(CountryType.CHO);
+  const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
 
   const getPossibleMoves = (piece: Piece, board: Board): Position[] => {
     switch (piece.type) {
@@ -81,6 +83,57 @@ export default function Referee() {
     }
   };
 
+  const moveTemporarily = (movingPiece: Piece, destination: Position, board: Board) => {
+    board[ROW_NUM - movingPiece.position.x][movingPiece.position.y - 1].piece = null; // move from original position
+    board[ROW_NUM - destination.x][destination.y - 1].piece = movingPiece; // to destination
+    movingPiece.setPosition(destination);
+  };
+
+  const revertTemporaryMove = (
+    movingPiece: Piece,
+    originalPosition: Position,
+    originalPiece: Piece | null,
+    board: Board,
+  ) => {
+    board[ROW_NUM - movingPiece.position.x][movingPiece.position.y - 1].piece = originalPiece; // put the original piece back
+    board[ROW_NUM - originalPosition.x][originalPosition.y - 1].piece = movingPiece; // revert moved position
+    movingPiece.setPosition(originalPosition);
+  };
+
+  // 이동 가능 위치를 판별하기 위해 임시로 생성한 boardPreview에서 장군이 나오는지 확인
+  const checkKingCheckPreview = (pieces: Piece[], board: Board): boolean => {
+    for (const piece of pieces) {
+      const poss = getPossibleMoves(piece, board);
+      if (isCheck(piece, poss, board)) return true;
+    }
+    return false;
+  };
+
+  // 장군이라서 못가는 자리까지 전부 제외한 이동 가능 위치
+  const getExactPossibleMoves = (piece: Piece, board: Board): { possible: Position[]; blocked: Position[] } => {
+    const possibleMoves = getPossibleMoves(piece, board);
+    const exactPossibleMoves: Position[] = [];
+    const blockedMoves: Position[] = [];
+
+    // 나중에 piece도 제대로 클론되도록 변경
+    const opponents: Piece[] = pieces.filter(p => p.isOpponent(piece));
+    const boardPreview: Board = board.map(row => [...row.map(tile => ({ ...tile }))]); // deep copy (but piece and position are still the original one)
+    const movingPiece = piece.clone();
+
+    for (const destination of possibleMoves) {
+      const opponent: Piece | null = pieceOccupyingTile(destination, boardPreview); // opponent at destination (if exists)
+      moveTemporarily(movingPiece, destination, boardPreview);
+      const check = checkKingCheckPreview(
+        (opponent && opponents.filter(op => !op.isSamePiece(opponent))) || opponents,
+        boardPreview,
+      );
+      check ? blockedMoves.push(destination) : exactPossibleMoves.push(destination);
+      revertTemporaryMove(movingPiece, piece.position, opponent, boardPreview);
+    }
+
+    return { possible: exactPossibleMoves, blocked: blockedMoves };
+  };
+
   // check if the new position is belongs to possible moves
   const isValidMove = (newPosition: Position, piece: Piece, board: Board): boolean => {
     if (isTileOccupiedByMyCountry(piece.country, newPosition, board)) return false;
@@ -101,10 +154,47 @@ export default function Referee() {
     setPieces(updatedPieces);
   };
 
+  const resetCheck = () => {
+    pieces.map(p => (p.isCheck = false));
+  };
+
+  // check if the piece has checked the king
+  const isCheck = (piece: Piece, possibleMoves: Position[], board: Board): boolean => {
+    for (const position of possibleMoves) {
+      const opponent: Piece | null = pieceOccupyingTile(position, board);
+      if (opponent && opponent.isOpponent(piece) && opponent.isKing()) return true;
+    }
+    return false;
+  };
+
+  // check if the king is checked
+  const detectCheck = (newBoard: Board) => {
+    resetCheck(); // 장군 새로 확인하기 전에 이전에 있던 값들 초기화
+    let check = false;
+    for (const piece of pieces) {
+      if (isCheck(piece, piece.possibleMoves, newBoard)) {
+        piece.isCheck = true;
+        check = true;
+      }
+    }
+    if (check) {
+      setShowCheckModal(true);
+      setTimeout(() => {
+        setShowCheckModal(false);
+      }, 1500);
+    }
+  };
+
+  const isCheckmate = (): boolean => {
+    return pieces.every(p => p.country !== turn || p.possibleMoves.length === 0);
+  };
+
   // update all possible moves depending on the board
-  const updatePossibleMoves = (newBoard: Board) => {
+  const updatePossibleAndBlockedMoves = (newBoard: Board) => {
     pieces.map(p => {
-      p.possibleMoves = getPossibleMoves(p, newBoard);
+      const { possible, blocked } = getExactPossibleMoves(p, newBoard);
+      p.possibleMoves = possible;
+      p.blockedMoves = blocked;
       return p;
     });
   };
@@ -120,12 +210,17 @@ export default function Referee() {
       });
     });
     setBoard(updatedBoard);
-    updatePossibleMoves(updatedBoard);
+    updatePossibleAndBlockedMoves(updatedBoard);
+    if (isCheckmate()) {
+      alert('외통!');
+      return;
+    }
+    detectCheck(updatedBoard);
   }, [pieces]);
 
   useEffect(() => {
     updateBoard();
   }, [updateBoard]);
 
-  return <JanggiBoard board={board} isValidMove={isValidMove} movePiece={movePiece} />;
+  return <JanggiBoard board={board} showCheckModal={showCheckModal} isValidMove={isValidMove} movePiece={movePiece} />;
 }

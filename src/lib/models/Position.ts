@@ -7,11 +7,15 @@ export class Position {
     this.y = y;
   }
 
-  isSamePosition(otherPosition: Position) {
+  isSamePosition(otherPosition: Position): boolean {
     return this.x === otherPosition.x && this.y === otherPosition.y;
   }
 
-  toString() {
+  toString(): string {
     return `(${this.x},${this.y})`;
+  }
+
+  clone(): Position {
+    return new Position(this.x, this.y);
   }
 }

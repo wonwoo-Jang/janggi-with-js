@@ -18,10 +18,10 @@
       width: 20%;
       height: 20%;
       border: 2px solid v.$border-brown;
-      border-radius: 50%;
       opacity: 0.6;
     }
 
+    // attackable piece
     &.pieceTile::after {
       width: 100%;
       height: 100%;
@@ -29,10 +29,22 @@
     }
   }
 
-  &:hover {
-    &.highlight::after {
-      opacity: 0.9;
-    }
+  &.blocked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    height: 40%;
+    opacity: 0.6;
+    background-image: url('../../images/block_icon.svg');
+    background-position: center;
+    background-size: cover;
+  }
+
+  &:hover.highlight::after {
+    opacity: 0.9;
   }
 
   .piece {
@@ -53,12 +65,23 @@
     }
 
     &:hover {
-      // cursor: grab;
       cursor: pointer;
     }
+  }
 
-    // &:active {
-    //   cursor: grabbing;
-    // }
+  .checkBubble {
+    position: absolute;
+    top: calc(80vh * 0.03 * -1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(80vh * 0.1);
+    height: calc(80vh * 0.05);
+    border: 1px solid v.$border-brown;
+    border-radius: 5px;
+    background-color: v.$border-brown-transparent;
+    color: white;
+    font-size: small;
+    cursor: default;
   }
 }
