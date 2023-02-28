@@ -17,6 +17,10 @@
 ![Typescript](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=fff)
 ![Sass](https://img.shields.io/badge/sass-CC6699?style=for-the-badge&logo=sass&logoColor=fff)
 
+## 🚀 배포 주소
+
+https://d8xm34ciok47x.cloudfront.net
+
 ## 🎉 시작
 
 1. 깃 레포지토리 클론
@@ -57,6 +61,7 @@
 | 💡     | comment  | 주석 추가, 수정, 삭제                 |
 | 📝     | docs     | 문서 수정                             |
 | 🔧     | config   | 환경 설정 관련 사항                   |
+| 🚀     | deploy   | 배포 관련                             |
 
 ## ✅ 할일
 
