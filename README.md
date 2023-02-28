@@ -17,6 +17,10 @@
 ![Typescript](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=fff)
 ![Sass](https://img.shields.io/badge/sass-CC6699?style=for-the-badge&logo=sass&logoColor=fff)
 
+## 🚀 배포 주소
+
+https://drm2p33sl408w.cloudfront.net
+
 ## 🎉 시작
 
 1. 깃 레포지토리 클론
