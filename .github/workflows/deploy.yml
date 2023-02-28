@@ -33,7 +33,7 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Deploy to S3
-        run: aws s3 sync ./dist s3://janggi-web --delete
+        run: aws s3 sync ./build s3://janggi-web --delete
 
       - name: CloudFront Invalidate Cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
