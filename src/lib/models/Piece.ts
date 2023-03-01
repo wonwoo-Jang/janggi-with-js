@@ -2,9 +2,12 @@ import { Position } from '@models/Position';
 
 import { CountryType, PieceType } from '@customTypes/janggiTypes';
 
+import { PIECE_POINT } from '@utils/janggi/constants';
+
 export class Piece {
   type: PieceType;
   country: CountryType;
+  point: number;
   image: string;
   position: Position;
   possibleMoves: Position[];
@@ -14,6 +17,7 @@ export class Piece {
   constructor(type: PieceType, position: Position, country: CountryType, image: string) {
     this.type = type;
     this.country = country;
+    this.point = PIECE_POINT[type];
     this.image = image;
     this.position = position;
     this.possibleMoves = [];

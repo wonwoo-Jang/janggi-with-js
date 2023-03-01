@@ -1,6 +1,6 @@
 import { Position } from '@models/Position';
 
-import { CountryType } from '@customTypes/janggiTypes';
+import { CountryType, PieceType } from '@customTypes/janggiTypes';
 
 export const ROW_NUM = 10;
 export const COLUMN_NUM = 9;
@@ -10,6 +10,16 @@ export const COLUMNS = Array.from({ length: COLUMN_NUM }, (v, i) => i + 1);
 
 export const SLASH_TILES = [4, 11, 60, 67];
 export const BACK_SLASH_TILES = [3, 12, 59, 68];
+
+export const PIECE_POINT: { [pieceName: string]: number } = {
+  [PieceType.CANNON]: 7,
+  [PieceType.CAR]: 13,
+  [PieceType.ELEPHANT]: 3,
+  [PieceType.HORSE]: 5,
+  [PieceType.KING]: 0,
+  [PieceType.SCHOLAR]: 3,
+  [PieceType.SOLDIER]: 2,
+};
 
 export const PALACE = {
   [CountryType.CHO]: {

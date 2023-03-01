@@ -1,9 +1,16 @@
 @use '@styles/variables.scss' as v;
 
 .janggi {
+  .scoreBoard {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .deadPieces {
     display: flex;
     align-items: center;
+    flex-grow: 1;
     height: calc(80vh * 0.08);
     border: 1px solid v.$border-brown;
 
