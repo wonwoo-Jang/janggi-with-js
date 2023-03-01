@@ -2,7 +2,7 @@ name: janggi-web deploy
 
 on:
   push:
-    branches: deploy
+    branches: [deploy]
   # pull_request:
   #   branches:
   #     - master
