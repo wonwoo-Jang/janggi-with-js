@@ -64,6 +64,8 @@ export default function Referee() {
   const [turn, setTurn] = useState<CountryType>(CountryType.CHO);
   const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
   const [isGameEnd, setIsGameEnd] = useState<boolean>(false);
+  const [deadPiecesCho, setDeadPiecesCho] = useState<Piece[]>([]);
+  const [deadPiecesHan, setDeadPiecesHan] = useState<Piece[]>([]);
 
   const getPossibleMoves = (piece: Piece, board: Board): Position[] => {
     switch (piece.type) {
@@ -148,9 +150,13 @@ export default function Referee() {
     piece.setPosition(newPosition); // move selectedPiece to the new position
     const updatedPieces = pieces.reduce((result, p) => {
       // remove attacked piece (filter alive pieces)
-      if (!attackedPiece || (attackedPiece && !p.isSamePiece(attackedPiece))) {
-        result.push(p);
-      }
+      if (attackedPiece && p.isSamePiece(attackedPiece)) {
+        if (attackedPiece.country === CountryType.CHO) {
+          setDeadPiecesCho(prev => [...prev, attackedPiece]);
+        } else {
+          setDeadPiecesHan(prev => [...prev, attackedPiece]);
+        }
+      } else result.push(p);
       return result;
     }, [] as Piece[]);
 
@@ -239,6 +245,17 @@ export default function Referee() {
 
   return (
     <div className={styles.janggi}>
+      <div className={styles.deadPieces}>
+        {deadPiecesCho.map((p, i) => (
+          <div
+            className={`${styles.deadPiece} 
+          ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(p.type) && styles.small}
+          `}
+            style={{ backgroundImage: `url(${p.image})` }}
+            key={i}
+          />
+        ))}
+      </div>
       <JanggiBoard
         board={board}
         turn={turn}
@@ -246,6 +263,17 @@ export default function Referee() {
         isValidMove={isValidMove}
         movePiece={movePiece}
       />
+      <div className={styles.deadPieces}>
+        {deadPiecesHan.map((p, i) => (
+          <div
+            className={`${styles.deadPiece} 
+          ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(p.type) && styles.small}
+          `}
+            style={{ backgroundImage: `url(${p.image})` }}
+            key={i}
+          />
+        ))}
+      </div>
       <div className={styles.gameOptions}>
         <button
           className={styles.pass}
