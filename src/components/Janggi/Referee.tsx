@@ -186,7 +186,7 @@ export default function Referee() {
   };
 
   const isCheckmate = (): boolean => {
-    return pieces.every(p => p.country !== turn || p.possibleMoves.length === 0);
+    return pieces.every(p => p.country === turn || p.possibleMoves.length === 0);
   };
 
   // update all possible moves depending on the board
@@ -197,6 +197,10 @@ export default function Referee() {
       p.blockedMoves = blocked;
       return p;
     });
+  };
+
+  const changeTurn = () => {
+    setTurn(prev => (prev === CountryType.CHO ? CountryType.HAN : CountryType.CHO));
   };
 
   // update board depending on the pieces
@@ -216,11 +220,20 @@ export default function Referee() {
       return;
     }
     detectCheck(updatedBoard);
+    changeTurn();
   }, [pieces]);
 
   useEffect(() => {
     updateBoard();
   }, [updateBoard]);
 
-  return <JanggiBoard board={board} showCheckModal={showCheckModal} isValidMove={isValidMove} movePiece={movePiece} />;
+  return (
+    <JanggiBoard
+      board={board}
+      turn={turn}
+      showCheckModal={showCheckModal}
+      isValidMove={isValidMove}
+      movePiece={movePiece}
+    />
+  );
 }

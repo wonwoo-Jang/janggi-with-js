@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board } from '@customTypes/janggiTypes';
+import { Board, CountryType } from '@customTypes/janggiTypes';
 
 import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES } from '@utils/janggi/constants';
 
@@ -14,13 +14,14 @@ import styles from './JanggiBoard.module.scss';
 
 interface JanggiBoardProps {
   board: Board;
+  turn: CountryType;
   showCheckModal: boolean;
   isValidMove(newPosition: Position, piece: Piece, board: Board): boolean;
   movePiece(selectedPiece: Piece, position: Position, clickedPiece: Piece | null): void;
 }
 
 // draw board
-export default function JanggiBoard({ board, showCheckModal, isValidMove, movePiece }: JanggiBoardProps) {
+export default function JanggiBoard({ board, turn, showCheckModal, isValidMove, movePiece }: JanggiBoardProps) {
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
   const [selectedRef, setSelectedRef] = useState<React.RefObject<HTMLDivElement> | null>(null); // for move effect
 
@@ -84,8 +85,8 @@ export default function JanggiBoard({ board, showCheckModal, isValidMove, movePi
       if (selectedPiece && clickedPiece.isSamePiece(selectedPiece)) {
         // reset `selectedPiece` if the clicked piece is the same as the previously selected one (toggle)
         resetSelectedPiece();
-      } else {
-        // select the clicked piece if no piece has been selected yet or the clicked piece is our country (except itself)
+      } else if (clickedPiece.country === turn) {
+        // select the clicked piece if no piece has been selected yet and the clicked piece is our country (except itself)
         selectPiece(clickedPiece, pieceRef);
       }
     }
