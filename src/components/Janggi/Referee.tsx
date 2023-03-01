@@ -19,6 +19,8 @@ import {
 
 import JanggiBoard from './JanggiBoard';
 
+import styles from './Referee.module.scss';
+
 const initialBoard = ROWS.reduce((board, x) => {
   const newRow = COLUMNS.reduce((row, y) => {
     row.push({ position: new Position(x, y), piece: null, highlight: false });
@@ -61,6 +63,7 @@ export default function Referee() {
   const [pieces, setPieces] = useState<Piece[]>(initialPieces);
   const [turn, setTurn] = useState<CountryType>(CountryType.CHO);
   const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
+  const [isGameEnd, setIsGameEnd] = useState<boolean>(false);
 
   const getPossibleMoves = (piece: Piece, board: Board): Position[] => {
     switch (piece.type) {
@@ -213,27 +216,56 @@ export default function Referee() {
         return tile;
       });
     });
+
     setBoard(updatedBoard);
     updatePossibleAndBlockedMoves(updatedBoard);
     if (isCheckmate()) {
-      alert('외통!');
-      return;
+      setIsGameEnd(true);
+    } else {
+      detectCheck(updatedBoard);
+      changeTurn();
     }
-    detectCheck(updatedBoard);
-    changeTurn();
   }, [pieces]);
 
   useEffect(() => {
     updateBoard();
   }, [updateBoard]);
 
+  useEffect(() => {
+    if (isGameEnd) {
+      alert(`${turn} win!`);
+    }
+  }, [isGameEnd]);
+
   return (
-    <JanggiBoard
-      board={board}
-      turn={turn}
-      showCheckModal={showCheckModal}
-      isValidMove={isValidMove}
-      movePiece={movePiece}
-    />
+    <div className={styles.janggi}>
+      <JanggiBoard
+        board={board}
+        turn={turn}
+        showCheckModal={showCheckModal}
+        isValidMove={isValidMove}
+        movePiece={movePiece}
+      />
+      <div className={styles.gameOptions}>
+        <button
+          className={styles.pass}
+          onClick={() => {
+            alert(`${turn} 한 수 쉼!`);
+            changeTurn();
+          }}
+        >
+          <span>한 수 쉼</span>
+        </button>
+        <button
+          className={styles.giveUp}
+          onClick={() => {
+            changeTurn();
+            setIsGameEnd(true);
+          }}
+        >
+          <span>기권</span>
+        </button>
+      </div>
+    </div>
   );
 }
