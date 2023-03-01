@@ -1,16 +1,14 @@
 name: janggi-web deploy
 
 on:
-  push:
-    branches: [deploy]
-  # pull_request:
-  #   branches:
-  #     - master
-  #   types: [closed]
+  pull_request:
+    branches:
+      - master
+    types: [closed]
 
 jobs:
   deploy:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Git Checkout
