@@ -61,6 +61,7 @@ const initialPieces = initPiecesInfo.reduce((pieces, info) => {
 export default function Referee() {
   const [board, setBoard] = useState<Board>(initialBoard);
   const [pieces, setPieces] = useState<Piece[]>(initialPieces);
+  const [tableSetting, setTableSetting] = useState<string[]>([]);
   const [turn, setTurn] = useState<CountryType>(CountryType.CHO);
   const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
   const [isGameEnd, setIsGameEnd] = useState<boolean>(false);
@@ -171,10 +172,6 @@ export default function Referee() {
     setPieces(updatedPieces);
   };
 
-  console.log(choScoreBoard, 'choinfo');
-
-  console.log('ahninfo:', hanScoreBoard);
-
   const resetCheck = () => {
     pieces.map(p => (p.isCheck = false));
   };
@@ -275,6 +272,8 @@ export default function Referee() {
         board={board}
         turn={turn}
         showCheckModal={showCheckModal}
+        tableSetting={tableSetting}
+        setTableSetting={setTableSetting}
         isValidMove={isValidMove}
         movePiece={movePiece}
       />

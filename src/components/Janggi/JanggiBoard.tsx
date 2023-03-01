@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
@@ -8,6 +8,7 @@ import { Board, CountryType } from '@customTypes/janggiTypes';
 import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES } from '@utils/janggi/constants';
 
 import CheckModal from './CheckModal';
+import TableSettingModal from './TableSettingModal';
 import Tile from './Tile';
 
 import styles from './JanggiBoard.module.scss';
@@ -16,12 +17,22 @@ interface JanggiBoardProps {
   board: Board;
   turn: CountryType;
   showCheckModal: boolean;
+  tableSetting: string[];
+  setTableSetting: Dispatch<SetStateAction<string[]>>;
   isValidMove(newPosition: Position, piece: Piece, board: Board): boolean;
   movePiece(selectedPiece: Piece, position: Position, clickedPiece: Piece | null): void;
 }
 
 // draw board
-export default function JanggiBoard({ board, turn, showCheckModal, isValidMove, movePiece }: JanggiBoardProps) {
+export default function JanggiBoard({
+  board,
+  turn,
+  showCheckModal,
+  tableSetting,
+  setTableSetting,
+  isValidMove,
+  movePiece,
+}: JanggiBoardProps) {
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
   const [selectedRef, setSelectedRef] = useState<React.RefObject<HTMLDivElement> | null>(null); // for move effect
 
@@ -129,6 +140,9 @@ export default function JanggiBoard({ board, turn, showCheckModal, isValidMove, 
         })}
       </div>
       {showCheckModal && <CheckModal />}
+      {!tableSetting.length ? (
+        <TableSettingModal myCountry={CountryType.CHO} opponentTableSetting={null} setTableSetting={setTableSetting} />
+      ) : null}
     </div>
   );
 }

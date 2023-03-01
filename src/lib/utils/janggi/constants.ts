@@ -21,6 +21,13 @@ export const PIECE_POINT: { [pieceName: string]: number } = {
   [PieceType.SOLDIER]: 2,
 };
 
+export const TABLE_SETTING_OPTIONS = [
+  [PieceType.HORSE, PieceType.ELEPHANT, PieceType.HORSE, PieceType.ELEPHANT],
+  [PieceType.ELEPHANT, PieceType.HORSE, PieceType.ELEPHANT, PieceType.HORSE],
+  [PieceType.HORSE, PieceType.ELEPHANT, PieceType.ELEPHANT, PieceType.HORSE],
+  [PieceType.ELEPHANT, PieceType.HORSE, PieceType.HORSE, PieceType.ELEPHANT],
+];
+
 export const PALACE = {
   [CountryType.CHO]: {
     topLeft: new Position(3, 4),
