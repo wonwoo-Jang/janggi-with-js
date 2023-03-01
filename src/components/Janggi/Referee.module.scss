@@ -11,20 +11,20 @@
     display: flex;
     align-items: center;
     flex-grow: 1;
-    height: calc(80vh * 0.08);
+    height: calc(v.$tile-height * 0.8);
     border: 1px solid v.$border-brown;
 
     .deadPiece {
-      width: calc(80vh * 0.07);
-      height: calc(80vh * 0.07);
+      width: calc(v.$tile-height * 0.7);
+      height: calc(v.$tile-height * 0.7);
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center 2px;
       background-color: v.$background-brown;
 
       &.small {
-        width: calc(80vh * 0.05);
-        height: calc(80vh * 0.05);
+        width: calc(v.$tile-height * 0.5);
+        height: calc(v.$tile-height * 0.5);
       }
     }
   }

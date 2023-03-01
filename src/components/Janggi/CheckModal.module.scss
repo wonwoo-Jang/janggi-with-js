@@ -7,8 +7,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: calc(80vh * 0.96);
-  height: calc(80vh * 0.2);
+  width: calc(v.$tile-height * 9.6);
+  height: calc(v.$tile-height * 2);
   color: white;
   font-size: large;
   background-color: v.$border-brown-transparent;
