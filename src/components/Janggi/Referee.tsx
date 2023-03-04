@@ -30,11 +30,12 @@ const initialBoard = ROWS.reduce((board, x) => {
   return board;
 }, [] as Board);
 
-// in charge of overall game progress
+// in charge of overall game process
 export default function Referee() {
   const [board, setBoard] = useState<Board>(initialBoard);
   const [pieces, setPieces] = useState<Piece[]>([]);
   const [tableSetting, setTableSetting] = useState<PieceType[]>([]);
+  const [playedCount, setPlayedCount] = useState<number>(-1);
   const [turn, setTurn] = useState<CountryType>(CountryType.HAN);
   const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
   const [isGameEnd, setIsGameEnd] = useState<boolean>(false);
@@ -208,14 +209,6 @@ export default function Referee() {
       });
 
       setBoard(newBoard);
-      // updatePossibleAndBlockedMoves(newBoard);
-
-      // if (isCheckmate()) {
-      //   setIsGameEnd(true);
-      // } else {
-      //   detectCheck(newBoard);
-      //   changeTurn();
-      // }
       return newBoard;
     },
     [pieces],
@@ -228,13 +221,15 @@ export default function Referee() {
     updatePossibleAndBlockedMoves(newBoard);
 
     const checkmate = isCheckmate();
-
     if (checkmate) {
       setIsGameEnd(true);
     } else {
       detectCheck(newBoard);
       changeTurn();
     }
+
+    setPlayedCount(prev => prev + 1);
+    console.log(playedCount);
   }, [pieces]);
 
   const initializePieces = useCallback(() => {
@@ -335,6 +330,7 @@ export default function Referee() {
           <span>기권</span>
         </button>
       </div>
+      <div className={styles.playedCount}>{playedCount}수</div>
     </div>
   );
 }
