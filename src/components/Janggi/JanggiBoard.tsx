@@ -3,9 +3,9 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board, CountryType } from '@customTypes/janggiTypes';
+import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
-import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES } from '@utils/janggi/constants';
+import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES, TABLE_SETTING_OPTIONS } from '@utils/janggi/constants';
 
 import CheckModal from './CheckModal';
 import TableSettingModal from './TableSettingModal';
@@ -17,8 +17,8 @@ interface JanggiBoardProps {
   board: Board;
   turn: CountryType;
   showCheckModal: boolean;
-  tableSetting: string[];
-  setTableSetting: Dispatch<SetStateAction<string[]>>;
+  tableSetting: PieceType[];
+  setTableSetting: Dispatch<SetStateAction<PieceType[]>>;
   isValidMove(newPosition: Position, piece: Piece, board: Board): boolean;
   movePiece(selectedPiece: Piece, position: Position, clickedPiece: Piece | null): void;
 }
@@ -141,7 +141,11 @@ export default function JanggiBoard({
       </div>
       {showCheckModal && <CheckModal />}
       {!tableSetting.length ? (
-        <TableSettingModal myCountry={CountryType.CHO} opponentTableSetting={null} setTableSetting={setTableSetting} />
+        <TableSettingModal
+          myCountry={CountryType.CHO}
+          opponentTableSetting={TABLE_SETTING_OPTIONS[0]}
+          setTableSetting={setTableSetting}
+        />
       ) : null}
     </div>
   );

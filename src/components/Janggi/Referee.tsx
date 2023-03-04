@@ -5,7 +5,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType, PieceType, TileI } from '@customTypes/janggiTypes';
 
-import { ROW_NUM, COLUMNS, ROWS } from '@utils/janggi/constants';
+import { ROW_NUM, COLUMNS, ROWS, TABLE_SETTING_OPTIONS } from '@utils/janggi/constants';
 import { isTileOccupiedByMyCountry, pieceOccupyingTile } from '@utils/janggi/rules/generalRules';
 import {
   getPossibleCannonMoves,
@@ -30,48 +30,21 @@ const initialBoard = ROWS.reduce((board, x) => {
   return board;
 }, [] as Board);
 
-const initPiecesInfo = [
-  { type: PieceType.SOLDIER, x: 4, y: [1, 3, 5, 7, 9] },
-  { type: PieceType.CANNON, x: 3, y: [2, 8] },
-  { type: PieceType.KING, x: 2, y: [5] },
-  { type: PieceType.CAR, x: 1, y: [1, 9] },
-  { type: PieceType.ELEPHANT, x: 1, y: [2, 7] }, // TODO: table setting options (using modal)
-  { type: PieceType.HORSE, x: 1, y: [3, 8] }, // TODO: table setting options (using modal)
-  { type: PieceType.SCHOLAR, x: 1, y: [4, 6] },
-];
-
-// TODO: determine country randomly
-const initialPieces = initPiecesInfo.reduce((pieces, info) => {
-  for (const y of info.y) {
-    for (const country of [CountryType.CHO, CountryType.HAN]) {
-      pieces.push(
-        new Piece(
-          info.type,
-          new Position(country === CountryType.CHO ? info.x : ROW_NUM + 1 - info.x, y),
-          country,
-          `images/${country}_${info.type}.png`,
-        ),
-      );
-    }
-  }
-  return pieces;
-}, [] as Piece[]);
-
 // in charge of overall game progress
 export default function Referee() {
   const [board, setBoard] = useState<Board>(initialBoard);
-  const [pieces, setPieces] = useState<Piece[]>(initialPieces);
-  const [tableSetting, setTableSetting] = useState<string[]>([]);
-  const [turn, setTurn] = useState<CountryType>(CountryType.CHO);
+  const [pieces, setPieces] = useState<Piece[]>([]);
+  const [tableSetting, setTableSetting] = useState<PieceType[]>([]);
+  const [turn, setTurn] = useState<CountryType>(CountryType.HAN);
   const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
   const [isGameEnd, setIsGameEnd] = useState<boolean>(false);
   const [choScoreBoard, setChoScoreBoard] = useState<{ deadPieces: Piece[]; score: number }>({
     deadPieces: [],
-    score: 30,
+    score: 28.5,
   });
   const [hanScoreBoard, setHanScoreBoard] = useState<{ deadPieces: Piece[]; score: number }>({
     deadPieces: [],
-    score: 28.5,
+    score: 30,
   });
 
   const getPossibleMoves = (piece: Piece, board: Board): Position[] => {
@@ -223,6 +196,8 @@ export default function Referee() {
 
   // update board depending on the pieces
   const updateBoard = useCallback(() => {
+    if (pieces.length < 1) return;
+
     const updatedBoard = board.map(row => {
       return row.map(tile => {
         const piece = pieces.find(p => p.position.isSamePosition(tile.position));
@@ -242,9 +217,64 @@ export default function Referee() {
     }
   }, [pieces]);
 
+  const initializePieces = useCallback(() => {
+    if (tableSetting.length < 1) return;
+
+    const TABLE_SETTING_POSITION = [2, 3, 7, 8];
+
+    const initPiecesInfo = [
+      { type: PieceType.SOLDIER, x: 4, y: [1, 3, 5, 7, 9] },
+      { type: PieceType.CANNON, x: 3, y: [2, 8] },
+      { type: PieceType.KING, x: 2, y: [5] },
+      { type: PieceType.CAR, x: 1, y: [1, 9] },
+      { type: PieceType.SCHOLAR, x: 1, y: [4, 6] },
+    ];
+
+    // TODO: determine country randomly
+    const initialPieces = initPiecesInfo.reduce((pieces, info) => {
+      for (const y of info.y) {
+        for (const country of [CountryType.CHO, CountryType.HAN]) {
+          pieces.push(
+            new Piece(
+              info.type,
+              new Position(country === CountryType.CHO ? info.x : ROW_NUM + 1 - info.x, y),
+              country,
+              `images/${country}_${info.type}.png`,
+            ),
+          );
+        }
+      }
+      return pieces;
+    }, [] as Piece[]);
+
+    const tableSettingOfEachCountry = [
+      { country: CountryType.CHO, tableSetting: tableSetting },
+      { country: CountryType.HAN, tableSetting: TABLE_SETTING_OPTIONS[0].reverse() },
+    ];
+
+    tableSettingOfEachCountry.map(info => {
+      info.tableSetting.map((pieceType, i) => {
+        initialPieces.push(
+          new Piece(
+            pieceType,
+            new Position(info.country === CountryType.CHO ? 1 : 10, TABLE_SETTING_POSITION[i]),
+            info.country,
+            `images/${info.country}_${pieceType}.png`,
+          ),
+        );
+      });
+    });
+
+    setPieces(initialPieces);
+  }, [tableSetting]);
+
   useEffect(() => {
     updateBoard();
   }, [updateBoard]);
+
+  useEffect(() => {
+    initializePieces();
+  }, [initializePieces]);
 
   useEffect(() => {
     if (isGameEnd) {
