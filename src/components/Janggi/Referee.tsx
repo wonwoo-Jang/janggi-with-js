@@ -229,7 +229,6 @@ export default function Referee() {
     }
 
     setPlayedCount(prev => prev + 1);
-    console.log(playedCount);
   }, [pieces]);
 
   const initializePieces = useCallback(() => {
@@ -299,18 +298,22 @@ export default function Referee() {
 
   return (
     <div className={styles.janggi}>
-      <ScoreBoard scoreBoard={hanScoreBoard} />
-      <JanggiBoard
-        board={board}
-        turn={turn}
-        showCheckModal={showCheckModal}
-        tableSetting={tableSetting}
-        setTableSetting={setTableSetting}
-        isValidMove={isValidMove}
-        movePiece={movePiece}
-      />
-      <ScoreBoard scoreBoard={choScoreBoard} />
+      <div className={styles.boards}>
+        <ScoreBoard scoreBoard={hanScoreBoard} />
+        <JanggiBoard
+          board={board}
+          turn={turn}
+          showCheckModal={showCheckModal}
+          tableSetting={tableSetting}
+          setTableSetting={setTableSetting}
+          isValidMove={isValidMove}
+          movePiece={movePiece}
+        />
+        <ScoreBoard scoreBoard={choScoreBoard} />
+      </div>
+
       <div className={styles.gameOptions}>
+        <div className={styles.playedCount}>{playedCount}수</div>
         <button
           className={styles.pass}
           onClick={() => {
@@ -330,7 +333,6 @@ export default function Referee() {
           <span>기권</span>
         </button>
       </div>
-      <div className={styles.playedCount}>{playedCount}수</div>
     </div>
   );
 }
