@@ -8,16 +8,43 @@
   gap: 20px;
   padding: 10px;
   width: calc(v.$tile-height * 9.6);
-  height: calc(v.$tile-height * 7);
+  // height: calc(v.$tile-height * 7);
   background-color: rgba($color: #000000, $alpha: 0.5);
   color: white;
+
+  .message {
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .opponentOption {
+        display: flex;
+        align-items: center;
+        padding-top: 2px;
+        width: 30%;
+        height: calc(v.$tile-height);
+        gap: 3px;
+        border: 2px solid white;
+        border-radius: 8px;
+
+        div {
+          flex-grow: 1;
+          height: 100%;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center center;
+        }
+      }
+    }
+  }
 
   .options {
     display: grid;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr;
     width: 100%;
-    height: 150px;
+    height: calc(v.$tile-height * 3);
     gap: 10px;
 
     .option {
