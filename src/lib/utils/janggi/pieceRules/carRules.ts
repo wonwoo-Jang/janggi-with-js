@@ -3,9 +3,9 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggiTypes';
 
-import { CORNER_NUM, palaceCornerPositions, diagDx, diagDy, COLUMN_NUM, ROW_NUM } from '@utils/janggi/constants';
+import { CORNER_NUM, PALACE_CORNERS, DIAG_DX, DIAG_DY, COLUMN_NUM, ROW_NUM } from '@utils/janggi/constants';
 
-import { getPalaceCenterDiagonalMoves, isInBoard, isTileOccupied, isTileOccupiedByOpponent } from '../generalRules';
+import { getPalaceCenterDiagonalMoves, isInBoard, isTileOccupied, isTileOccupiedByOpponent } from '../common';
 
 // almost the same as `getLinearMoves` function in `cannonRules.ts`
 // TODO: integrate `getLinearMoves` in carRules and cannonRules
@@ -52,9 +52,9 @@ export const getPossibleCarMoves = (car: Piece, board: Board): Position[] => {
 
   // diagonal moves at the corner of the palace
   for (let i = 0; i < CORNER_NUM; i++) {
-    const isAtPalaceCorner = palaceCornerPositions[i].some(corner => corner.isSamePosition(car.position));
+    const isAtPalaceCorner = PALACE_CORNERS[i].some(corner => corner.isSamePosition(car.position));
     if (isAtPalaceCorner) {
-      const diagonalMoves = getLinearMoves(diagDx[i], diagDy[i], 2, car, board);
+      const diagonalMoves = getLinearMoves(DIAG_DX[i], DIAG_DY[i], 2, car, board);
       possibleMoves.push(...diagonalMoves);
       break;
     }

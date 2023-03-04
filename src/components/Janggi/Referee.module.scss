@@ -1,0 +1,17 @@
+@use '@styles/variables.scss' as v;
+
+.janggi {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  .gameOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    button {
+      padding: 8px 10px;
+    }
+  }
+}

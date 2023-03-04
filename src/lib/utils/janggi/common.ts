@@ -3,13 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggiTypes';
 
-import { PALACE_X, PALACE_Y, PALACE, DIRECTION_NUM, diagDx, diagDy, COLUMN_NUM, ROW_NUM } from '../constants';
-
-export const isInBoard = (position: Position): boolean => {
-  const isValidRangeX: boolean = position.x >= 1 && position.x <= ROW_NUM;
-  const isValidRangeY: boolean = position.y >= 1 && position.y <= COLUMN_NUM;
-  return isValidRangeX && isValidRangeY;
-};
+import { PALACE_X, PALACE_Y, PALACE, DIRECTION_NUM, DIAG_DX, DIAG_DY, COLUMN_NUM, ROW_NUM } from './constants';
 
 export const pieceOccupyingTile = (position: Position, board: Board): Piece | null => {
   if (!isInBoard(position)) return null;
@@ -30,6 +24,12 @@ export const isTileOccupiedByMyCountry = (myCountry: CountryType, position: Posi
   return Boolean(occupyingPiece && occupyingPiece.country === myCountry);
 };
 
+export const isInBoard = (position: Position): boolean => {
+  const isValidRangeX: boolean = position.x >= 1 && position.x <= ROW_NUM;
+  const isValidRangeY: boolean = position.y >= 1 && position.y <= COLUMN_NUM;
+  return isValidRangeX && isValidRangeY;
+};
+
 export const isInPalace = (position: Position): boolean => {
   const isXInPalace: boolean = PALACE_X.includes(position.x);
   const isYInPalace: boolean = PALACE_Y.includes(position.y);
@@ -44,7 +44,7 @@ export const getPalaceCenterDiagonalMoves = (piece: Piece, board: Board): Positi
 
   if (piece.position.isSamePosition(PALACE.cho.center) || piece.position.isSamePosition(PALACE.han.center)) {
     for (let i = 0; i < DIRECTION_NUM; i++) {
-      const position: Position = new Position(piece.position.x + diagDx[i], piece.position.y + diagDy[i]);
+      const position: Position = new Position(piece.position.x + DIAG_DX[i], piece.position.y + DIAG_DY[i]);
       if (!isTileOccupiedByMyCountry(piece.country, position, board)) {
         possibleMoves.push(position);
       }

@@ -3,10 +3,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board, CountryType, PieceType, TileI } from '@customTypes/janggiTypes';
+import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
-import { ROW_NUM, COLUMNS, ROWS } from '@utils/janggi/constants';
-import { isTileOccupiedByMyCountry, pieceOccupyingTile } from '@utils/janggi/rules/generalRules';
+import { pieceOccupyingTile } from '@utils/janggi/common';
+import {
+  ROW_NUM,
+  TABLE_SETTING_OPTIONS,
+  TABLE_SETTING_POSITION,
+  INIT_PIECES_INFO,
+  INITIAL_BOARD,
+} from '@utils/janggi/constants';
 import {
   getPossibleCannonMoves,
   getPossibleCarMoves,
@@ -15,52 +21,30 @@ import {
   getPossibleKingMoves,
   getPossibleScholarMoves,
   getPossibleSoldierMoves,
-} from '@utils/janggi/rules/pieceRules';
+} from '@utils/janggi/pieceRules';
 
 import JanggiBoard from './JanggiBoard';
+import ScoreBoard from './ScoreBoard';
 
-const initialBoard = ROWS.reduce((board, x) => {
-  const newRow = COLUMNS.reduce((row, y) => {
-    row.push({ position: new Position(x, y), piece: null, highlight: false });
-    return row;
-  }, [] as TileI[]);
-  board.push(newRow);
-  return board;
-}, [] as Board);
+import styles from './Referee.module.scss';
 
-const initPiecesInfo = [
-  { type: PieceType.SOLDIER, x: 4, y: [1, 3, 5, 7, 9] },
-  { type: PieceType.CANNON, x: 3, y: [2, 8] },
-  { type: PieceType.KING, x: 2, y: [5] },
-  { type: PieceType.CAR, x: 1, y: [1, 9] },
-  { type: PieceType.ELEPHANT, x: 1, y: [2, 7] }, // TODO: table setting options (using modal)
-  { type: PieceType.HORSE, x: 1, y: [3, 8] }, // TODO: table setting options (using modal)
-  { type: PieceType.SCHOLAR, x: 1, y: [4, 6] },
-];
-
-// TODO: determine country randomly
-const initialPieces = initPiecesInfo.reduce((pieces, info) => {
-  for (const y of info.y) {
-    for (const country of [CountryType.CHO, CountryType.HAN]) {
-      pieces.push(
-        new Piece(
-          info.type,
-          new Position(country === CountryType.CHO ? info.x : ROW_NUM + 1 - info.x, y),
-          country,
-          `images/${country}_${info.type}.png`,
-        ),
-      );
-    }
-  }
-  return pieces;
-}, [] as Piece[]);
-
-// in charge of overall game progress
+// in charge of overall game process
 export default function Referee() {
-  const [board, setBoard] = useState<Board>(initialBoard);
-  const [pieces, setPieces] = useState<Piece[]>(initialPieces);
-  const [turn, setTurn] = useState<CountryType>(CountryType.CHO);
+  const [board, setBoard] = useState<Board>(INITIAL_BOARD);
+  const [pieces, setPieces] = useState<Piece[]>([]);
+  const [tableSetting, setTableSetting] = useState<PieceType[]>([]);
+  const [playedCount, setPlayedCount] = useState<number>(0);
+  const [turn, setTurn] = useState<CountryType>(CountryType.HAN);
   const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
+  const [isGameEnd, setIsGameEnd] = useState<boolean>(false);
+  const [choScoreBoard, setChoScoreBoard] = useState<{ deadOpponentPieces: Piece[]; score: number }>({
+    deadOpponentPieces: [],
+    score: 28.5,
+  });
+  const [hanScoreBoard, setHanScoreBoard] = useState<{ deadOpponentPieces: Piece[]; score: number }>({
+    deadOpponentPieces: [],
+    score: 30,
+  });
 
   const getPossibleMoves = (piece: Piece, board: Board): Position[] => {
     switch (piece.type) {
@@ -83,12 +67,6 @@ export default function Referee() {
     }
   };
 
-  const moveTemporarily = (movingPiece: Piece, destination: Position, board: Board) => {
-    board[ROW_NUM - movingPiece.position.x][movingPiece.position.y - 1].piece = null; // move from original position
-    board[ROW_NUM - destination.x][destination.y - 1].piece = movingPiece; // to destination
-    movingPiece.setPosition(destination);
-  };
-
   const revertTemporaryMove = (
     movingPiece: Piece,
     originalPosition: Position,
@@ -100,11 +78,17 @@ export default function Referee() {
     movingPiece.setPosition(originalPosition);
   };
 
+  const moveTemporarily = (movingPiece: Piece, destination: Position, board: Board) => {
+    board[ROW_NUM - movingPiece.position.x][movingPiece.position.y - 1].piece = null; // move from original position
+    board[ROW_NUM - destination.x][destination.y - 1].piece = movingPiece; // to destination
+    movingPiece.setPosition(destination);
+  };
+
   // 이동 가능 위치를 판별하기 위해 임시로 생성한 boardPreview에서 장군이 나오는지 확인
   const checkKingCheckPreview = (pieces: Piece[], board: Board): boolean => {
     for (const piece of pieces) {
-      const poss = getPossibleMoves(piece, board);
-      if (isCheck(piece, poss, board)) return true;
+      const possibleMoves = getPossibleMoves(piece, board);
+      if (isCheck(piece, possibleMoves, board)) return true;
     }
     return false;
   };
@@ -134,24 +118,31 @@ export default function Referee() {
     return { possible: exactPossibleMoves, blocked: blockedMoves };
   };
 
-  // check if the new position is belongs to possible moves
-  const isValidMove = (newPosition: Position, piece: Piece, board: Board): boolean => {
-    if (isTileOccupiedByMyCountry(piece.country, newPosition, board)) return false;
-    const isValid = piece.possibleMoves.some(p => p.isSamePosition(newPosition));
-    return isValid;
-  };
-
-  const movePiece = (piece: Piece, newPosition: Position, attackedPiece: Piece | null) => {
-    piece.setPosition(newPosition); // move selectedPiece to the new position
+  const movePiece = (piece: Piece, destination: Position, attackedPiece: Piece | null) => {
+    piece.setPosition(destination); // move selectedPiece to the destination
     const updatedPieces = pieces.reduce((result, p) => {
       // remove attacked piece (filter alive pieces)
-      if (!attackedPiece || (attackedPiece && !p.isSamePiece(attackedPiece))) {
-        result.push(p);
-      }
+      if (attackedPiece && p.isSamePiece(attackedPiece)) {
+        if (attackedPiece.country === CountryType.CHO) {
+          const deadOpponentPieces = [...hanScoreBoard.deadOpponentPieces, attackedPiece];
+          setChoScoreBoard(prev => ({ ...prev, score: prev.score - attackedPiece.point }));
+          setHanScoreBoard(prev => ({ ...prev, deadOpponentPieces }));
+        } else {
+          const deadOpponentPieces = [...choScoreBoard.deadOpponentPieces, attackedPiece];
+          setHanScoreBoard(prev => ({ ...prev, score: prev.score - attackedPiece.point }));
+          setChoScoreBoard(prev => ({ ...prev, deadOpponentPieces }));
+        }
+      } else result.push(p);
       return result;
     }, [] as Piece[]);
 
     setPieces(updatedPieces);
+    setPlayedCount(prev => prev + 1);
+  };
+
+  const changeTurn = (newTurn?: CountryType) => {
+    if (newTurn) setTurn(newTurn);
+    else setTurn(prev => (prev === CountryType.CHO ? CountryType.HAN : CountryType.CHO));
   };
 
   const resetCheck = () => {
@@ -186,7 +177,19 @@ export default function Referee() {
   };
 
   const isCheckmate = (): boolean => {
-    return pieces.every(p => p.country !== turn || p.possibleMoves.length === 0);
+    return pieces.every(p => p.country === turn || p.possibleMoves.length === 0);
+  };
+
+  const checkGameEnd = (): boolean => {
+    if (isCheckmate() || choScoreBoard.score < 10 || hanScoreBoard.score < 10) {
+      setIsGameEnd(true);
+      return true;
+    } else if (playedCount > 200) {
+      changeTurn(choScoreBoard.score < hanScoreBoard.score ? CountryType.HAN : CountryType.CHO);
+      setIsGameEnd(true);
+      return true;
+    }
+    return false;
   };
 
   // update all possible moves depending on the board
@@ -200,27 +203,116 @@ export default function Referee() {
   };
 
   // update board depending on the pieces
-  const updateBoard = useCallback(() => {
-    const updatedBoard = board.map(row => {
-      return row.map(tile => {
-        const piece = pieces.find(p => p.position.isSamePosition(tile.position));
-        tile.piece = piece ?? null;
-        // tile.highlight = false;
-        return tile;
+  const updateBoard = useCallback(
+    (pieces: Piece[]): Board => {
+      const newBoard: Board = board.map(row => {
+        return row.map(tile => {
+          const piece = pieces.find(p => p.position.isSamePosition(tile.position));
+          tile.piece = piece ?? null;
+          return tile;
+        });
       });
-    });
-    setBoard(updatedBoard);
-    updatePossibleAndBlockedMoves(updatedBoard);
-    if (isCheckmate()) {
-      alert('외통!');
-      return;
-    }
-    detectCheck(updatedBoard);
+
+      setBoard(newBoard);
+      return newBoard;
+    },
+    [pieces],
+  );
+
+  const updateGame = useCallback(() => {
+    if (pieces.length < 1) return;
+    const newBoard = updateBoard(pieces);
+    updatePossibleAndBlockedMoves(newBoard);
+    if (checkGameEnd()) return;
+    detectCheck(newBoard);
+    changeTurn();
   }, [pieces]);
 
-  useEffect(() => {
-    updateBoard();
-  }, [updateBoard]);
+  const initializePieces = useCallback(() => {
+    if (tableSetting.length < 1) return;
 
-  return <JanggiBoard board={board} showCheckModal={showCheckModal} isValidMove={isValidMove} movePiece={movePiece} />;
+    // TODO: determine country randomly
+    const initialPieces = INIT_PIECES_INFO.reduce((pieces, info) => {
+      for (const y of info.y) {
+        for (const country of [CountryType.CHO, CountryType.HAN]) {
+          const x = country === CountryType.CHO ? info.x : ROW_NUM + 1 - info.x;
+          pieces.push(new Piece(info.type, new Position(x, y), country, `images/${country}_${info.type}.png`));
+        }
+      }
+      return pieces;
+    }, [] as Piece[]);
+
+    const tableSettingOfEachCountry = [
+      { country: CountryType.CHO, tableSetting: tableSetting },
+      { country: CountryType.HAN, tableSetting: TABLE_SETTING_OPTIONS[0].reverse() },
+    ];
+
+    tableSettingOfEachCountry.map(info => {
+      info.tableSetting.map((pieceType, i) => {
+        initialPieces.push(
+          new Piece(
+            pieceType,
+            new Position(info.country === CountryType.CHO ? 1 : 10, TABLE_SETTING_POSITION[i]),
+            info.country,
+            `images/${info.country}_${pieceType}.png`,
+          ),
+        );
+      });
+    });
+
+    setPieces(initialPieces);
+  }, [tableSetting]);
+
+  useEffect(() => {
+    updateGame();
+  }, [updateGame]);
+
+  useEffect(() => {
+    initializePieces();
+  }, [initializePieces]);
+
+  useEffect(() => {
+    if (isGameEnd) {
+      alert(`${turn} win!`);
+    }
+  }, [isGameEnd]);
+
+  return (
+    <div className={styles.janggi}>
+      <div className={styles.boards}>
+        <ScoreBoard scoreBoard={hanScoreBoard} />
+        <JanggiBoard
+          board={board}
+          turn={turn}
+          showCheckModal={showCheckModal}
+          tableSetting={tableSetting}
+          setTableSetting={setTableSetting}
+          movePiece={movePiece}
+        />
+        <ScoreBoard scoreBoard={choScoreBoard} />
+      </div>
+      <div className={styles.gameOptions}>
+        <div className={styles.playedCount}>{playedCount}수</div>
+        <button
+          className={styles.pass}
+          onClick={() => {
+            alert(`${turn} 한 수 쉼!`);
+            setPlayedCount(prev => prev + 1);
+            changeTurn();
+          }}
+        >
+          <span>한 수 쉼</span>
+        </button>
+        <button
+          className={styles.giveUp}
+          onClick={() => {
+            changeTurn();
+            setIsGameEnd(true);
+          }}
+        >
+          <span>기권</span>
+        </button>
+      </div>
+    </div>
+  );
 }

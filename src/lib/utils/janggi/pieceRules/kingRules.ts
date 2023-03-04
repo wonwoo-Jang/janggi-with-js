@@ -5,15 +5,15 @@ import { Board } from '@customTypes/janggiTypes';
 
 import {
   DIRECTION_NUM,
-  linearDx,
-  linearDy,
+  LINEAR_DX,
+  LINEAR_DY,
   CORNER_NUM,
-  palaceCornerPositions,
-  diagDx,
-  diagDy,
+  PALACE_CORNERS,
+  DIAG_DX,
+  DIAG_DY,
 } from '@utils/janggi/constants';
 
-import { getPalaceCenterDiagonalMoves, isInPalace, isTileOccupiedByMyCountry } from '../generalRules';
+import { getPalaceCenterDiagonalMoves, isInPalace, isTileOccupiedByMyCountry } from '../common';
 
 // same as scholar move
 export const getPossibleKingMoves = (king: Piece, board: Board): Position[] => {
@@ -22,7 +22,7 @@ export const getPossibleKingMoves = (king: Piece, board: Board): Position[] => {
 
   // linear move
   for (let i = 0; i < DIRECTION_NUM; i++) {
-    const position: Position = new Position(currX + linearDx[i], currY + linearDy[i]);
+    const position: Position = new Position(currX + LINEAR_DX[i], currY + LINEAR_DY[i]);
     if (isInPalace(position) && !isTileOccupiedByMyCountry(king.country, position, board)) {
       possibleMoves.push(position);
     }
@@ -30,9 +30,9 @@ export const getPossibleKingMoves = (king: Piece, board: Board): Position[] => {
 
   // diagonal move at the corner of the palace
   for (let i = 0; i < CORNER_NUM; i++) {
-    const isAtPalaceCorner = palaceCornerPositions[i].some(corner => corner.isSamePosition(king.position));
+    const isAtPalaceCorner = PALACE_CORNERS[i].some(corner => corner.isSamePosition(king.position));
     if (isAtPalaceCorner) {
-      const diagonalMove: Position = new Position(currX + diagDx[i], currY + diagDy[i]);
+      const diagonalMove: Position = new Position(currX + DIAG_DX[i], currY + DIAG_DY[i]);
       if (!isTileOccupiedByMyCountry(king.country, diagonalMove, board)) {
         possibleMoves.push(diagonalMove);
       }

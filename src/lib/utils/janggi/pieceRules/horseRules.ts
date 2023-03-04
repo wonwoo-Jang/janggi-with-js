@@ -3,7 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board } from '@customTypes/janggiTypes';
 
-import { isInBoard, isNeckBlocked, isTileOccupiedByMyCountry } from '../generalRules';
+import { isInBoard, isNeckBlocked, isTileOccupiedByMyCountry } from '../common';
 
 // 상이랑 행마 로직이 같음
 export const getPossibleHorseMove = (horse: Piece, board: Board): Position[] => {

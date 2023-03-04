@@ -3,17 +3,9 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
-import {
-  CORNER_NUM,
-  palaceCornerPositions,
-  PALACE,
-  diagDx,
-  diagDy,
-  ROW_NUM,
-  COLUMN_NUM,
-} from '@utils/janggi/constants';
+import { CORNER_NUM, PALACE_CORNERS, PALACE, DIAG_DX, DIAG_DY, ROW_NUM, COLUMN_NUM } from '@utils/janggi/constants';
 
-import { isInBoard, isTileOccupied, pieceOccupyingTile } from '../generalRules';
+import { isInBoard, isTileOccupied, pieceOccupyingTile } from '../common';
 
 // 포다리 찾는 함수
 const getBridge = (
@@ -92,14 +84,14 @@ export const getPossibleCannonMoves = (cannon: Piece, board: Board): Position[] 
   const { x: currX, y: currY } = cannon.position;
 
   for (let i = 0; i < CORNER_NUM; i++) {
-    const isAtPalaceCorner = palaceCornerPositions[i].some(corner => corner.isSamePosition(cannon.position));
+    const isAtPalaceCorner = PALACE_CORNERS[i].some(corner => corner.isSamePosition(cannon.position));
     if (isAtPalaceCorner) {
       const currPositionCountry = [1, 2, 3].includes(currX) ? CountryType.CHO : CountryType.HAN;
       const bridge = pieceOccupyingTile(PALACE[currPositionCountry].center, board);
 
       if (bridge && bridge.type !== PieceType.CANNON) {
         // TODO: refactor? (the same logic as linear moves)
-        const position = new Position(currX + 2 * diagDx[i], currY + 2 * diagDy[i]);
+        const position = new Position(currX + 2 * DIAG_DX[i], currY + 2 * DIAG_DY[i]);
         const occupyingPiece: Piece | null = pieceOccupyingTile(position, board);
         if (!occupyingPiece || (occupyingPiece.isOpponent(cannon) && occupyingPiece.type !== PieceType.CANNON)) {
           // destination is empty or oppenent except cannon is at the destination

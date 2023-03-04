@@ -52,7 +52,7 @@
     height: 100%;
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: center 3px;
+    background-position: center 2px;
     transition: translate 0.4s ease-in-out, scale 0.5s ease-in-out;
 
     &.small {
@@ -71,12 +71,12 @@
 
   .checkBubble {
     position: absolute;
-    top: calc(80vh * 0.03 * -1);
+    top: calc(v.$tile-height * -0.3);
     display: flex;
     justify-content: center;
     align-items: center;
-    width: calc(80vh * 0.1);
-    height: calc(80vh * 0.05);
+    width: v.$tile-height;
+    height: calc(v.$tile-height * 0.5);
     border: 1px solid v.$border-brown;
     border-radius: 5px;
     background-color: v.$border-brown-transparent;

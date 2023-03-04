@@ -16,10 +16,4 @@ export enum PieceType {
   SOLDIER = 'soldier',
 }
 
-export interface TileI {
-  position: Position;
-  piece: Piece | null;
-  highlight: boolean;
-}
-
-export type Board = TileI[][];
+export type Board = { position: Position; piece: Piece | null }[][];

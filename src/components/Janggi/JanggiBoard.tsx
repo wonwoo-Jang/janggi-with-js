@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board } from '@customTypes/janggiTypes';
+import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
-import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES } from '@utils/janggi/constants';
+import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES, TABLE_SETTING_OPTIONS } from '@utils/janggi/constants';
 
 import CheckModal from './CheckModal';
+import TableSettingModal from './TableSettingModal';
 import Tile from './Tile';
 
 import styles from './JanggiBoard.module.scss';
 
 interface JanggiBoardProps {
   board: Board;
+  turn: CountryType;
   showCheckModal: boolean;
-  isValidMove(newPosition: Position, piece: Piece, board: Board): boolean;
+  tableSetting: PieceType[];
+  setTableSetting: Dispatch<SetStateAction<PieceType[]>>;
   movePiece(selectedPiece: Piece, position: Position, clickedPiece: Piece | null): void;
 }
 
-// draw board
-export default function JanggiBoard({ board, showCheckModal, isValidMove, movePiece }: JanggiBoardProps) {
+// draw board mainly
+export default function JanggiBoard({
+  board,
+  turn,
+  showCheckModal,
+  tableSetting,
+  setTableSetting,
+  movePiece,
+}: JanggiBoardProps) {
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
   const [selectedRef, setSelectedRef] = useState<React.RefObject<HTMLDivElement> | null>(null); // for move effect
 
@@ -73,19 +83,18 @@ export default function JanggiBoard({ board, showCheckModal, isValidMove, movePi
   };
 
   const onClickTile = (position: Position, clickedPiece: Piece | null, pieceRef: React.RefObject<HTMLDivElement>) => {
+    // previously selected piece exists, and seems movable to the destination (no piece or opponent at the destination)
     if (selectedPiece && (!clickedPiece || clickedPiece.isOpponent(selectedPiece))) {
-      // previously selected piece exists, and seems movable to the destination
-      const validMove: boolean = isValidMove(position, selectedPiece, board);
-      if (validMove) {
-        moveSmoothly(position, clickedPiece);
-      }
+      // if the destination is in the range of possibleMoves, it's valid
+      const validMove: boolean = selectedPiece.possibleMoves.some(p => p.isSamePosition(position));
+      if (validMove) moveSmoothly(position, clickedPiece);
       resetSelectedPiece();
     } else if (clickedPiece) {
       if (selectedPiece && clickedPiece.isSamePiece(selectedPiece)) {
         // reset `selectedPiece` if the clicked piece is the same as the previously selected one (toggle)
         resetSelectedPiece();
-      } else {
-        // select the clicked piece if no piece has been selected yet or the clicked piece is our country (except itself)
+      } else if (clickedPiece.country === turn) {
+        // select the clicked piece if no piece has been selected yet and the clicked piece is our country (except itself)
         selectPiece(clickedPiece, pieceRef);
       }
     }
@@ -128,6 +137,13 @@ export default function JanggiBoard({ board, showCheckModal, isValidMove, movePi
         })}
       </div>
       {showCheckModal && <CheckModal />}
+      {!tableSetting.length ? (
+        <TableSettingModal
+          myCountry={CountryType.CHO}
+          opponentTableSetting={TABLE_SETTING_OPTIONS[0]}
+          setTableSetting={setTableSetting}
+        />
+      ) : null}
     </div>
   );
 }
