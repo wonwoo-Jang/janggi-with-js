@@ -1,4 +1,3 @@
-// piece rules
 export * from './cannonRules';
 export * from './carRules';
 export * from './elephantRules';

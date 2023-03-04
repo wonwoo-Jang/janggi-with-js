@@ -5,6 +5,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
+import { pieceOccupyingTile } from '@utils/janggi/common';
 import {
   ROW_NUM,
   TABLE_SETTING_OPTIONS,
@@ -12,7 +13,6 @@ import {
   INIT_PIECES_INFO,
   INITIAL_BOARD,
 } from '@utils/janggi/constants';
-import { pieceOccupyingTile } from '@utils/janggi/rules/generalRules';
 import {
   getPossibleCannonMoves,
   getPossibleCarMoves,
@@ -21,7 +21,7 @@ import {
   getPossibleKingMoves,
   getPossibleScholarMoves,
   getPossibleSoldierMoves,
-} from '@utils/janggi/rules/pieceRules';
+} from '@utils/janggi/pieceRules';
 
 import JanggiBoard from './JanggiBoard';
 import ScoreBoard from './ScoreBoard';
@@ -140,6 +140,11 @@ export default function Referee() {
     setPlayedCount(prev => prev + 1);
   };
 
+  const changeTurn = (newTurn?: CountryType) => {
+    if (newTurn) setTurn(newTurn);
+    else setTurn(prev => (prev === CountryType.CHO ? CountryType.HAN : CountryType.CHO));
+  };
+
   const resetCheck = () => {
     pieces.map(p => (p.isCheck = false));
   };
@@ -175,6 +180,18 @@ export default function Referee() {
     return pieces.every(p => p.country === turn || p.possibleMoves.length === 0);
   };
 
+  const checkGameEnd = (): boolean => {
+    if (isCheckmate() || choScoreBoard.score < 10 || hanScoreBoard.score < 10) {
+      setIsGameEnd(true);
+      return true;
+    } else if (playedCount > 200) {
+      changeTurn(choScoreBoard.score < hanScoreBoard.score ? CountryType.HAN : CountryType.CHO);
+      setIsGameEnd(true);
+      return true;
+    }
+    return false;
+  };
+
   // update all possible moves depending on the board
   const updatePossibleAndBlockedMoves = (newBoard: Board) => {
     pieces.map(p => {
@@ -183,11 +200,6 @@ export default function Referee() {
       p.blockedMoves = blocked;
       return p;
     });
-  };
-
-  const changeTurn = (newTurn?: CountryType) => {
-    if (newTurn) setTurn(newTurn);
-    else setTurn(prev => (prev === CountryType.CHO ? CountryType.HAN : CountryType.CHO));
   };
 
   // update board depending on the pieces
@@ -206,18 +218,6 @@ export default function Referee() {
     },
     [pieces],
   );
-
-  const checkGameEnd = (): boolean => {
-    if (isCheckmate() || choScoreBoard.score < 10 || hanScoreBoard.score < 10) {
-      setIsGameEnd(true);
-      return true;
-    } else if (playedCount > 200) {
-      changeTurn(choScoreBoard.score < hanScoreBoard.score ? CountryType.HAN : CountryType.CHO);
-      setIsGameEnd(true);
-      return true;
-    }
-    return false;
-  };
 
   const updateGame = useCallback(() => {
     if (pieces.length < 1) return;

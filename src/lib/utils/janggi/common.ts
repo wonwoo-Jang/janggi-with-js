@@ -3,13 +3,7 @@ import { Position } from '@models/Position';
 
 import { Board, CountryType } from '@customTypes/janggiTypes';
 
-import { PALACE_X, PALACE_Y, PALACE, DIRECTION_NUM, DIAG_DX, DIAG_DY, COLUMN_NUM, ROW_NUM } from '../constants';
-
-export const isInBoard = (position: Position): boolean => {
-  const isValidRangeX: boolean = position.x >= 1 && position.x <= ROW_NUM;
-  const isValidRangeY: boolean = position.y >= 1 && position.y <= COLUMN_NUM;
-  return isValidRangeX && isValidRangeY;
-};
+import { PALACE_X, PALACE_Y, PALACE, DIRECTION_NUM, DIAG_DX, DIAG_DY, COLUMN_NUM, ROW_NUM } from './constants';
 
 export const pieceOccupyingTile = (position: Position, board: Board): Piece | null => {
   if (!isInBoard(position)) return null;
@@ -28,6 +22,12 @@ export const isTileOccupiedByOpponent = (myCountry: CountryType, position: Posit
 export const isTileOccupiedByMyCountry = (myCountry: CountryType, position: Position, board: Board): boolean => {
   const occupyingPiece = pieceOccupyingTile(position, board);
   return Boolean(occupyingPiece && occupyingPiece.country === myCountry);
+};
+
+export const isInBoard = (position: Position): boolean => {
+  const isValidRangeX: boolean = position.x >= 1 && position.x <= ROW_NUM;
+  const isValidRangeY: boolean = position.y >= 1 && position.y <= COLUMN_NUM;
+  return isValidRangeX && isValidRangeY;
 };
 
 export const isInPalace = (position: Position): boolean => {

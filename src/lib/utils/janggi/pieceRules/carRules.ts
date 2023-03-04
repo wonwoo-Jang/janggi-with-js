@@ -5,7 +5,7 @@ import { Board } from '@customTypes/janggiTypes';
 
 import { CORNER_NUM, PALACE_CORNERS, DIAG_DX, DIAG_DY, COLUMN_NUM, ROW_NUM } from '@utils/janggi/constants';
 
-import { getPalaceCenterDiagonalMoves, isInBoard, isTileOccupied, isTileOccupiedByOpponent } from '../generalRules';
+import { getPalaceCenterDiagonalMoves, isInBoard, isTileOccupied, isTileOccupiedByOpponent } from '../common';
 
 // almost the same as `getLinearMoves` function in `cannonRules.ts`
 // TODO: integrate `getLinearMoves` in carRules and cannonRules

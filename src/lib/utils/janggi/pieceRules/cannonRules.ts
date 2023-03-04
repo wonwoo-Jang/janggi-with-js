@@ -5,7 +5,7 @@ import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
 import { CORNER_NUM, PALACE_CORNERS, PALACE, DIAG_DX, DIAG_DY, ROW_NUM, COLUMN_NUM } from '@utils/janggi/constants';
 
-import { isInBoard, isTileOccupied, pieceOccupyingTile } from '../generalRules';
+import { isInBoard, isTileOccupied, pieceOccupyingTile } from '../common';
 
 // 포다리 찾는 함수
 const getBridge = (

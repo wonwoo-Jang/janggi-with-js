@@ -6,7 +6,6 @@ import { Position } from '@models/Position';
 import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
 import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES, TABLE_SETTING_OPTIONS } from '@utils/janggi/constants';
-import { isTileOccupiedByMyCountry } from '@utils/janggi/rules/generalRules';
 
 import CheckModal from './CheckModal';
 import TableSettingModal from './TableSettingModal';
