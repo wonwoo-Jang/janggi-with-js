@@ -195,23 +195,42 @@ export default function Referee() {
   };
 
   // update board depending on the pieces
-  const updateBoard = useCallback(() => {
+  const updateBoard = useCallback(
+    (pieces: Piece[]): Board => {
+      const newBoard: Board = board.map(row => {
+        return row.map(tile => {
+          const piece = pieces.find(p => p.position.isSamePosition(tile.position));
+          tile.piece = piece ?? null;
+          return tile;
+        });
+      });
+
+      setBoard(newBoard);
+      // updatePossibleAndBlockedMoves(newBoard);
+
+      // if (isCheckmate()) {
+      //   setIsGameEnd(true);
+      // } else {
+      //   detectCheck(newBoard);
+      //   changeTurn();
+      // }
+      return newBoard;
+    },
+    [pieces],
+  );
+
+  const updateGame = useCallback(() => {
     if (pieces.length < 1) return;
 
-    const updatedBoard = board.map(row => {
-      return row.map(tile => {
-        const piece = pieces.find(p => p.position.isSamePosition(tile.position));
-        tile.piece = piece ?? null;
-        return tile;
-      });
-    });
+    const newBoard = updateBoard(pieces);
+    updatePossibleAndBlockedMoves(newBoard);
 
-    setBoard(updatedBoard);
-    updatePossibleAndBlockedMoves(updatedBoard);
-    if (isCheckmate()) {
+    const checkmate = isCheckmate();
+
+    if (checkmate) {
       setIsGameEnd(true);
     } else {
-      detectCheck(updatedBoard);
+      detectCheck(newBoard);
       changeTurn();
     }
   }, [pieces]);
@@ -268,8 +287,8 @@ export default function Referee() {
   }, [tableSetting]);
 
   useEffect(() => {
-    updateBoard();
-  }, [updateBoard]);
+    updateGame();
+  }, [updateGame]);
 
   useEffect(() => {
     initializePieces();
