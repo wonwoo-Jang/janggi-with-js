@@ -38,12 +38,12 @@ export default function Referee() {
   const [turn, setTurn] = useState<CountryType>(CountryType.HAN);
   const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
   const [isGameEnd, setIsGameEnd] = useState<boolean>(false);
-  const [choScoreBoard, setChoScoreBoard] = useState<{ deadPieces: Piece[]; score: number }>({
-    deadPieces: [],
+  const [choScoreBoard, setChoScoreBoard] = useState<{ deadOpponentPieces: Piece[]; score: number }>({
+    deadOpponentPieces: [],
     score: 28.5,
   });
-  const [hanScoreBoard, setHanScoreBoard] = useState<{ deadPieces: Piece[]; score: number }>({
-    deadPieces: [],
+  const [hanScoreBoard, setHanScoreBoard] = useState<{ deadOpponentPieces: Piece[]; score: number }>({
+    deadOpponentPieces: [],
     score: 30,
   });
 
@@ -132,11 +132,13 @@ export default function Referee() {
       // remove attacked piece (filter alive pieces)
       if (attackedPiece && p.isSamePiece(attackedPiece)) {
         if (attackedPiece.country === CountryType.CHO) {
-          const deadPieces = [...choScoreBoard.deadPieces, attackedPiece];
-          setChoScoreBoard(prev => ({ score: prev.score - attackedPiece.point, deadPieces }));
+          const deadOpponentPieces = [...hanScoreBoard.deadOpponentPieces, attackedPiece];
+          setChoScoreBoard(prev => ({ ...prev, score: prev.score - attackedPiece.point }));
+          setHanScoreBoard(prev => ({ ...prev, deadOpponentPieces }));
         } else {
-          const deadPieces = [...hanScoreBoard.deadPieces, attackedPiece];
-          setHanScoreBoard(prev => ({ score: prev.score - attackedPiece.point, deadPieces }));
+          const deadOpponentPieces = [...choScoreBoard.deadOpponentPieces, attackedPiece];
+          setHanScoreBoard(prev => ({ ...prev, score: prev.score - attackedPiece.point }));
+          setChoScoreBoard(prev => ({ ...prev, deadOpponentPieces }));
         }
       } else result.push(p);
       return result;
@@ -302,20 +304,7 @@ export default function Referee() {
 
   return (
     <div className={styles.janggi}>
-      <div className={styles.scoreBoard}>
-        <span className={styles.score}>{hanScoreBoard.score}</span>
-        <div className={styles.deadPieces}>
-          {choScoreBoard.deadPieces.map((p, i) => (
-            <div
-              className={`${styles.deadPiece} 
-          ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(p.type) && styles.small}
-          `}
-              style={{ backgroundImage: `url(${p.image})` }}
-              key={i}
-            />
-          ))}
-        </div>
-      </div>
+      <ScoreBoard scoreBoard={hanScoreBoard} />
       <JanggiBoard
         board={board}
         turn={turn}
@@ -325,20 +314,7 @@ export default function Referee() {
         isValidMove={isValidMove}
         movePiece={movePiece}
       />
-      <div className={styles.scoreBoard}>
-        <span className={styles.score}>{choScoreBoard.score}</span>
-        <div className={styles.deadPieces}>
-          {hanScoreBoard.deadPieces.map((p, i) => (
-            <div
-              className={`${styles.deadPiece} 
-          ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(p.type) && styles.small}
-          `}
-              style={{ backgroundImage: `url(${p.image})` }}
-              key={i}
-            />
-          ))}
-        </div>
-      </div>
+      <ScoreBoard scoreBoard={choScoreBoard} />
       <div className={styles.gameOptions}>
         <button
           className={styles.pass}
@@ -358,6 +334,25 @@ export default function Referee() {
         >
           <span>기권</span>
         </button>
+      </div>
+    </div>
+  );
+}
+
+function ScoreBoard({ scoreBoard }: { scoreBoard: { deadOpponentPieces: Piece[]; score: number } }) {
+  return (
+    <div className={styles.scoreBoard}>
+      <span className={styles.score}>{scoreBoard.score}</span>
+      <div className={styles.deadPieces}>
+        {scoreBoard.deadOpponentPieces.map((p, i) => (
+          <div
+            className={`${styles.deadPiece} 
+          ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(p.type) && styles.small}
+          `}
+            style={{ backgroundImage: `url(${p.image})` }}
+            key={i}
+          />
+        ))}
       </div>
     </div>
   );
