@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 import { CountryType, PieceType } from '@customTypes/janggiTypes';
 
@@ -17,10 +17,7 @@ export default function TableSettingModal({
   opponentTableSetting,
   setTableSetting,
 }: TableSettingModalProps) {
-  const selectTableSetting = (tableSetting: PieceType[]) => {
-    console.log(tableSetting);
-    setTableSetting(tableSetting);
-  };
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   return (
     <div className={styles.tableSettingModal}>
@@ -39,7 +36,11 @@ export default function TableSettingModal({
       </div>
       <div className={styles.options}>
         {TABLE_SETTING_OPTIONS.map((option, i) => (
-          <div className={styles.option} onClick={() => selectTableSetting(option)} key={i}>
+          <div
+            className={`${styles.option}  ${selectedIndex === i && styles.selected}`}
+            onClick={() => setSelectedIndex(i)}
+            key={i}
+          >
             {option.map((p, j) => (
               <div
                 className={styles.piece}
@@ -50,7 +51,7 @@ export default function TableSettingModal({
           </div>
         ))}
       </div>
-      <button>확인</button>
+      <button onClick={() => setTableSetting(TABLE_SETTING_OPTIONS[selectedIndex])}>확인</button>
     </div>
   );
 }

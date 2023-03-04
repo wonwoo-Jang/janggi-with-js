@@ -56,7 +56,8 @@
       border-radius: 10px;
       cursor: pointer;
 
-      &:hover {
+      &:hover,
+      &.selected {
         background-color: rgba($color: white, $alpha: 0.5);
       }
 
