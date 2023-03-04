@@ -23,7 +23,7 @@ import styles from './Referee.module.scss';
 
 const initialBoard = ROWS.reduce((board, x) => {
   const newRow = COLUMNS.reduce((row, y) => {
-    row.push({ position: new Position(x, y), piece: null, highlight: false });
+    row.push({ position: new Position(x, y), piece: null });
     return row;
   }, [] as TileI[]);
   board.push(newRow);
@@ -202,7 +202,6 @@ export default function Referee() {
       return row.map(tile => {
         const piece = pieces.find(p => p.position.isSamePosition(tile.position));
         tile.piece = piece ?? null;
-        // tile.highlight = false;
         return tile;
       });
     });
