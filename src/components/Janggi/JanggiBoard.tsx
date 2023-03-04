@@ -6,6 +6,7 @@ import { Position } from '@models/Position';
 import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
 import { ROW_NUM, COLUMN_NUM, BACK_SLASH_TILES, SLASH_TILES, TABLE_SETTING_OPTIONS } from '@utils/janggi/constants';
+import { isTileOccupiedByMyCountry } from '@utils/janggi/rules/generalRules';
 
 import CheckModal from './CheckModal';
 import TableSettingModal from './TableSettingModal';
@@ -19,18 +20,16 @@ interface JanggiBoardProps {
   showCheckModal: boolean;
   tableSetting: PieceType[];
   setTableSetting: Dispatch<SetStateAction<PieceType[]>>;
-  isValidMove(newPosition: Position, piece: Piece, board: Board): boolean;
   movePiece(selectedPiece: Piece, position: Position, clickedPiece: Piece | null): void;
 }
 
-// draw board
+// draw board mainly
 export default function JanggiBoard({
   board,
   turn,
   showCheckModal,
   tableSetting,
   setTableSetting,
-  isValidMove,
   movePiece,
 }: JanggiBoardProps) {
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
@@ -85,12 +84,11 @@ export default function JanggiBoard({
   };
 
   const onClickTile = (position: Position, clickedPiece: Piece | null, pieceRef: React.RefObject<HTMLDivElement>) => {
+    // previously selected piece exists, and seems movable to the destination (no piece or opponent at the destination)
     if (selectedPiece && (!clickedPiece || clickedPiece.isOpponent(selectedPiece))) {
-      // previously selected piece exists, and seems movable to the destination
-      const validMove: boolean = isValidMove(position, selectedPiece, board);
-      if (validMove) {
-        moveSmoothly(position, clickedPiece);
-      }
+      // if the destination is in the range of possibleMoves, it's valid
+      const validMove: boolean = selectedPiece.possibleMoves.some(p => p.isSamePosition(position));
+      if (validMove) moveSmoothly(position, clickedPiece);
       resetSelectedPiece();
     } else if (clickedPiece) {
       if (selectedPiece && clickedPiece.isSamePiece(selectedPiece)) {

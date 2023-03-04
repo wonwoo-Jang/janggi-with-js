@@ -3,10 +3,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { Piece } from '@models/Piece';
 import { Position } from '@models/Position';
 
-import { Board, CountryType, PieceType, TileI } from '@customTypes/janggiTypes';
+import { Board, CountryType, PieceType } from '@customTypes/janggiTypes';
 
-import { ROW_NUM, COLUMNS, ROWS, TABLE_SETTING_OPTIONS } from '@utils/janggi/constants';
-import { isTileOccupiedByMyCountry, pieceOccupyingTile } from '@utils/janggi/rules/generalRules';
+import {
+  ROW_NUM,
+  TABLE_SETTING_OPTIONS,
+  TABLE_SETTING_POSITION,
+  INIT_PIECES_INFO,
+  INITIAL_BOARD,
+} from '@utils/janggi/constants';
+import { pieceOccupyingTile } from '@utils/janggi/rules/generalRules';
 import {
   getPossibleCannonMoves,
   getPossibleCarMoves,
@@ -18,24 +24,16 @@ import {
 } from '@utils/janggi/rules/pieceRules';
 
 import JanggiBoard from './JanggiBoard';
+import ScoreBoard from './ScoreBoard';
 
 import styles from './Referee.module.scss';
 
-const initialBoard = ROWS.reduce((board, x) => {
-  const newRow = COLUMNS.reduce((row, y) => {
-    row.push({ position: new Position(x, y), piece: null });
-    return row;
-  }, [] as TileI[]);
-  board.push(newRow);
-  return board;
-}, [] as Board);
-
 // in charge of overall game process
 export default function Referee() {
-  const [board, setBoard] = useState<Board>(initialBoard);
+  const [board, setBoard] = useState<Board>(INITIAL_BOARD);
   const [pieces, setPieces] = useState<Piece[]>([]);
   const [tableSetting, setTableSetting] = useState<PieceType[]>([]);
-  const [playedCount, setPlayedCount] = useState<number>(-1);
+  const [playedCount, setPlayedCount] = useState<number>(0);
   const [turn, setTurn] = useState<CountryType>(CountryType.HAN);
   const [showCheckModal, setShowCheckModal] = useState<boolean>(false);
   const [isGameEnd, setIsGameEnd] = useState<boolean>(false);
@@ -69,12 +67,6 @@ export default function Referee() {
     }
   };
 
-  const moveTemporarily = (movingPiece: Piece, destination: Position, board: Board) => {
-    board[ROW_NUM - movingPiece.position.x][movingPiece.position.y - 1].piece = null; // move from original position
-    board[ROW_NUM - destination.x][destination.y - 1].piece = movingPiece; // to destination
-    movingPiece.setPosition(destination);
-  };
-
   const revertTemporaryMove = (
     movingPiece: Piece,
     originalPosition: Position,
@@ -86,11 +78,17 @@ export default function Referee() {
     movingPiece.setPosition(originalPosition);
   };
 
+  const moveTemporarily = (movingPiece: Piece, destination: Position, board: Board) => {
+    board[ROW_NUM - movingPiece.position.x][movingPiece.position.y - 1].piece = null; // move from original position
+    board[ROW_NUM - destination.x][destination.y - 1].piece = movingPiece; // to destination
+    movingPiece.setPosition(destination);
+  };
+
   // 이동 가능 위치를 판별하기 위해 임시로 생성한 boardPreview에서 장군이 나오는지 확인
   const checkKingCheckPreview = (pieces: Piece[], board: Board): boolean => {
     for (const piece of pieces) {
-      const poss = getPossibleMoves(piece, board);
-      if (isCheck(piece, poss, board)) return true;
+      const possibleMoves = getPossibleMoves(piece, board);
+      if (isCheck(piece, possibleMoves, board)) return true;
     }
     return false;
   };
@@ -120,15 +118,8 @@ export default function Referee() {
     return { possible: exactPossibleMoves, blocked: blockedMoves };
   };
 
-  // check if the new position is belongs to possible moves
-  const isValidMove = (newPosition: Position, piece: Piece, board: Board): boolean => {
-    if (isTileOccupiedByMyCountry(piece.country, newPosition, board)) return false;
-    const isValid = piece.possibleMoves.some(p => p.isSamePosition(newPosition));
-    return isValid;
-  };
-
-  const movePiece = (piece: Piece, newPosition: Position, attackedPiece: Piece | null) => {
-    piece.setPosition(newPosition); // move selectedPiece to the new position
+  const movePiece = (piece: Piece, destination: Position, attackedPiece: Piece | null) => {
+    piece.setPosition(destination); // move selectedPiece to the destination
     const updatedPieces = pieces.reduce((result, p) => {
       // remove attacked piece (filter alive pieces)
       if (attackedPiece && p.isSamePiece(attackedPiece)) {
@@ -146,6 +137,7 @@ export default function Referee() {
     }, [] as Piece[]);
 
     setPieces(updatedPieces);
+    setPlayedCount(prev => prev + 1);
   };
 
   const resetCheck = () => {
@@ -193,8 +185,9 @@ export default function Referee() {
     });
   };
 
-  const changeTurn = () => {
-    setTurn(prev => (prev === CountryType.CHO ? CountryType.HAN : CountryType.CHO));
+  const changeTurn = (newTurn?: CountryType) => {
+    if (newTurn) setTurn(newTurn);
+    else setTurn(prev => (prev === CountryType.CHO ? CountryType.HAN : CountryType.CHO));
   };
 
   // update board depending on the pieces
@@ -214,48 +207,36 @@ export default function Referee() {
     [pieces],
   );
 
+  const checkGameEnd = (): boolean => {
+    if (isCheckmate() || choScoreBoard.score < 10 || hanScoreBoard.score < 10) {
+      setIsGameEnd(true);
+      return true;
+    } else if (playedCount > 200) {
+      changeTurn(choScoreBoard.score < hanScoreBoard.score ? CountryType.HAN : CountryType.CHO);
+      setIsGameEnd(true);
+      return true;
+    }
+    return false;
+  };
+
   const updateGame = useCallback(() => {
     if (pieces.length < 1) return;
-
     const newBoard = updateBoard(pieces);
     updatePossibleAndBlockedMoves(newBoard);
-
-    const checkmate = isCheckmate();
-    if (checkmate) {
-      setIsGameEnd(true);
-    } else {
-      detectCheck(newBoard);
-      changeTurn();
-    }
-
-    setPlayedCount(prev => prev + 1);
+    if (checkGameEnd()) return;
+    detectCheck(newBoard);
+    changeTurn();
   }, [pieces]);
 
   const initializePieces = useCallback(() => {
     if (tableSetting.length < 1) return;
 
-    const TABLE_SETTING_POSITION = [2, 3, 7, 8];
-
-    const initPiecesInfo = [
-      { type: PieceType.SOLDIER, x: 4, y: [1, 3, 5, 7, 9] },
-      { type: PieceType.CANNON, x: 3, y: [2, 8] },
-      { type: PieceType.KING, x: 2, y: [5] },
-      { type: PieceType.CAR, x: 1, y: [1, 9] },
-      { type: PieceType.SCHOLAR, x: 1, y: [4, 6] },
-    ];
-
     // TODO: determine country randomly
-    const initialPieces = initPiecesInfo.reduce((pieces, info) => {
+    const initialPieces = INIT_PIECES_INFO.reduce((pieces, info) => {
       for (const y of info.y) {
         for (const country of [CountryType.CHO, CountryType.HAN]) {
-          pieces.push(
-            new Piece(
-              info.type,
-              new Position(country === CountryType.CHO ? info.x : ROW_NUM + 1 - info.x, y),
-              country,
-              `images/${country}_${info.type}.png`,
-            ),
-          );
+          const x = country === CountryType.CHO ? info.x : ROW_NUM + 1 - info.x;
+          pieces.push(new Piece(info.type, new Position(x, y), country, `images/${country}_${info.type}.png`));
         }
       }
       return pieces;
@@ -306,18 +287,17 @@ export default function Referee() {
           showCheckModal={showCheckModal}
           tableSetting={tableSetting}
           setTableSetting={setTableSetting}
-          isValidMove={isValidMove}
           movePiece={movePiece}
         />
         <ScoreBoard scoreBoard={choScoreBoard} />
       </div>
-
       <div className={styles.gameOptions}>
         <div className={styles.playedCount}>{playedCount}수</div>
         <button
           className={styles.pass}
           onClick={() => {
             alert(`${turn} 한 수 쉼!`);
+            setPlayedCount(prev => prev + 1);
             changeTurn();
           }}
         >
@@ -332,25 +312,6 @@ export default function Referee() {
         >
           <span>기권</span>
         </button>
-      </div>
-    </div>
-  );
-}
-
-function ScoreBoard({ scoreBoard }: { scoreBoard: { deadOpponentPieces: Piece[]; score: number } }) {
-  return (
-    <div className={styles.scoreBoard}>
-      <span className={styles.score}>{scoreBoard.score}</span>
-      <div className={styles.deadPieces}>
-        {scoreBoard.deadOpponentPieces.map((p, i) => (
-          <div
-            className={`${styles.deadPiece} 
-          ${[PieceType.SCHOLAR, PieceType.SOLDIER].includes(p.type) && styles.small}
-          `}
-            style={{ backgroundImage: `url(${p.image})` }}
-            key={i}
-          />
-        ))}
       </div>
     </div>
   );
