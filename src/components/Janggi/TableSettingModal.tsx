@@ -19,6 +19,14 @@ export default function TableSettingModal({
 }: TableSettingModalProps) {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
+  const chooseTableSetting = () => {
+    if (selectedIndex >= 0) {
+      setTableSetting(TABLE_SETTING_OPTIONS[selectedIndex]);
+    } else {
+      alert('상차림을 선택해주세요.');
+    }
+  };
+
   return (
     <div className={styles.tableSettingModal}>
       <div className={styles.message}>
@@ -51,7 +59,7 @@ export default function TableSettingModal({
           </div>
         ))}
       </div>
-      <button onClick={() => setTableSetting(TABLE_SETTING_OPTIONS[selectedIndex])}>확인</button>
+      <button onClick={chooseTableSetting}>확인</button>
     </div>
   );
 }
